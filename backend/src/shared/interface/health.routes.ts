@@ -1,4 +1,12 @@
 import { Hono } from "hono";
+import type { CheckHealth } from "../application/check-health.use-case";
+import { domainErrorResponse } from "./error-handler";
 
-// Pembacaan ringan ke database (keep-alive Supabase) ditambahkan di P03.
-export const healthRoutes = new Hono().get("/health", (c) => c.json({ status: "ok" }));
+// Dipanggil cron keep-alive (docs/03 §11): membaca satu baris dari database.
+export function healthRoutes(checkHealth: CheckHealth): Hono {
+  return new Hono().get("/health", async (c) => {
+    const result = await checkHealth.execute();
+    if (!result.ok) return domainErrorResponse(c, result.error);
+    return c.json({ status: "ok" });
+  });
+}
