@@ -194,6 +194,53 @@ export const DRAFT = {
   deskripsiAplikasi: "MOSA: Medication Organizer, Scanner & Assistant", // DRAFT
 } as const;
 
+/** Layar masuk, daftar, onboarding, persetujuan (Figma MOSA DRAFT 01–03). Semua DRAFT. */
+export const AUTH = {
+  tagline: "MOSA · Pendamping Minum Obat", // DRAFT
+  onboardingJudul: "Minum obat tepat waktu", // DRAFT
+  onboardingIsi: "Bantu lansia dan keluarga mengikuti instruksi obat dari apoteker.", // DRAFT
+  mulaiSekarang: "Mulai Sekarang", // DRAFT
+  /** Ilustrasi onboarding (dekoratif, disembunyikan dari pembaca layar). */
+  ilustrasiJadwal: "Pagi · 07.00", // DRAFT
+  ilustrasiObat: "Amlodipin 5 mg", // DRAFT
+  ilustrasiStatus: "Sudah", // DRAFT
+  sudahPunyaAkun: "Sudah punya akun?", // DRAFT
+  masuk: "Masuk", // DRAFT
+  masukJudul: "Masuk ke akun keluarga", // DRAFT
+  masukIsi: "Satu akun dipakai bersama oleh lansia dan keluarga, dari HP masing-masing.", // DRAFT
+  tetapMasuk: "Anda tetap masuk di HP ini. Tidak perlu masuk berulang kali.", // DRAFT
+  belumPunyaAkun: "Belum punya akun?", // DRAFT
+  daftarAkunBaru: "Daftar akun baru", // DRAFT
+  daftarJudul: "Daftar Akun", // DRAFT
+  daftarIsi: "Buat satu akun untuk dipakai bersama oleh lansia dan keluarga.", // DRAFT
+  labelNamaPasien: "Nama pasien", // DRAFT
+  labelEmail: "Email", // DRAFT
+  labelKataSandi: "Kata sandi", // DRAFT
+  labelUlangiKataSandi: "Ulangi kata sandi", // DRAFT
+  /** Keterangan di bawah kotak persetujuan (kalimat utama = DRAFT.persetujuanData, D-f). */
+  persetujuanKeterangan: "Data hanya bisa dilihat pemilik akun dan bisa dihapus kapan saja.", // DRAFT
+  buatAkun: "Buat Akun", // DRAFT
+  persetujuanJudul: "Persetujuan data", // DRAFT
+  persetujuanIsi: "Sebelum memakai aplikasi, setujui penyimpanan data obat di akun ini.", // DRAFT
+  setujuLanjutkan: "Setuju dan lanjutkan", // DRAFT
+  keluar: "Keluar dari Akun", // DRAFT
+  // Galat formulir dan masuk
+  galatNama: "Isi nama pasien.", // DRAFT
+  galatEmail: "Isi email yang benar, misalnya nama@email.com.", // DRAFT
+  galatKataSandiPendek: "Kata sandi minimal 8 karakter.", // DRAFT
+  galatKataSandiBeda: "Kata sandi tidak sama.", // DRAFT
+  galatPersetujuan: "Centang persetujuan untuk membuat akun.", // DRAFT
+  galatKataSandiKosong: "Isi kata sandi.", // DRAFT
+  galatMasuk: "Email atau kata sandi salah.", // DRAFT
+  galatEmailBelumDikonfirmasi: "Email belum dikonfirmasi. Buka email Anda, lalu masuk lagi.", // DRAFT
+  galatSudahTerdaftar: "Email ini sudah terdaftar. Silakan masuk.", // DRAFT
+  galatKataSandiLemah: "Kata sandi terlalu mudah ditebak. Pakai kata sandi lain.", // DRAFT
+  galatJaringan: "Tidak dapat terhubung. Periksa internet, lalu coba lagi.", // DRAFT
+  galatUmum: "Terjadi kesalahan. Coba lagi sebentar lagi.", // DRAFT
+  cekEmail: "Akun dibuat. Buka email Anda untuk konfirmasi, lalu masuk.", // DRAFT
+  cobaLagi: "Coba lagi", // DRAFT
+} as const;
+
 /** docs/06 [USULAN]: label status dosis (selalu bersama ikon dan warna). "Terlewat" baku (#11). */
 export const LABEL_STATUS = {
   belum: "Belum", // DRAFT

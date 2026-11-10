@@ -4,6 +4,7 @@ export { Badge, Chip, type BadgeTone } from "./badge";
 export { Banner, type BannerProps } from "./banner";
 export { Button, type ButtonProps, type ButtonVariant } from "./button";
 export { Card, type CardProps } from "./card";
+export { CheckboxCard, type CheckboxCardProps } from "./checkbox-card";
 export { ChoiceCards, type ChoiceCardsProps, type ChoiceOption } from "./choice-cards";
 export { cx } from "./cx";
 export { Dialog, type DialogProps } from "./dialog";

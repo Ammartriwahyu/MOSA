@@ -9,6 +9,8 @@ import { cx } from "./cx";
 const VARIANT = {
   /** Aksi utama: kapsul gelap (Scan Obat, Foto Obat yang Benar). */
   action: "bg-action text-on-action",
+  /** Hijau brand (Figma 03: Buat Akun). */
+  brand: "bg-brand text-on-brand",
   /** Sekunder: abu muda (Kembali ke Jadwal, Batal, Sudah minum tanpa scan). */
   secondary: "bg-secondary text-ink",
   /** Bahaya padat (Ya, hapus semua). */

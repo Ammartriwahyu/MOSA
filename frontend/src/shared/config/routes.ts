@@ -4,6 +4,7 @@ export const ROUTES = {
   welcome: "/welcome",
   login: "/login",
   register: "/register",
+  consent: "/consent",
   scan: "/scan",
   medicines: "/medicines",
   newMedicine: "/medicines/new",

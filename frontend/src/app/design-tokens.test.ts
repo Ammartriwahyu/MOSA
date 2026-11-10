@@ -51,6 +51,8 @@ const TEXT_PAIRS: Array<[string, string]> = [
   ["color-on-brand", "color-danger"],
   ["color-info", "color-info-soft"],
   ["color-status-missed", "color-surface"],
+  ["color-brand-ink", "color-hero-to"],
+  ["color-ink", "color-hero-from"],
 ];
 
 describe("kontras teks ≥ 4,5:1 (docs/06)", () => {
@@ -79,4 +81,12 @@ describe("ukuran minimum (docs/06)", () => {
 
 test("palet bawaan Tailwind dimatikan: hanya warna token yang tersedia", () => {
   expect(css).toContain("--color-*: initial;");
+});
+
+test("nama ukuran teks tidak bentrok dengan nama warna (kelas text-* jadi ambigu)", () => {
+  const names = (prefix: string) =>
+    new Set([...css.matchAll(new RegExp(`--${prefix}-([\w-]+?)(?:--[\w-]+)?:`, "g"))].map((m) => m[1]));
+  const colors = names("color");
+  const clashes = [...names("text")].filter((name) => colors.has(name));
+  expect(clashes).toEqual([]);
 });

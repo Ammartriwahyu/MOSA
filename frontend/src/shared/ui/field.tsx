@@ -57,7 +57,7 @@ function Frame({
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} className="text-body font-semibold text-danger">
+        <p id={errorId} role="alert" className="text-body font-semibold text-danger">
           {error}
         </p>
       ) : null}
