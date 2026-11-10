@@ -1,42 +1,28 @@
 import { Hono } from "hono";
 import { requestId } from "hono/request-id";
 import { describe, expect, test } from "vitest";
-import type { Container } from "../../src/composition-root";
 import { createApp } from "../../src/create-app";
-import { CheckHealth, type DatabasePing } from "../../src/shared/application/check-health.use-case";
-import type { LogEvent, Logger } from "../../src/shared/application/logger";
+import type { DatabasePing } from "../../src/shared/application/check-health.use-case";
 import {
   DOMAIN_ERROR_CODES,
   domainError,
   type DomainErrorCode,
 } from "../../src/shared/domain/domain-error";
-import { err, ok } from "../../src/shared/domain/result";
+import { err } from "../../src/shared/domain/result";
 import {
   DOMAIN_ERROR_STATUS,
   createErrorHandler,
   domainErrorResponse,
 } from "../../src/shared/interface/error-handler";
+import { FRONTEND, healthyDb, memoryLogger, testContainer } from "../support/test-container";
 
-const FRONTEND = "http://localhost:3000";
-
-function memoryLogger(): Logger & { events: LogEvent[] } {
-  const events: LogEvent[] = [];
-  return { events, info: (e) => events.push(e), error: (e) => events.push(e) };
-}
-
-const healthyDb: DatabasePing = { ping: async () => ok(undefined) };
 const downDb: DatabasePing = {
   ping: async () => err(domainError("DATABASE_UNAVAILABLE", "Database tidak dapat dihubungi.")),
 };
 
 function buildApp(database: DatabasePing = healthyDb) {
-  const logger = memoryLogger();
-  const container: Container = {
-    frontendOrigin: FRONTEND,
-    logger,
-    checkHealth: new CheckHealth(database),
-  };
-  return { app: createApp(container), logger };
+  const container = testContainer({ database });
+  return { app: createApp(container), logger: container.logger };
 }
 
 describe("GET /v1/health", () => {
@@ -83,7 +69,7 @@ describe("log permintaan", () => {
 describe("rute tidak dikenal", () => {
   test("membalas 404 dengan format galat seragam", async () => {
     const { app } = buildApp();
-    const res = await app.request("/v1/tidak-ada");
+    const res = await app.request("/tidak-ada");
     expect(res.status).toBe(404);
     expect(await res.json()).toEqual({
       error: { code: "NOT_FOUND", message: "Alamat tidak ditemukan.", details: null },
@@ -126,6 +112,7 @@ describe("pemetaan galat domain ke HTTP (docs/03 §9)", () => {
     AI_QUOTA_EXCEEDED: 429,
     AI_UNAVAILABLE: 503,
     DATABASE_UNAVAILABLE: 503,
+    AUTH_UNAVAILABLE: 503,
   };
 
   test.each(DOMAIN_ERROR_CODES)("%s → status sesuai tabel dan format seragam", async (code) => {

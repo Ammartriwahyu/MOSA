@@ -14,8 +14,9 @@ export const DOMAIN_ERROR_CODES = [
   "PHOTO_UNREADABLE",
   "AI_QUOTA_EXCEEDED",
   "AI_UNAVAILABLE",
-  // Tambahan di luar tabel docs/03 §9: database tidak terjangkau (health, repository).
+  // Tambahan di luar tabel docs/03 §9: layanan pendukung tidak terjangkau.
   "DATABASE_UNAVAILABLE",
+  "AUTH_UNAVAILABLE",
 ] as const;
 
 export type DomainErrorCode = (typeof DOMAIN_ERROR_CODES)[number];

@@ -33,6 +33,7 @@ export const DOMAIN_ERROR_STATUS: Record<DomainErrorCode, ContentfulStatusCode> 
   AI_QUOTA_EXCEEDED: 429,
   AI_UNAVAILABLE: 503,
   DATABASE_UNAVAILABLE: 503,
+  AUTH_UNAVAILABLE: 503,
 };
 
 /** Respons untuk Result gagal dari use case. Rute memanggil ini, bukan menyusun galat sendiri. */
