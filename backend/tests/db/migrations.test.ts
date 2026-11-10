@@ -47,6 +47,10 @@ describe("migrasi database", () => {
     expect(sql).not.toMatch(/\b(photo|foto|image|gambar)\w*\s+(text|bytea|jsonb|uuid)/);
   });
 
+  test("obat punya kolom kegunaan wajib (PRD §9.2 isian #3)", () => {
+    expect(sql).toMatch(/add column if not exists purpose text not null/);
+  });
+
   test("konfirmasi dosis unik per obat, tanggal, dan jam", () => {
     expect(sql).toMatch(/unique \(medicine_id, scheduled_date, scheduled_time\)/);
   });
