@@ -182,6 +182,16 @@ export const DRAFT = {
   tutup: "Tutup", // DRAFT
   /** Label aksesibel indikator memuat. */ // DRAFT
   memuat: "Memuat…", // DRAFT
+  /** Navigasi bawah (Figma MOSA DRAFT 05). Tombol tengah memakai TOMBOL.scanObat (B3). */ // DRAFT
+  navJadwal: "Jadwal", // DRAFT
+  navObat: "Obat", // DRAFT
+  /** Label aksesibel wilayah navigasi bawah. */ // DRAFT
+  navigasiUtama: "Navigasi utama", // DRAFT
+  /** Label aksesibel tombol ikon di header (Figma: panah kiri, roda gigi). */ // DRAFT
+  kembali: "Kembali", // DRAFT
+  pengaturan: "Pengaturan", // DRAFT
+  /** Deskripsi aplikasi untuk metadata halaman (sub-label MOSA, keputusan D7). */ // DRAFT
+  deskripsiAplikasi: "MOSA: Medication Organizer, Scanner & Assistant", // DRAFT
 } as const;
 
 /** docs/06 [USULAN]: label status dosis (selalu bersama ikon dan warna). "Terlewat" baku (#11). */

@@ -127,6 +127,11 @@
 }
 
 @layer base {
+  :root {
+    /* Nama keluarga dari @fontsource-variable/plus-jakarta-sans (diimpor di app/layout.tsx). */
+    --font-plus-jakarta-sans: "Plus Jakarta Sans Variable";
+  }
+
   html {
     -webkit-text-size-adjust: 100%;
   }
