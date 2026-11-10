@@ -131,4 +131,9 @@ GitHub Actions (`.github/workflows/ci.yml`) menjalankan `pnpm install --frozen-l
 
 ## Atribusi
 
-*(menyusul)* Sumber daftar obat familiar pada formulir Tambah Obat.
+**Daftar obat familiar** pada pilihan "Nama Obat" di formulir Tambah Obat (`frontend/src/features/medicines/data/familiar-medicines.ts`) berisi 15 nama obat generik yang umum dipakai lansia di Indonesia, dipilih tim produk (PRD §19.1 #3). Rujukan penamaan:
+
+- Kementerian Kesehatan RI, *Formularium Nasional* (e-Fornas), [e-fornas.kemkes.go.id](https://e-fornas.kemkes.go.id)
+- Badan POM RI, *Informatorium Obat Nasional Indonesia* (IONI), [pionas.pom.go.id/ioni](https://pionas.pom.go.id/ioni)
+
+Daftar ini hanya membantu mengisi nama obat. Kekuatan, aturan pakai, dan jadwal selalu diisi sesuai resep oleh apoteker atau keluarga. Aplikasi tidak menyimpan database obat umum.
