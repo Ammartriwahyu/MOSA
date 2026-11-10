@@ -178,6 +178,10 @@ export const DRAFT = {
   petunjukAturanPakai: "Tulis hubungan dengan makan saja, tanpa jam. Contoh: sesudah makan.", // DRAFT
   /** docs/01 §2 [USULAN]: isian tegas kolom Larangan bila tidak ada. */ // DRAFT
   tidakAdaLarangan: "Tidak ada larangan khusus", // DRAFT
+  /** Label aksesibel tombol tutup dialog (tidak terlihat). */ // DRAFT
+  tutup: "Tutup", // DRAFT
+  /** Label aksesibel indikator memuat. */ // DRAFT
+  memuat: "Memuat…", // DRAFT
 } as const;
 
 /** docs/06 [USULAN]: label status dosis (selalu bersama ikon dan warna). "Terlewat" baku (#11). */
