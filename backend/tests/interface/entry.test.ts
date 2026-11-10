@@ -1,0 +1,29 @@
+import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
+
+// Menguji entri sungguhan (src/index.ts) seperti yang dijalankan Vercel dan server lokal.
+// Nilai env fiktif; tes ini tidak menghubungi Supabase.
+describe("entri src/index.ts", () => {
+  beforeAll(() => {
+    vi.stubEnv("SUPABASE_URL", "http://127.0.0.1:1");
+    vi.stubEnv("SUPABASE_SECRET_KEY", "kunci-uji");
+  });
+  afterAll(() => {
+    vi.unstubAllEnvs();
+  });
+
+  test("rute tidak dikenal dibalas 404 berformat seragam, bukan teks bawaan Hono", async () => {
+    const { default: app } = await import("../../src/index");
+    const res = await app.request("/tidak-ada");
+    expect(res.status).toBe(404);
+    expect(await res.json()).toEqual({
+      error: { code: "NOT_FOUND", message: "Alamat tidak ditemukan.", details: null },
+    });
+  });
+
+  test("rute terlindungi tanpa token dibalas 401 berformat seragam", async () => {
+    const { default: app } = await import("../../src/index");
+    const res = await app.request("/v1/apa-saja");
+    expect(res.status).toBe(401);
+    expect(((await res.json()) as { error: { code: string } }).error.code).toBe("UNAUTHENTICATED");
+  });
+});

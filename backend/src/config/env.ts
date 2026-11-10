@@ -1,13 +1,16 @@
 import { z } from "zod";
 
-// Hanya variabel yang sudah dipakai kode. Variabel Supabase, Gemini, dan token
-// scan ditambahkan sebagai wajib di branch yang pertama kali memakainya.
+// Hanya variabel yang sudah dipakai kode. Variabel Gemini dan token scan
+// ditambahkan sebagai wajib di branch yang pertama kali memakainya.
 const DEV_FRONTEND_ORIGIN = "http://localhost:3000";
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().int().min(1).max(65_535).default(8787),
   FRONTEND_ORIGIN: z.url(),
+  SUPABASE_URL: z.url(),
+  // Secret key (sb_secret_...) pengganti service_role; hanya di server.
+  SUPABASE_SECRET_KEY: z.string().min(1),
 });
 
 export type Env = z.infer<typeof envSchema>;

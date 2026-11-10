@@ -85,6 +85,22 @@ const layerPolicies = [
     message: "shared/ tidak boleh mengimpor modules/ atau berkas entri.",
   },
   {
+    // Lapisan di dalam shared/ mengikuti aturan yang sama dengan modul.
+    from: shared("application"),
+    disallow: { to: [config, shared(["infrastructure", "interface"]), ANY_PACKAGE] },
+    message: "shared/application hanya boleh mengimpor shared/domain.",
+  },
+  {
+    from: shared("infrastructure"),
+    disallow: { to: [config, shared("interface")] },
+    message: "shared/infrastructure tidak boleh mengimpor shared/interface atau config/.",
+  },
+  {
+    from: shared("interface"),
+    disallow: { to: [config, shared("infrastructure")] },
+    message: "shared/interface tidak boleh mengimpor shared/infrastructure atau config/.",
+  },
+  {
     from: { element: { type: "config" } },
     disallow: { to: [{ element: { type: ["layer", "shared"] } }, entry] },
     message: "config/ hanya membaca environment.",
