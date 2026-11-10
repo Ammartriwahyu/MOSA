@@ -55,6 +55,27 @@ Kunci rahasia hanya ada di backend. Jangan memberi awalan `NEXT_PUBLIC_` pada ku
 
 Backend berjalan di `http://localhost:8787` dan frontend di `http://localhost:3000`. Tanpa `.env`, backend tetap menyala untuk pengembangan (`FRONTEND_ORIGIN` default `http://localhost:3000`); fitur yang butuh Supabase atau Gemini memerlukan nilainya.
 
+## Database (Supabase)
+
+Skema ada di `backend/supabase/migrations/` (SQL berurutan). RLS aktif di semua tabel tanpa kebijakan, dan hak `anon`/`authenticated` dicabut: hanya backend (secret key) yang bisa mengakses data. Tidak ada kolom foto.
+
+Perintah Supabase CLI dijalankan dari folder `backend/` dengan `npx supabase@3.1.0 <perintah>`.
+
+### Membangun ulang database dari nol (proyek cloud)
+
+1. Buat proyek di [supabase.com](https://supabase.com), lalu salin URL, publishable key, dan secret key dari **Project Settings → API Keys** ke `backend/.env` dan `frontend/.env.local`.
+2. Terapkan migrasi, pilih salah satu:
+   - **CLI:** `npx supabase@3.1.0 login`, lalu `npx supabase@3.1.0 link --project-ref <ref-proyek>`, lalu `npx supabase@3.1.0 db push`.
+   - **Tanpa CLI:** buka **SQL Editor**, tempel isi setiap berkas di `backend/supabase/migrations/` sesuai urutan nama, lalu jalankan. Aman dijalankan ulang.
+3. Buktikan RLS menolak klien publik: `pnpm --filter backend db:check-rls`. Skrip ini memakai nilai publik di `frontend/.env.local` dan harus mencetak `RLS OK`.
+4. Untuk menghapus semua data dan mengulang: hapus tabel lewat SQL Editor (atau buat proyek baru), lalu ulangi langkah 2–3.
+
+### Database lokal (opsional, butuh Docker)
+
+1. `npx supabase@3.1.0 start` menyalakan Supabase lokal dan menerapkan migrasi.
+2. `npx supabase@3.1.0 db reset` membangun ulang dari nol.
+3. `npx supabase@3.1.0 stop` mematikannya.
+
 ## Akun Demo Juri
 
 *(menyusul)*
