@@ -1,7 +1,11 @@
+import { AuthGuard } from "@/features/auth";
 import { AppShell } from "@/shared/ui";
 
-// Halaman setelah masuk: kolom mobile + navigasi bawah. Penjaga rute (wajib login)
-// dipasang di sini pada feat/fe-api-layer, bersama klien Supabase Auth.
+// Halaman setelah masuk: wajib sesi (AuthGuard), lalu kolom mobile + navigasi bawah.
 export default function AppLayout({ children }: LayoutProps<"/">) {
-  return <AppShell>{children}</AppShell>;
+  return (
+    <AuthGuard>
+      <AppShell>{children}</AppShell>
+    </AuthGuard>
+  );
 }
