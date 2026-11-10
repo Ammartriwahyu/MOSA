@@ -4,10 +4,41 @@ AGENTS.md
 .claude/
 .mcp.json
 PROGRESS.md
-/README.md
+KIT.md
 prompts/
 docs/10-git-workflow.md
 docs/11-hemat-token.md
 docs/12-rencana-branch.md
 docs/design/ORIENTATION.md
 docs/design/screen-map.md
+
+# Dependensi
+node_modules/
+.pnpm-store/
+
+# Hasil build
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+
+# Tes
+coverage/
+playwright-report/
+test-results/
+
+# Rahasia: hanya contoh yang masuk git
+.env
+.env.*
+!.env.example
+
+# Deploy
+.vercel/
+
+# Log dan berkas sistem
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.DS_Store
+Thumbs.db
