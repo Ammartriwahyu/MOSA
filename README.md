@@ -78,7 +78,21 @@ Perintah Supabase CLI dijalankan dari folder `backend/` dengan `npx supabase@3.1
 
 ## Akun Demo Juri
 
-*(menyusul)*
+Akun demo berisi obat fiktif yang siap diuji: **Amlodipin 5 mg** (07.00 dan 19.00, diisi apoteker) dan **Metformin 500 mg** (12.00 dan 18.00, diisi keluarga). Persetujuan data sudah tercatat, dan akun ditandai `is_demo` sehingga tidak bisa dihapus.
+
+Kredensial: *(diisi saat rilis)*
+
+### Menyiapkan akun demo
+
+1. Isi `DEMO_EMAIL` dan `DEMO_PASSWORD` di `backend/.env`, bersama `SUPABASE_URL` dan `SUPABASE_SECRET_KEY`.
+2. Pastikan migrasi sudah diterapkan (lihat bagian Database).
+3. Jalankan `pnpm --filter backend seed:demo`.
+
+Seed boleh dijalankan berulang. Setiap kali dijalankan, akun demo kembali ke keadaan awal: obat demo dipulihkan, obat tambahan dan catatan minum akun demo dihapus, serta persetujuan scan dan pilihan Teks/Suara dikosongkan agar alurnya bisa didemokan lagi. Akun lain tidak tersentuh.
+
+### Latihan demo: dosis jatuh tempo sekarang
+
+`pnpm --filter backend seed:demo-due` menggeser jadwal Metformin ke menit saat perintah dijalankan (WIB), sehingga dosisnya langsung jatuh tempo dan bisa dikonfirmasi selama 120 menit. Jalankan `pnpm --filter backend seed:demo` untuk mengembalikan jadwal normal.
 
 ## Deploy (Vercel)
 
