@@ -53,7 +53,7 @@ Salin contoh lalu isi nilainya. Berkas `.env*` selain `.env.example` tidak perna
 
 Kunci rahasia hanya ada di backend. Jangan memberi awalan `NEXT_PUBLIC_` pada kunci rahasia karena nilainya akan ikut terkirim ke browser.
 
-Backend berjalan di `http://localhost:8787` dan frontend di `http://localhost:3000`. Tanpa `.env`, backend tetap menyala untuk pengembangan (`FRONTEND_ORIGIN` default `http://localhost:3000`); fitur yang butuh Supabase atau Gemini memerlukan nilainya.
+Backend berjalan di `http://localhost:8787` dan frontend di `http://localhost:3000`. Backend wajib punya `SUPABASE_URL` dan `SUPABASE_SECRET_KEY`; tanpa keduanya backend berhenti saat dinyalakan dan menyebut nama variabel yang kurang. `FRONTEND_ORIGIN` default `http://localhost:3000` di luar produksi. Cek cepat: `http://localhost:8787/v1/health` membalas `{"status":"ok"}` bila database terjangkau, atau `503 DATABASE_UNAVAILABLE` bila tidak.
 
 ## Database (Supabase)
 
