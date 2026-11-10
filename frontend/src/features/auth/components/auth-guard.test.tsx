@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { act, render, screen } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { DRAFT } from "@/shared/copy";
 import { AuthGuard } from "./auth-guard";
@@ -18,17 +18,23 @@ const auth = vi.hoisted(() => {
     },
   };
 });
-vi.mock("@/shared/lib", () => ({ getSupabaseBrowserClient: () => ({ auth }) }));
+const backend = vi.hoisted(() => ({ household: { dataConsentAt: "2026-11-10T00:00:00Z" as string | null } }));
+vi.mock("@/shared/lib", () => ({
+  getSupabaseBrowserClient: () => ({ auth }),
+  api: () => ({
+    json: async () => ({ scanConsentAt: null, outputMode: null, isDemo: false, ...backend.household }),
+  }),
+}));
 
 const router = vi.hoisted(() => ({ replace: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => router }));
 
-function renderGuard() {
-  const queryClient = new QueryClient();
-  queryClient.setQueryData(["household"], { isDemo: false });
+function renderGuard(requireConsent?: boolean) {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  queryClient.setQueryData(["data-lain"], { isi: 1 });
   const view = render(
     <QueryClientProvider client={queryClient}>
-      <AuthGuard>
+      <AuthGuard requireConsent={requireConsent}>
         <p>Isi terlindungi</p>
       </AuthGuard>
     </QueryClientProvider>,
@@ -39,6 +45,7 @@ function renderGuard() {
 beforeEach(() => {
   router.replace.mockClear();
   auth.unsubscribe.mockClear();
+  backend.household.dataConsentAt = "2026-11-10T00:00:00Z";
 });
 
 describe("AuthGuard", () => {
@@ -48,26 +55,42 @@ describe("AuthGuard", () => {
     expect(screen.queryByText("Isi terlindungi")).not.toBeInTheDocument();
   });
 
-  test("sesi ada → isi tampil, tidak dialihkan", () => {
+  test("sesi ada dan sudah setuju → isi tampil", async () => {
     renderGuard();
     act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
-    expect(screen.getByText("Isi terlindungi")).toBeInTheDocument();
+    expect(await screen.findByText("Isi terlindungi")).toBeInTheDocument();
     expect(router.replace).not.toHaveBeenCalled();
   });
 
-  test("belum masuk → dialihkan ke /login tanpa menampilkan isi", () => {
+  test("sesi ada tetapi belum setuju → dialihkan ke /consent tanpa menampilkan isi", async () => {
+    backend.household.dataConsentAt = null;
     renderGuard();
-    act(() => auth.emit("INITIAL_SESSION", null));
-    expect(router.replace).toHaveBeenCalledWith("/login");
+    act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
+    await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/consent"));
     expect(screen.queryByText("Isi terlindungi")).not.toBeInTheDocument();
   });
 
-  test("keluar di tengah sesi → cache data dihapus lalu dialihkan", () => {
+  test("requireConsent=false tidak memeriksa persetujuan (layar persetujuan itu sendiri)", () => {
+    backend.household.dataConsentAt = null;
+    renderGuard(false);
+    act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
+    expect(screen.getByText("Isi terlindungi")).toBeInTheDocument();
+  });
+
+  test("belum masuk → dialihkan ke onboarding", () => {
+    renderGuard();
+    act(() => auth.emit("INITIAL_SESSION", null));
+    expect(router.replace).toHaveBeenCalledWith("/welcome");
+    expect(screen.queryByText("Isi terlindungi")).not.toBeInTheDocument();
+  });
+
+  test("keluar di tengah sesi → cache data dihapus lalu dialihkan", async () => {
     const { queryClient } = renderGuard();
     act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
+    await screen.findByText("Isi terlindungi");
     act(() => auth.emit("SIGNED_OUT", null));
-    expect(queryClient.getQueryData(["household"])).toBeUndefined();
-    expect(router.replace).toHaveBeenCalledWith("/login");
+    expect(queryClient.getQueryData(["data-lain"])).toBeUndefined();
+    expect(router.replace).toHaveBeenCalledWith("/welcome");
   });
 
   test("berhenti berlangganan saat dilepas", () => {

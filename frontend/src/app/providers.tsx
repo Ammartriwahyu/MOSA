@@ -1,7 +1,14 @@
 "use client";
 
-import { environmentManager, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  environmentManager,
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import type { ReactNode } from "react";
+import { householdQueryKey, signOut } from "@/features/auth";
 import { isApiError } from "@/shared/lib";
 
 /** Galat 4xx (validasi, izin, dosis sudah tercatat) tidak akan berubah bila diulang. */
@@ -10,8 +17,23 @@ function shouldRetry(failureCount: number, error: unknown): boolean {
   return failureCount < 2;
 }
 
-function makeQueryClient(): QueryClient {
-  return new QueryClient({
+/**
+ * Penanganan galat global (P08 tugas 5):
+ * - CONSENT_REQUIRED → muat ulang status rumah tangga; AuthGuard lalu membuka /consent.
+ * - UNAUTHENTICATED → keluar; AuthGuard lalu membuka onboarding.
+ */
+function handleGlobalError(error: unknown, client: QueryClient): void {
+  if (isApiError(error, "CONSENT_REQUIRED")) {
+    void client.invalidateQueries({ queryKey: householdQueryKey });
+  } else if (isApiError(error, "UNAUTHENTICATED")) {
+    void signOut();
+  }
+}
+
+export function makeQueryClient(): QueryClient {
+  const client: QueryClient = new QueryClient({
+    queryCache: new QueryCache({ onError: (error) => handleGlobalError(error, client) }),
+    mutationCache: new MutationCache({ onError: (error) => handleGlobalError(error, client) }),
     defaultOptions: {
       queries: {
         staleTime: 15_000,
@@ -23,6 +45,7 @@ function makeQueryClient(): QueryClient {
       mutations: { retry: false },
     },
   });
+  return client;
 }
 
 let browserQueryClient: QueryClient | undefined;
