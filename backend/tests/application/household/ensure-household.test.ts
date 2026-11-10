@@ -41,9 +41,12 @@ describe("EnsureHousehold", () => {
   });
 
   test("galat database diteruskan sebagai Result, bukan dilempar", async () => {
+    const down = async () => err(domainError("DATABASE_UNAVAILABLE", "Database tidak dapat dihubungi."));
     const failing: HouseholdRepository = {
-      findByOwner: async () => err(domainError("DATABASE_UNAVAILABLE", "Database tidak dapat dihubungi.")),
-      createIfAbsent: async () => err(domainError("DATABASE_UNAVAILABLE", "Database tidak dapat dihubungi.")),
+      findByOwner: down,
+      findById: down,
+      createIfAbsent: down,
+      saveSettings: down,
     };
     const result = await new EnsureHousehold(failing).execute({ userId: "user-3" });
     expect(result).toEqual({
