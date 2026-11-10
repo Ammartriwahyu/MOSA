@@ -1,4 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { AdminClient } from "./supabase-client";
 import type { DatabasePing } from "../application/check-health.use-case";
 import { domainError, type DomainError } from "../domain/domain-error";
 import { err, ok, type Result } from "../domain/result";
@@ -6,7 +6,7 @@ import { err, ok, type Result } from "../domain/result";
 const PING_TIMEOUT_MS = 5_000;
 
 export class SupabaseDatabasePing implements DatabasePing {
-  constructor(private readonly client: SupabaseClient) {}
+  constructor(private readonly client: AdminClient) {}
 
   async ping(): Promise<Result<void, DomainError>> {
     try {

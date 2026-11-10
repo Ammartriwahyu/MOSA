@@ -10,7 +10,8 @@
     "test": "vitest run",
     "db:check-rls": "tsx --env-file-if-exists=../frontend/.env.local scripts/check-rls.ts",
     "seed:demo": "tsx --env-file-if-exists=.env supabase/seed/demo.ts",
-    "seed:demo-due": "tsx --env-file-if-exists=.env supabase/seed/demo.ts --due"
+    "seed:demo-due": "tsx --env-file-if-exists=.env supabase/seed/demo.ts --due",
+    "db:types": "npx -y supabase@3.1.0 gen types typescript --schema public > src/shared/infrastructure/database.types.ts"
   },
   "dependencies": {
     "@hono/node-server": "2.1.6",
