@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 import type { Container } from "./composition-root";
+import { householdRoutes } from "./modules/household/interface/household.routes";
 import { resolveHousehold } from "./modules/household/interface/resolve-household.middleware";
 import { authenticate } from "./shared/interface/authenticate.middleware";
 import { createErrorHandler, handleNotFound } from "./shared/interface/error-handler";
@@ -32,6 +33,7 @@ export function createApp(container: Container): Hono {
   app.use("/v1/*", requireDataConsent());
 
   app.route("/v1", healthRoutes(container.checkHealth));
+  app.route("/v1", householdRoutes(container.household));
 
   app.notFound(handleNotFound);
   app.onError(createErrorHandler(container.logger));
