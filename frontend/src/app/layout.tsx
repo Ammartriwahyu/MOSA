@@ -2,6 +2,7 @@ import "@fontsource-variable/plus-jakarta-sans";
 import type { Metadata, Viewport } from "next";
 import { DRAFT, NAMA_APLIKASI } from "@/shared/copy";
 import "./globals.css";
+import { Providers } from "./providers";
 
 // Font Figma (Plus Jakarta Sans) dari paket lokal, bukan next/font/google:
 // berkas font ikut di node_modules sehingga demo localhost tetap jalan tanpa internet (NFR-07).
@@ -22,7 +23,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="id">
-      <body className="min-h-dvh antialiased">{children}</body>
+      <body className="min-h-dvh antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
