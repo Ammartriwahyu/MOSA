@@ -55,9 +55,44 @@ Kunci rahasia hanya ada di backend. Jangan memberi awalan `NEXT_PUBLIC_` pada ku
 
 Backend berjalan di `http://localhost:8787` dan frontend di `http://localhost:3000`. Tanpa `.env`, backend tetap menyala untuk pengembangan (`FRONTEND_ORIGIN` default `http://localhost:3000`); fitur yang butuh Supabase atau Gemini memerlukan nilainya.
 
+## Database (Supabase)
+
+Skema ada di `backend/supabase/migrations/` (SQL berurutan). RLS aktif di semua tabel tanpa kebijakan, dan hak `anon`/`authenticated` dicabut: hanya backend (secret key) yang bisa mengakses data. Tidak ada kolom foto.
+
+Perintah Supabase CLI dijalankan dari folder `backend/` dengan `npx supabase@3.1.0 <perintah>`.
+
+### Membangun ulang database dari nol (proyek cloud)
+
+1. Buat proyek di [supabase.com](https://supabase.com), lalu salin URL, publishable key, dan secret key dari **Project Settings → API Keys** ke `backend/.env` dan `frontend/.env.local`.
+2. Terapkan migrasi, pilih salah satu:
+   - **CLI:** `npx supabase@3.1.0 login`, lalu `npx supabase@3.1.0 link --project-ref <ref-proyek>`, lalu `npx supabase@3.1.0 db push`.
+   - **Tanpa CLI:** buka **SQL Editor**, tempel isi setiap berkas di `backend/supabase/migrations/` sesuai urutan nama, lalu jalankan. Aman dijalankan ulang.
+3. Buktikan RLS menolak klien publik: `pnpm --filter backend db:check-rls`. Skrip ini memakai nilai publik di `frontend/.env.local` dan harus mencetak `RLS OK`.
+4. Untuk menghapus semua data dan mengulang: hapus tabel lewat SQL Editor (atau buat proyek baru), lalu ulangi langkah 2–3.
+
+### Database lokal (opsional, butuh Docker)
+
+1. `npx supabase@3.1.0 start` menyalakan Supabase lokal dan menerapkan migrasi.
+2. `npx supabase@3.1.0 db reset` membangun ulang dari nol.
+3. `npx supabase@3.1.0 stop` mematikannya.
+
 ## Akun Demo Juri
 
-*(menyusul)*
+Akun demo berisi obat fiktif yang siap diuji: **Amlodipin 5 mg** (07.00 dan 19.00, diisi apoteker) dan **Metformin 500 mg** (12.00 dan 18.00, diisi keluarga). Persetujuan data sudah tercatat, dan akun ditandai `is_demo` sehingga tidak bisa dihapus.
+
+Kredensial: *(diisi saat rilis)*
+
+### Menyiapkan akun demo
+
+1. Isi `DEMO_EMAIL` dan `DEMO_PASSWORD` di `backend/.env`, bersama `SUPABASE_URL` dan `SUPABASE_SECRET_KEY`.
+2. Pastikan migrasi sudah diterapkan (lihat bagian Database).
+3. Jalankan `pnpm --filter backend seed:demo`.
+
+Seed boleh dijalankan berulang. Setiap kali dijalankan, akun demo kembali ke keadaan awal: obat demo dipulihkan, obat tambahan dan catatan minum akun demo dihapus, serta persetujuan scan dan pilihan Teks/Suara dikosongkan agar alurnya bisa didemokan lagi. Akun lain tidak tersentuh.
+
+### Latihan demo: dosis jatuh tempo sekarang
+
+`pnpm --filter backend seed:demo-due` menggeser jadwal Metformin ke menit saat perintah dijalankan (WIB), sehingga dosisnya langsung jatuh tempo dan bisa dikonfirmasi selama 120 menit. Jalankan `pnpm --filter backend seed:demo` untuk mengembalikan jadwal normal.
 
 ## Deploy (Vercel)
 
@@ -96,4 +131,9 @@ GitHub Actions (`.github/workflows/ci.yml`) menjalankan `pnpm install --frozen-l
 
 ## Atribusi
 
-*(menyusul)* Sumber daftar obat familiar pada formulir Tambah Obat.
+**Daftar obat familiar** pada pilihan "Nama Obat" di formulir Tambah Obat (`frontend/src/features/medicines/data/familiar-medicines.ts`) berisi 15 nama obat generik yang umum dipakai lansia di Indonesia, dipilih tim produk (PRD §19.1 #3). Rujukan penamaan:
+
+- Kementerian Kesehatan RI, *Formularium Nasional* (e-Fornas), [e-fornas.kemkes.go.id](https://e-fornas.kemkes.go.id)
+- Badan POM RI, *Informatorium Obat Nasional Indonesia* (IONI), [pionas.pom.go.id/ioni](https://pionas.pom.go.id/ioni)
+
+Daftar ini hanya membantu mengisi nama obat. Kekuatan, aturan pakai, dan jadwal selalu diisi sesuai resep oleh apoteker atau keluarga. Aplikasi tidak menyimpan database obat umum.

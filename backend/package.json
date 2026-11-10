@@ -7,10 +7,14 @@
     "dev": "tsx watch --env-file-if-exists=.env src/local-server.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:check-rls": "tsx --env-file-if-exists=../frontend/.env.local scripts/check-rls.ts",
+    "seed:demo": "tsx --env-file-if-exists=.env supabase/seed/demo.ts",
+    "seed:demo-due": "tsx --env-file-if-exists=.env supabase/seed/demo.ts --due"
   },
   "dependencies": {
     "@hono/node-server": "2.1.6",
+    "@supabase/supabase-js": "2.119.0",
     "hono": "4.13.17",
     "zod": "4.6.7"
   },
