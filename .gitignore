@@ -4,11 +4,10 @@ AGENTS.md
 .claude/
 .mcp.json
 PROGRESS.md
-README.md
+/README.md
 prompts/
 docs/10-git-workflow.md
 docs/11-hemat-token.md
 docs/12-rencana-branch.md
 docs/design/ORIENTATION.md
 docs/design/screen-map.md
-docs/
