@@ -18,6 +18,8 @@ function toOutputMode(value: string | null): OutputMode | null {
 }
 
 const toEpoch = (value: string | null): number | null => (value === null ? null : Date.parse(value));
+const toIso = (value: number | null): string | null =>
+  value === null ? null : new Date(value).toISOString();
 
 function toHousehold(row: HouseholdRow): Household {
   return {
@@ -43,6 +45,41 @@ export class SupabaseHouseholdRepository implements HouseholdRepository {
         .maybeSingle();
       if (error) return err(databaseUnavailable());
       return ok(data ? toHousehold(data) : null);
+    } catch {
+      return err(databaseUnavailable());
+    }
+  }
+
+  async findById(householdId: string): Promise<Result<Household | null, DomainError>> {
+    try {
+      const { data, error } = await this.client
+        .from("households")
+        .select(COLUMNS)
+        .eq("id", householdId)
+        .maybeSingle();
+      if (error) return err(databaseUnavailable());
+      return ok(data ? toHousehold(data) : null);
+    } catch {
+      return err(databaseUnavailable());
+    }
+  }
+
+  async saveSettings(household: Household): Promise<Result<void, DomainError>> {
+    try {
+      // Hanya kolom pengaturan; is_demo dan pemilik tidak pernah diubah dari aplikasi.
+      const { data, error } = await this.client
+        .from("households")
+        .update({
+          data_consent_at: toIso(household.dataConsentAt),
+          scan_consent_at: toIso(household.scanConsentAt),
+          output_mode: household.outputMode,
+        })
+        .eq("id", household.id)
+        .eq("owner_user_id", household.ownerUserId)
+        .select("id");
+      if (error) return err(databaseUnavailable());
+      if (data.length === 0) return err(domainError("NOT_FOUND", "Rumah tangga tidak ditemukan."));
+      return ok(undefined);
     } catch {
       return err(databaseUnavailable());
     }
