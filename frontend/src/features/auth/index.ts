@@ -3,6 +3,7 @@ export { householdQueryKey, type Household } from "./api/household";
 export { signOut } from "./api/auth-service";
 export { AuthGuard } from "./components/auth-guard";
 export { ConsentScreen } from "./components/consent-screen";
+export { DemoModeBanner } from "./components/demo-mode-banner";
 export { GuestGuard } from "./components/guest-guard";
 export { LoginScreen } from "./components/login-screen";
 export { RegisterScreen } from "./components/register-screen";
