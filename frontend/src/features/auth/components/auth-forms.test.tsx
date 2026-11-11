@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
 import type { ReactNode } from "react";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { AUTH, DRAFT } from "@/shared/copy";
 import { LoginScreen } from "./login-screen";
 import { RegisterScreen } from "./register-screen";
@@ -75,6 +75,40 @@ describe("LoginScreen", () => {
     );
     const results = await axe.run(document.body, { rules: { "color-contrast": { enabled: false } } });
     expect(results.violations.map((v) => v.id)).toEqual([]);
+  });
+});
+
+describe("Quick Login Demo Juri", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  test("tanpa kredensial demo di env, tombol demo tidak tampil", () => {
+    vi.stubEnv("NEXT_PUBLIC_DEMO_EMAIL", "");
+    vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "");
+    renderWithClient(<LoginScreen />);
+    expect(screen.queryByRole("button", { name: AUTH.masukDemo })).not.toBeInTheDocument();
+  });
+
+  test("dengan kredensial demo, satu ketukan masuk ke akun demo lalu ke jadwal", async () => {
+    // Nilai fiktif untuk uji.
+    vi.stubEnv("NEXT_PUBLIC_DEMO_EMAIL", "demo-juri@contoh.test");
+    vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "sandi-demo-uji");
+    service.signIn.mockResolvedValue({ ok: true });
+    renderWithClient(<LoginScreen />);
+    await userEvent.click(screen.getByRole("button", { name: AUTH.masukDemo }));
+    expect(service.signIn).toHaveBeenCalledWith("demo-juri@contoh.test", "sandi-demo-uji");
+    expect(router.replace).toHaveBeenCalledWith("/");
+  });
+
+  test("demo gagal masuk (mis. seed belum dijalankan) → pesan, tetap di halaman", async () => {
+    vi.stubEnv("NEXT_PUBLIC_DEMO_EMAIL", "demo-juri@contoh.test");
+    vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "sandi-demo-uji");
+    service.signIn.mockResolvedValue({ ok: false, reason: "invalid_credentials" });
+    renderWithClient(<LoginScreen />);
+    await userEvent.click(screen.getByRole("button", { name: AUTH.masukDemo }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(AUTH.galatMasuk);
+    expect(router.replace).not.toHaveBeenCalled();
   });
 });
 
