@@ -1,4 +1,11 @@
 import type { Env } from "./config/env";
+import { ConfirmDose } from "./modules/dosing/application/confirm-dose.use-case";
+import { GetNextDose } from "./modules/dosing/application/get-next-dose.use-case";
+import { ListTodaysDoses } from "./modules/dosing/application/list-todays-doses.use-case";
+import { SupabaseDoseConfirmationRepository } from "./modules/dosing/infrastructure/supabase-dose-confirmation.repository";
+import { SupabaseDosingMedicineReader } from "./modules/dosing/infrastructure/supabase-dosing-medicine-reader";
+import { UnavailableScanTokenVerifier } from "./modules/dosing/infrastructure/unavailable-scan-token-verifier";
+import type { DosingUseCases } from "./modules/dosing/interface/dosing.routes";
 import { DeleteHouseholdData } from "./modules/household/application/delete-household-data.use-case";
 import { EnsureHousehold } from "./modules/household/application/ensure-household.use-case";
 import { GetHousehold } from "./modules/household/application/get-household.use-case";
@@ -40,6 +47,8 @@ export type Container = {
   ensureHousehold: EnsureHousehold;
   household: HouseholdUseCases;
   medication: MedicationUseCases;
+  dosing: DosingUseCases;
+  getNextDose: GetNextDose;
 };
 
 export function buildContainer(env: Env): Container {
@@ -47,6 +56,8 @@ export function buildContainer(env: Env): Container {
   const supabase = createSupabaseAdminClient(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY);
   const households = new SupabaseHouseholdRepository(supabase);
   const medicines = new SupabaseMedicineRepository(supabase);
+  const dosingMedicines = new SupabaseDosingMedicineReader(supabase);
+  const confirmations = new SupabaseDoseConfirmationRepository(supabase);
   // Satu klien Gemini per proses, dipakai bersama penjelasan obat dan (nanti) baca kemasan.
   const gemini = new GeminiJsonGenerator(createGeminiGenerateContent(env.GEMINI_API_KEY), {
     model: env.GEMINI_MODEL,
@@ -60,6 +71,11 @@ export function buildContainer(env: Env): Container {
     checkHealth: new CheckHealth(new SupabaseDatabasePing(supabase)),
     tokenVerifier: new SupabaseAccessTokenVerifier(supabase),
     ensureHousehold: new EnsureHousehold(households),
+    getNextDose: new GetNextDose(dosingMedicines, confirmations, systemClock),
+    dosing: {
+      listTodaysDoses: new ListTodaysDoses(dosingMedicines, confirmations, systemClock),
+      confirmDose: new ConfirmDose(dosingMedicines, confirmations, new UnavailableScanTokenVerifier(), systemClock),
+    },
     household: {
       getHousehold: new GetHousehold(households),
       recordConsent: new RecordConsent(households, systemClock),

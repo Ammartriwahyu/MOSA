@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
 import type { Container } from "./composition-root";
+import { dosingRoutes } from "./modules/dosing/interface/dosing.routes";
 import { householdRoutes } from "./modules/household/interface/household.routes";
 import { resolveHousehold } from "./modules/household/interface/resolve-household.middleware";
 import { medicationRoutes } from "./modules/medication/interface/medication.routes";
@@ -36,6 +37,7 @@ export function createApp(container: Container): Hono {
   app.route("/v1", healthRoutes(container.checkHealth));
   app.route("/v1", householdRoutes(container.household));
   app.route("/v1", medicationRoutes(container.medication));
+  app.route("/v1", dosingRoutes(container.dosing));
 
   app.notFound(handleNotFound);
   app.onError(createErrorHandler(container.logger));
