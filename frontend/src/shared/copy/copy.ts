@@ -281,6 +281,50 @@ export const AUTH = {
   cobaLagi: "Coba lagi", // DRAFT
 } as const;
 
+/** Nama kelompok waktu (docs/01: Pagi 04.00–10.59, Siang 11.00–17.59, Malam 18.00–03.59). */
+const NAMA_KELOMPOK: Record<KelompokWaktu, string> = { pagi: "Pagi", siang: "Siang", malam: "Malam" };
+
+/** Kelompok waktu dari jam "HH:mm" (docs/01). Hanya untuk tampilan; jadwal dihitung backend. */
+export function kelompokWaktu(jam: string): KelompokWaktu {
+  const menit = Number(jam.slice(0, 2)) * 60 + Number(jam.slice(3, 5));
+  if (menit >= 4 * 60 && menit < 11 * 60) return "pagi";
+  if (menit >= 11 * 60 && menit < 18 * 60) return "siang";
+  return "malam";
+}
+
+/** Jam minum untuk daftar/detail: ["07:00","19:00"] → "Pagi 07.00 · Malam 19.00" (Figma 16, 21). */
+export function formatJamMinum(jam: readonly string[]): string {
+  return jam.map((j) => `${NAMA_KELOMPOK[kelompokWaktu(j)]} ${formatJam(j)}`).join(" · ");
+}
+
+/** Daftar dan detail obat (Figma MOSA DRAFT 16 · 135:4138, 21 · 135:4576). */
+export const OBAT = {
+  judulDaftar: "Daftar Obat", // DRAFT
+  tambahObat: "Tambah Obat", // DRAFT
+  kosongJudul: "Belum ada obat", // DRAFT
+  kosongPesan: "Tambahkan obat pertama agar jadwal minum muncul di layar Jadwal.", // DRAFT
+  judulDetail: "Detail Obat", // DRAFT
+  penjelasanSederhana: "Penjelasan Sederhana", // DRAFT
+  penjelasanDiperiksa: "Dibuat AI dan sudah diperiksa saat disimpan", // DRAFT
+  informasiAsli: "Informasi asli pengisi", // DRAFT
+  aturanPakai: "Aturan pakai", // DRAFT
+  jumlahPerMinum: "Jumlah per minum", // DRAFT
+  jamMinum: "Jam minum", // DRAFT
+  larangan: "Larangan / peringatan", // DRAFT
+  catatanPribadi: "Catatan pribadi", // DRAFT
+  bukanSaranMedis:
+    "Informasi ini berasal dari data yang diisi apoteker atau keluarga. Aplikasi tidak memberi saran medis.", // DRAFT
+  ubahPilihanKeluaran: "Ubah pilihan teks / suara", // DRAFT
+  tidakDitemukan: "Obat tidak ditemukan", // DRAFT
+  tidakDitemukanPesan: "Obat ini mungkin sudah dihapus.", // DRAFT
+  kembaliKeDaftar: "Kembali ke Daftar Obat", // DRAFT
+} as const;
+
+/** "3 obat terdaftar" (Figma 16). */ // DRAFT
+export function jumlahObatTerdaftar(jumlah: number): string {
+  return `${jumlah} obat terdaftar`; // DRAFT
+}
+
 /** docs/06 [USULAN]: label status dosis (selalu bersama ikon dan warna). "Terlewat" baku (#11). */
 export const LABEL_STATUS = {
   belum: "Belum", // DRAFT

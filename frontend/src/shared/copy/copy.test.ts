@@ -3,6 +3,9 @@ import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 import {
   AI_GAGAL,
+  formatJamMinum,
+  jumlahObatTerdaftar,
+  kelompokWaktu,
   DRAFT,
   KALIMAT_PITCHING,
   KONFIRMASI_MINUM,
@@ -224,5 +227,24 @@ describe("kebersihan teks", () => {
 
   test.each(semua)("tanpa spasi ganda, titik ganda, atau spasi di tepi: %j", (teks) => {
     expect(teks).not.toMatch(/ {2}|\.\.(?!\.)|\s$|^\s/);
+  });
+});
+
+describe("jam minum obat (Figma 16, 21)", () => {
+  test.each([
+    ["03:59", "malam"],
+    ["04:00", "pagi"],
+    ["10:59", "pagi"],
+    ["11:00", "siang"],
+    ["17:59", "siang"],
+    ["18:00", "malam"],
+    ["00:00", "malam"],
+  ] as const)("%s termasuk kelompok %s (docs/01)", (jam, kelompok) => {
+    expect(kelompokWaktu(jam)).toBe(kelompok);
+  });
+
+  test("format jam minum dan jumlah obat", () => {
+    expect(formatJamMinum(["06:30", "12:00", "19:00"])).toBe("Pagi 06.30 · Siang 12.00 · Malam 19.00");
+    expect(jumlahObatTerdaftar(3)).toBe("3 obat terdaftar");
   });
 });
