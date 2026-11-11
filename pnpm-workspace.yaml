@@ -4,8 +4,11 @@ packages:
 
 # sharp dan unrs-resolver: skrip build tidak diperlukan (hasil create-next-app).
 # esbuild: dipakai tsx (server lokal backend); skripnya memasang binari platform.
+# @google/genai (preinstall hanya echo) dan protobufjs (cek versi): tidak diperlukan.
 allowBuilds:
+  '@google/genai': false
   esbuild: true
+  protobufjs: false
   sharp: false
   unrs-resolver: false
 
