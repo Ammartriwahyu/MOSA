@@ -109,6 +109,11 @@ describe("validateMedicineInput", () => {
     });
   });
 
+  test("penjelasan yang menambah angka atau anjuran baru ditolak saat simpan (pagar AI tidak bisa dilewati)", () => {
+    expect(fields({ ...VALID, explanation: "Minum 2 tablet sesudah makan." })).toEqual(["explanation"]);
+    expect(fields({ ...VALID, explanation: "Obat untuk darah tinggi, minum sesudah makan." })).toEqual(["explanation"]);
+  });
+
   test("ai_dikonfirmasi tanpa teks penjelasan ditolak", () => {
     expect(fields({ ...VALID, explanation: "  " })).toEqual(["explanation"]);
   });

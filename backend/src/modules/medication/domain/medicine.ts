@@ -1,5 +1,6 @@
 import { domainError, type DomainError } from "../../../shared/domain/domain-error";
 import { err, ok, type Result } from "../../../shared/domain/result";
+import { isFaithfulExplanation } from "./services/explanation-guard";
 import { normalizeMedicineName } from "./services/medicine-name-normalizer";
 import { parseScheduleTimes } from "./value-objects/schedule-times";
 import { parseStrength } from "./value-objects/strength";
@@ -111,7 +112,10 @@ export function validateMedicineInput(input: MedicineInput): Result<MedicineDraf
   let explanation: string | null = null;
   if (input.explanationOrigin === "ai_dikonfirmasi") {
     explanation = requiredText(input.explanation ?? "", LIMITS.explanation);
-    if (explanation === null) invalid.push("explanation");
+    // Pagar yang sama dengan saat AI menjawab, diulang saat simpan: klien tidak
+    // bisa melewatinya dengan mengirim teks lain sebagai "ai_dikonfirmasi".
+    const source = [usageRule, warnings, notes ?? ""].join("\n");
+    if (explanation === null || !isFaithfulExplanation(source, explanation)) invalid.push("explanation");
   } else if (input.explanation !== null && input.explanation.trim() !== "") {
     invalid.push("explanation");
   }
