@@ -354,6 +354,22 @@ export const FORM_OBAT = {
   galatRingkas: "Ada isian yang perlu diperbaiki.", // DRAFT
 } as const;
 
+/** Tambah Obat: Figma 18, 19, B22; kalimat utama dialog memakai KONFIRMASI_SIMPAN_OBAT. */
+export const SIMPAN_OBAT = {
+  menyiapkan: "Menyiapkan penjelasan sederhana…", // DRAFT
+  prosesIsi: "AI sedang menyederhanakan instruksi obat. Hanya data obat yang dikirim, tanpa nama atau data pribadi.", // DRAFT
+  periksaJudul: "Periksa data obat", // DRAFT
+  dataAsli: "Data asli", // DRAFT
+  sumber: "Sumber", // DRAFT
+  penjelasanAi: "Penjelasan sederhana (dibuat AI)", // DRAFT
+  tanpaAi: "Data tetap bisa disimpan tanpa penjelasan AI. Panduan minum memakai teks asli pengisi.", // DRAFT
+  menyimpan: "Menyimpan obat…", // DRAFT
+  galatSimpan: "Obat belum berhasil disimpan. Periksa koneksi, lalu coba lagi.", // DRAFT
+  galatValidasi: "Data obat belum dapat disimpan. Pilih Perbaiki lagi dan periksa isian sesuai resep.", // DRAFT
+  berhasil: "Obat berhasil disimpan", // DRAFT
+  baru: "Baru", // DRAFT
+} as const;
+
 /** "3 obat terdaftar" (Figma 16). */ // DRAFT
 export function jumlahObatTerdaftar(jumlah: number): string {
   return `${jumlah} obat terdaftar`; // DRAFT

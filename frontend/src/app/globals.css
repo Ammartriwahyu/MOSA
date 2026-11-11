@@ -34,6 +34,7 @@
   --color-brand-light: #3d8466; /* akhir gradasi banner */
   --color-brand-ink: #1f5c42; /* teks chip label sumber, navigasi aktif */
   --color-brand-soft: #e4f0ea; /* --mosa-positive: lingkar ikon, chip, nav aktif */
+  --color-brand-border: #a7cdb9; /* bingkai penjelasan AI (Figma 19) */
   --color-day-from: #d6eadf; /* gradasi kartu tanggal */
   --color-day-to: #f7faf8;
   --color-hero-from: #cfe5da; /* gradasi ilustrasi onboarding (01) */
