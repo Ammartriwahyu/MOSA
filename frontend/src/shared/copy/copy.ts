@@ -320,6 +320,40 @@ export const OBAT = {
   kembaliKeDaftar: "Kembali ke Daftar Obat", // DRAFT
 } as const;
 
+/** Label pilihan jam: "07:00" → "Pagi · 07.00" (Figma 17). */
+export function labelJamMinum(jam: string): string {
+  return `${NAMA_KELOMPOK[kelompokWaktu(jam)]} · ${formatJam(jam)}`;
+}
+
+/** Formulir Tambah/Ubah Obat (Figma MOSA DRAFT 17 · 135:4216). Label kolom memakai LABEL/OBAT. */
+export const FORM_OBAT = {
+  catatanIsi: "Isi sesuai resep atau etiket obat. Pilih sumber informasi sebelum melanjutkan.", // DRAFT
+  siapaMengisi: "Siapa yang mengisi?", // DRAFT
+  siapaMengisiPetunjuk: "Pilih sesuai orang yang mengisi data obat.", // DRAFT
+  dataObat: "Data obat", // DRAFT
+  namaObat: "Nama obat", // DRAFT
+  namaPetunjuk: "Pilih dari daftar atau tulis nama seperti yang tertera di kemasan.", // DRAFT
+  kekuatan: "Kekuatan", // DRAFT
+  kekuatanPetunjuk: "Salin angka dan satuan kekuatan pada kemasan.", // DRAFT
+  jamBisaDiubah: "Jam bisa diubah sesuai resep", // DRAFT
+  ubahJam: "Ubah jam", // DRAFT
+  jamLain: "Jam lain", // DRAFT
+  tambahJam: "Tambah jam lain", // DRAFT
+  privasiPetunjuk: "Jangan tulis nama atau data pribadi pasien di sini.", // DRAFT
+  catatanOpsional: "Catatan pribadi (opsional)", // DRAFT
+  catatanContoh: "Contoh: simpan di kotak obat biru", // DRAFT
+  kirimAi: "Hanya aturan pakai, peringatan, dan catatan dikirim ke AI. Jangan tulis identitas pasien.", // DRAFT
+  lanjut: "Lanjut: Periksa Data", // DRAFT
+  galatWajib: "Kolom ini wajib diisi.", // DRAFT
+  galatKekuatan: "Tulis angka dan satuannya, misalnya 5 mg.", // DRAFT
+  galatPanjang: "Tulisan terlalu panjang.", // DRAFT
+  galatSumber: "Pilih siapa yang mengisi.", // DRAFT
+  galatJamMinimal: "Pilih minimal satu jam minum.", // DRAFT
+  galatJamKosong: "Isi jamnya.", // DRAFT
+  galatJamSama: "Jam minum tidak boleh sama.", // DRAFT
+  galatRingkas: "Ada isian yang perlu diperbaiki.", // DRAFT
+} as const;
+
 /** "3 obat terdaftar" (Figma 16). */ // DRAFT
 export function jumlahObatTerdaftar(jumlah: number): string {
   return `${jumlah} obat terdaftar`; // DRAFT
