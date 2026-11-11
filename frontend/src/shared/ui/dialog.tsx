@@ -25,6 +25,8 @@ export type DialogProps = {
    * sehingga tombol bahaya tidak pernah menjadi fokus bawaan (docs/06).
    */
   initialFocusRef?: RefObject<HTMLElement | null>;
+  /** Alur tanpa Radix Trigger (mis. proses AI): pulihkan fokus ke tombol formulir. */
+  returnFocusRef?: RefObject<HTMLElement | null>;
   /** false = tidak tertutup lewat klik latar (dialog penting). Esc tetap menutup. */
   dismissOnOutsideClick?: boolean;
 };
@@ -49,6 +51,7 @@ export function Dialog({
   children,
   actions,
   initialFocusRef,
+  returnFocusRef,
   dismissOnOutsideClick = true,
 }: DialogProps) {
   const contentRef = useRef<HTMLDivElement>(null);
@@ -65,6 +68,12 @@ export function Dialog({
           onOpenAutoFocus={(event) => {
             event.preventDefault();
             (initialFocusRef?.current ?? contentRef.current)?.focus();
+          }}
+          onCloseAutoFocus={(event) => {
+            if (returnFocusRef?.current) {
+              event.preventDefault();
+              returnFocusRef.current.focus();
+            }
           }}
           onPointerDownOutside={(event) => {
             if (!dismissOnOutsideClick) event.preventDefault();

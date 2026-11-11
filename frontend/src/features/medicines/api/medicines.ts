@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { api } from "@/shared/lib";
+import type { MedicineFormOutput } from "../schemas/medicine-form";
 
 // Bentuk obat dari backend (GET /v1/medicines, /v1/medicines/:id). Data
 // divalidasi di sini agar layar tidak pernah merender bentuk yang tak dikenal.
@@ -32,4 +33,26 @@ export async function listMedicines(): Promise<Medicine[]> {
 
 export function getMedicine(id: string): Promise<Medicine> {
   return api().json(`/v1/medicines/${encodeURIComponent(id)}`, medicineSchema);
+}
+
+export type ExplanationInput = Pick<MedicineFormOutput, "usageRule" | "warnings" | "notes">;
+export type ReviewedExplanation =
+  | { explanation: string; explanationOrigin: "ai_dikonfirmasi" }
+  | { explanation: null; explanationOrigin: "teks_pengisi" };
+export type CreateMedicineInput = MedicineFormOutput & ReviewedExplanation;
+
+const explanationSchema = z.object({ explanation: z.string().trim().min(1) });
+
+/** Daftar kolom eksplisit: identitas, kegunaan, takaran, dan jadwal tidak dikirim ke AI. */
+export async function explainMedicine(input: ExplanationInput, signal?: AbortSignal): Promise<string> {
+  const { explanation } = await api().json("/v1/medicines/explain", explanationSchema, {
+    method: "POST",
+    body: { usageRule: input.usageRule, warnings: input.warnings, notes: input.notes },
+    signal,
+  });
+  return explanation;
+}
+
+export function createMedicine(input: CreateMedicineInput): Promise<Medicine> {
+  return api().json("/v1/medicines", medicineSchema, { method: "POST", body: input });
 }

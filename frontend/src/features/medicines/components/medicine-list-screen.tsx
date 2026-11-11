@@ -1,10 +1,10 @@
 "use client";
 
-import { ChevronRight, Pill, Plus } from "lucide-react";
+import { Check, ChevronRight, Pill, Plus } from "lucide-react";
 import Link from "next/link";
 import { medicineDetail, ROUTES } from "@/shared/config";
-import { AUTH, formatJamMinum, formatKekuatan, jumlahObatTerdaftar, OBAT } from "@/shared/copy";
-import { Button, EmptyState, ErrorState, PageHeader, Skeleton, Spinner } from "@/shared/ui";
+import { AUTH, DRAFT, formatJamMinum, formatKekuatan, jumlahObatTerdaftar, OBAT, SIMPAN_OBAT } from "@/shared/copy";
+import { Badge, Button, EmptyState, ErrorState, Notice, PageHeader, Skeleton, Spinner, cx } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
 import { useMedicines } from "../hooks/use-medicines";
 import { LabelSourceChip } from "./label-source-chip";
@@ -20,12 +20,12 @@ function AddButton() {
   );
 }
 
-function MedicineItem({ medicine }: { medicine: Medicine }) {
+function MedicineItem({ medicine, saved }: { medicine: Medicine; saved: boolean }) {
   return (
     <li>
       <Link
         href={medicineDetail(medicine.id)}
-        className="flex items-center gap-3.5 rounded-card bg-surface p-4.5 shadow-card"
+        className={cx("flex items-center gap-3.5 rounded-card bg-surface p-4.5 shadow-card", saved && "ring-2 ring-success-border")}
       >
         <span aria-hidden="true" className="flex size-13 shrink-0 items-center justify-center rounded-pill bg-brand-soft text-brand">
           <Pill className="size-6.5" />
@@ -38,6 +38,7 @@ function MedicineItem({ medicine }: { medicine: Medicine }) {
             {medicine.doseAmount} · {formatJamMinum(medicine.intakeTimes)}
           </span>
           <LabelSourceChip source={medicine.labelSource} />
+          {saved ? <Badge tone="success" icon={<Check />}>{SIMPAN_OBAT.baru}</Badge> : null}
         </span>
         <ChevronRight aria-hidden="true" className="size-6.5 shrink-0 text-ink" />
       </Link>
@@ -57,12 +58,20 @@ function LoadingList() {
 }
 
 /** Daftar Obat (Figma MOSA DRAFT 16 · 135:4138): obat aktif milik akun, terurut saat dibuat. */
-export function MedicineListScreen() {
+export function MedicineListScreen({ savedId }: { savedId?: string } = {}) {
   const medicines = useMedicines();
+  const savedMedicine = medicines.data?.find((medicine) => medicine.id === savedId);
 
   return (
     <>
       <PageHeader title={OBAT.judulDaftar} />
+      {savedMedicine ? (
+        <Notice tone="brand" role="status">
+          <p className="font-bold">{SIMPAN_OBAT.berhasil}</p>
+          <p>{savedMedicine.name} {formatKekuatan(savedMedicine.strength)}</p>
+          {savedMedicine.explanationOrigin === "teks_pengisi" ? <p>{DRAFT.penjelasanBelumTersedia} {SIMPAN_OBAT.tanpaAi}</p> : null}
+        </Notice>
+      ) : null}
       {medicines.isPending ? (
         <LoadingList />
       ) : medicines.isError ? (
@@ -87,7 +96,7 @@ export function MedicineListScreen() {
           <p className="text-body font-semibold text-ink-secondary">{jumlahObatTerdaftar(medicines.data.length)}</p>
           <ul className="flex flex-col gap-4">
             {medicines.data.map((medicine) => (
-              <MedicineItem key={medicine.id} medicine={medicine} />
+              <MedicineItem key={medicine.id} medicine={medicine} saved={medicine.id === savedId} />
             ))}
           </ul>
         </>
