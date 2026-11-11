@@ -9,6 +9,8 @@ export type MedicineSchedule = {
   readonly active: boolean;
   readonly createdAt: number;
   readonly intakeTimes: readonly string[];
+  /** Q5: waktu aktif tiap jam; tidak berubah untuk jam yang tetap dipakai. */
+  readonly intakeTimeStartedAt?: Readonly<Record<string, number>>;
 };
 
 /** Tanggal bisa hari ini, kemarin (jendela lintas tengah malam), atau besok. */
@@ -32,7 +34,11 @@ export function buildDailySlots(schedules: readonly MedicineSchedule[], date: Wi
       if (!slot.ok) return slot;
       // USULAN D11: lihat docs/07-open-decisions.md. Slot masa lalu pada hari
       // pembuatan obat tidak dihitung; dibuat tepat pada J masih masuk.
-      if (slot.value.scheduledAt >= schedule.createdAt) slots.push(slot.value);
+      const startedAt = schedule.intakeTimeStartedAt?.[time] ?? schedule.createdAt;
+      if (!Number.isFinite(startedAt) || !Number.isFinite(new Date(startedAt).getTime())) {
+        return err(domainError("VALIDATION_FAILED", "Waktu pengaktifan jam tidak valid.", { field: "intakeTimeStartedAt" }));
+      }
+      if (slot.value.scheduledAt >= Math.max(schedule.createdAt, startedAt)) slots.push(slot.value);
     }
   }
   slots.sort((a, b) => a.scheduledAt - b.scheduledAt || (a.medicineId < b.medicineId ? -1 : a.medicineId > b.medicineId ? 1 : 0));

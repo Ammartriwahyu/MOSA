@@ -67,14 +67,14 @@ isOneToOne: false
                   ]
                 },"medicines": {
                   Row: {
-                    "active": boolean,"created_at": string,"dose_amount": string,"explanation": string | null,"explanation_origin": string,"household_id": string,"id": string,"intake_times": (string)[],"label_source": string,"name": string,"name_normalized": string,"notes": string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings": string | null
+                    "active": boolean,"created_at": string,"dose_amount": string,"explanation": string | null,"explanation_origin": string,"household_id": string,"id": string,"intake_times": (string)[],"intake_times_started_at": Json,"label_source": string,"name": string,"name_normalized": string,"notes": string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"created_at"?: string,"dose_amount": string,"explanation"?: string | null,"explanation_origin": string,"household_id": string,"id"?: string,"intake_times": (string)[],"label_source": string,"name": string,"name_normalized": string,"notes"?: string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings"?: string | null
+                    "active"?: boolean,"created_at"?: string,"dose_amount": string,"explanation"?: string | null,"explanation_origin": string,"household_id": string,"id"?: string,"intake_times": (string)[],"intake_times_started_at"?: Json,"label_source": string,"name": string,"name_normalized": string,"notes"?: string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings"?: string | null
                   }
                   Update: {
-                    "active"?: boolean,"created_at"?: string,"dose_amount"?: string,"explanation"?: string | null,"explanation_origin"?: string,"household_id"?: string,"id"?: string,"intake_times"?: (string)[],"label_source"?: string,"name"?: string,"name_normalized"?: string,"notes"?: string | null,"purpose"?: string,"strength"?: string,"strength_normalized"?: string,"usage_rule"?: string,"warnings"?: string | null
+                    "active"?: boolean,"created_at"?: string,"dose_amount"?: string,"explanation"?: string | null,"explanation_origin"?: string,"household_id"?: string,"id"?: string,"intake_times"?: (string)[],"intake_times_started_at"?: Json,"label_source"?: string,"name"?: string,"name_normalized"?: string,"notes"?: string | null,"purpose"?: string,"strength"?: string,"strength_normalized"?: string,"usage_rule"?: string,"warnings"?: string | null
                   }
                   Relationships: [
                     {
@@ -131,6 +131,10 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
+            confirm_dose: {
+              Args: { p_household_id: string; p_medicine_id: string; p_scheduled_date: string; p_scheduled_time: string; p_confirmed_at: string; p_level: string; p_opens_before_minutes: number; p_closes_after_minutes: number };
+              Returns: Json;
+            };
             "consume_ai_usage":
 { Args: { "p_day": string,"p_household_id": string,"p_limit": number }; Returns: boolean
                            }

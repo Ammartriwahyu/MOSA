@@ -7,6 +7,14 @@ import { atWib, MEDICINE_SCHEDULE, wibDate } from "../../support/dosing-fixtures
 const DAY = wibDate("2026-11-11");
 
 describe("slot harian: dihitung, tidak disimpan", () => {
+  test("Q5: jam yang baru ditambahkan tidak membuat slot lampau; jam yang tetap dipakai tidak hilang", () => {
+    const result = buildDailySlots([{ ...MEDICINE_SCHEDULE, intakeTimes: ["07:00", "08:00", "20:00"], intakeTimeStartedAt: { "07:00": MEDICINE_SCHEDULE.createdAt, "08:00": atWib(DAY, "15:00"), "20:00": atWib(DAY, "15:00") } }], DAY);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.value.map((slot) => slot.scheduledTime)).toEqual(["07:00", "20:00"]);
+  });
+  test("waktu aktif jam yang rusak ditolak, bukan membolehkan konfirmasi", () => {
+    expect(buildDailySlots([{ ...MEDICINE_SCHEDULE, intakeTimeStartedAt: { "07:00": NaN } }], DAY)).toMatchObject({ ok: false, error: { code: "VALIDATION_FAILED" } });
+  });
   test("hanya obat aktif, terurut deterministik dan input tidak diubah", () => {
     const schedules = Object.freeze([
       Object.freeze({ ...MEDICINE_SCHEDULE, medicineId: "obat-b", intakeTimes: Object.freeze(["19:00", "07:00"]) }),
