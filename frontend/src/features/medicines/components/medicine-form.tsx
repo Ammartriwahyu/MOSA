@@ -22,6 +22,7 @@ export type MedicineFormProps = {
   onValid: (output: MedicineFormOutput) => void;
   /** Saat menunggu proses lanjutan (mis. AI), tombol dinonaktifkan. */
   busy?: boolean;
+  instructions?: string;
 };
 
 /**
@@ -29,7 +30,7 @@ export type MedicineFormProps = {
  * pilih dari 15 obat familiar atau ketik sendiri (datalist bawaan); daftar
  * hanya mengisi nama, kekuatan selalu diisi terpisah (PRD §19 #15).
  */
-export function MedicineForm({ values, onValuesChange, onValid, busy = false }: MedicineFormProps) {
+export function MedicineForm({ values, onValuesChange, onValid, busy = false, instructions = FORM_OBAT.catatanIsi }: MedicineFormProps) {
   const listId = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<FormErrors>({});
@@ -70,7 +71,7 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false }: 
 
   return (
     <form ref={formRef} noValidate onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Notice tone="brand">{FORM_OBAT.catatanIsi}</Notice>
+      <Notice tone="brand">{instructions}</Notice>
 
       <LabelSourceField value={values.labelSource} onChange={(v) => set("labelSource", v)} error={errors.labelSource} />
 
