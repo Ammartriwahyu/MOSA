@@ -5,11 +5,11 @@ import type { AdminClient } from "../../../shared/infrastructure/supabase-client
 import type { ExplanationOrigin, LabelSource, Medicine, MedicineDraft } from "../domain/medicine";
 import type { MedicineRepository } from "../domain/medicine-repository";
 
-type MedicineRow = Database["public"]["Tables"]["medicines"]["Row"];
+type MedicineRow = Omit<Database["public"]["Tables"]["medicines"]["Row"], "intake_times_started_at">;
 // Kolom yang ditulis dari draft; id, household_id, active, created_at diatur terpisah.
 type MedicineWrite = Omit<
   Database["public"]["Tables"]["medicines"]["Insert"],
-  "id" | "household_id" | "active" | "created_at"
+  "id" | "household_id" | "active" | "created_at" | "intake_times_started_at"
 >;
 
 const COLUMNS =

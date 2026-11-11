@@ -374,7 +374,7 @@ export const SIMPAN_OBAT = {
 export const UBAH_OBAT = {
   judul: "Ubah data obat", // DRAFT
   tombol: "Ubah Data Obat", // DRAFT
-  petunjuk: "Perubahan berlaku untuk jadwal berikutnya. Riwayat lama tetap tersimpan.", // DRAFT
+  petunjuk: "Perubahan jadwal langsung berlaku. Riwayat minum yang sudah tercatat tetap tersimpan.", // DRAFT, keputusan PM Q5
   periksaJudul: "Periksa perubahan obat", // DRAFT
   berhasil: "Perubahan obat berhasil disimpan", // DRAFT
   hapus: "Hapus Obat", // DRAFT

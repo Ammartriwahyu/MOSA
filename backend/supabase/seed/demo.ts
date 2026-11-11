@@ -75,7 +75,11 @@ async function resetDemoHousehold(): Promise<void> {
   );
   if (household.error) fail(`rumah tangga demo (${household.error.code})`);
 
-  const medicines = demoMedicines(mode, new Date());
+  const medicines = demoMedicines(mode, new Date()).map((medicine) => ({
+    ...medicine,
+    // Reset demo juga memulihkan waktu aktif jadwal, bukan menyisakan edit juri.
+    intake_times_started_at: Object.fromEntries(medicine.intake_times.map((time) => [time, medicine.created_at])),
+  }));
   const keepIds = medicines.map((m) => m.id);
 
   const confirmations = await supabase

@@ -4,7 +4,7 @@ Kit ini memilih nilai bawaan agar pekerjaan tidak berhenti. Setiap nilai bawaan 
 
 | ID | Keputusan | Nilai bawaan kit | Sumber | Dampak bila diganti |
 |---|---|---|---|---|
-| D1 | Jendela dosis | `jatuh_tempo` mulai J−30 mnt, `terlewat` setelah J+120 mnt, dosis bertumpuk < 150 mnt | PRD §19 #8 (120 mnt); J−30 dan 150 adalah USULAN | Ubah konstanta di `dosing/domain` + tes batas |
+| D1 | Jendela dosis | J−30 sampai J+120 mnt inklusif; slot bertumpuk tetap terbuka dan pengguna memilih slot, tanpa pemotongan otomatis | PM 11 Nov 2026: Q1 = J−30; jawaban terakhir Q2 = opsi 2. Akhir inklusif sesuai docs/05 dan flow alt #19 | Konstanta `dose-window.ts`; pemilihan slot di P05 API/P11 |
 | D2 | Dosis `terlewat` boleh dikonfirmasi belakangan? | Tidak (cukup tercatat terlewat) | USULAN | Menambah status/level baru |
 | D3 | AI gagal saat Tambah Obat | Simpan tetap boleh, teks pengisi ditampilkan ke lansia | USULAN | Alternatif: blokir simpan sampai AI berhasil |
 | D4 | Kolom *kegunaan* dikirim ke AI? | Tidak | Dokumen final vs PRD §9.2 langkah 4 | Ubah `AI_INPUT_FIELDS` |
@@ -19,6 +19,7 @@ Kit ini memilih nilai bawaan agar pekerjaan tidak berhenti. Setiap nilai bawaan 
 | D13 | Layanan hosting backend | Vercel (Hono) | Saran PM | Satu target deploy |
 | D14 | Login | Email + password Supabase; sesi persisten | PRD §19.1 #1 | — |
 | D15 | Validasi pengguna (SM-05) | Di luar kode; jadwalkan wawancara | PRD §19.1 #4 | — |
+| D16 | Kapan perubahan jam minum berlaku? | Langsung saat disimpan; jam baru tidak menciptakan dosis masa lalu, jam tetap mempertahankan waktu aktif, konfirmasi lama dipertahankan | PM 11 Nov 2026 (Q5) | Metadata internal `intake_times_started_at`, trigger jadwal, pembangkit slot dan RPC konfirmasi |
 
 ## Klaim dokumen yang tidak dapat diverifikasi dari kode
 Bobot "Problem-Solution Fit 25%", "Ethics 10%", dan "waktu persiapan 1 menit" di PRD berasal dari guidebook lomba yang tidak ada di repo. Jangan menulis klaim itu di UI atau README tanpa memeriksa guidebook.

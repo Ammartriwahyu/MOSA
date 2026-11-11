@@ -64,7 +64,8 @@ describe("POST /v1/household/consents", () => {
     );
 
     const after = await app.request("/v1/doses/today", auth("token-baru"));
-    expect(after.status).toBe(404); // lolos persetujuan; rutenya dibuat di P05
+    expect(after.status).toBe(200);
+    expect(await after.json()).toMatchObject({ doses: [], summary: { confirmed: 0, total: 0 } });
   });
 
   test("persetujuan scan sebelum persetujuan data → 403 CONSENT_REQUIRED", async () => {

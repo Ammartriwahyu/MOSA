@@ -14,7 +14,7 @@ Dashboard menampilkan daftar obat aktif, jadwal konsumsi harian yang dikelompokk
 
 Ketika pengguna membuka Dashboard, sistem memeriksa jadwal konsumsi obat berdasarkan waktu saat ini. Apabila waktu jadwal sudah tiba dan dosis belum dikonfirmasi, sistem menampilkan reminder di dalam Dashboard yang mengingatkan pengguna untuk mengonsumsi obat.
 
-Sebagai contoh, apabila obat dijadwalkan pukul 13.00 WIB, pengguna mulai dapat melakukan konfirmasi tepat pukul 13.00 hingga 120 menit setelahnya. Selama rentang tersebut, sistem menampilkan dosis sebagai belum dikonfirmasi dan menyediakan pilihan konfirmasi.
+Keputusan PM 11 Nov 2026 (Q1): jendela konfirmasi dibuka 30 menit sebelum jadwal. Sebagai contoh, apabila obat dijadwalkan pukul 13.00 WIB, pengguna mulai dapat melakukan konfirmasi pukul 12.30 sampai tepat pukul 15.00 WIB (J+120, inklusif). Selama rentang tersebut, sistem menampilkan dosis sebagai belum dikonfirmasi dan menyediakan pilihan konfirmasi.
 
 Apabila pengguna berhasil mengonfirmasi konsumsi, reminder untuk dosis tersebut tidak lagi ditampilkan sebagai pengingat yang belum diselesaikan. Apabila waktu melewati batas 120 menit tanpa konfirmasi, sistem mengubah status dosis menjadi terlewat.
 
@@ -145,6 +145,8 @@ Apabila dua perangkat yang menggunakan akun MOSA yang sama mencoba mengonfirmasi
 **16\. Pengguna mengedit obat yang memiliki riwayat**
 
 Ketika pengguna mengedit obat yang sudah memiliki riwayat konsumsi, sistem menampilkan formulir dengan informasi obat saat ini. Setelah pengguna melakukan perubahan dan menyimpannya, backend memperbarui informasi obat serta jadwal yang berlaku ke depan. Apabila perubahan memengaruhi penjelasan obat, AI menghasilkan penjelasan baru untuk ditinjau pengguna. Riwayat konsumsi sebelumnya tetap dipertahankan dan tidak ikut berubah.
+
+Keputusan PM 11 Nov 2026 (Q5): perubahan jam langsung berlaku ketika disimpan. Jam yang dihapus tidak lagi dapat dikonfirmasi. Jam baru tidak menciptakan dosis yang jadwalnya mendahului waktu perubahan, sedangkan jam yang tidak berubah tetap berlaku seperti semula. Konfirmasi yang sudah tercatat tetap tampil dan dihitung pada tanggal jadwal asal walau jamnya dihapus. Semua edit tetap melalui pemeriksaan penjelasan dan pop-up konfirmasi sesuai docs/01 §2.
 
 **17\. Pengguna menghapus obat aktif**
 
