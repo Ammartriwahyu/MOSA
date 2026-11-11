@@ -10,6 +10,7 @@ import {
   ListMedicines,
   UpdateMedicine,
 } from "../../../src/modules/medication/application/medicine-use-cases";
+import { RateLimitedExplainer } from "../../../src/modules/medication/application/rate-limited-explainer";
 import type { PlainLanguageExplainer } from "../../../src/modules/medication/application/ports/plain-language-explainer";
 import type { MedicineInput } from "../../../src/modules/medication/domain/medicine";
 import { fixedClock } from "../../../src/shared/domain/clock";
@@ -71,11 +72,37 @@ describe("ExplainMedicineText", () => {
     expect(result).toMatchObject({ ok: false, error: { code: "AI_UNAVAILABLE" } });
   });
 
+  test("keluaran yang menambah angka atau anjuran baru ditolak sebagai AI gagal (docs/04)", async () => {
+    const input = { householdId: "rumah-1", aturanPakai: "1 tablet sesudah makan", larangan: "Tidak ada larangan khusus", catatan: null };
+    const added = new ExplainMedicineText({ explain: async () => ok("Minum 2 tablet sesudah makan.") });
+    expect(await added.execute(input)).toMatchObject({ ok: false, error: { code: "AI_UNAVAILABLE" } });
+    const advice = new ExplainMedicineText({ explain: async () => ok("Minum 1 tablet, konsultasi ke dokter.") });
+    expect(await advice.execute(input)).toMatchObject({ ok: false, error: { code: "AI_UNAVAILABLE" } });
+  });
+
   test("aturan pakai kosong tidak dikirim ke AI", async () => {
     const explain = vi.fn<PlainLanguageExplainer["explain"]>(async () => ok("x"));
     const result = await new ExplainMedicineText({ explain }).execute({ householdId: "rumah-1", aturanPakai: " ", larangan: "x", catatan: null });
     expect(result).toMatchObject({ ok: false, error: { code: "VALIDATION_FAILED" } });
     expect(explain).not.toHaveBeenCalled();
+  });
+});
+
+describe("RateLimitedExplainer", () => {
+  const TEXT = { aturanPakai: "sesudah makan", larangan: "x", catatan: null };
+
+  test("jatah dipotong dulu; habis berarti AI tidak dipanggil", async () => {
+    const explain = vi.fn<PlainLanguageExplainer["explain"]>(async () => ok("Minum sesudah makan."));
+    const consume = vi.fn(async () => err(domainError("AI_QUOTA_EXCEEDED", "habis")));
+    const result = await new RateLimitedExplainer({ explain }, { consume }).explain("rumah-1", TEXT);
+    expect(result).toMatchObject({ ok: false, error: { code: "AI_QUOTA_EXCEEDED" } });
+    expect(consume).toHaveBeenCalledWith("rumah-1");
+    expect(explain).not.toHaveBeenCalled();
+  });
+
+  test("masih ada jatah: hasil AI diteruskan", async () => {
+    const limited = new RateLimitedExplainer({ explain: async () => ok("Minum sesudah makan.") }, { consume: async () => ok(undefined) });
+    expect(await limited.explain("rumah-1", TEXT)).toEqual({ ok: true, value: "Minum sesudah makan." });
   });
 });
 
