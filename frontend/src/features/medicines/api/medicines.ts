@@ -56,3 +56,13 @@ export async function explainMedicine(input: ExplanationInput, signal?: AbortSig
 export function createMedicine(input: CreateMedicineInput): Promise<Medicine> {
   return api().json("/v1/medicines", medicineSchema, { method: "POST", body: input });
 }
+
+/** PATCH mengganti semua isian, termasuk penjelasan yang diperiksa ulang. */
+export function updateMedicine(id: string, input: CreateMedicineInput): Promise<Medicine> {
+  return api().json(`/v1/medicines/${encodeURIComponent(id)}`, medicineSchema, { method: "PATCH", body: input });
+}
+
+/** Backend menonaktifkan obat; riwayat konsumsi dipertahankan. */
+export function deactivateMedicine(id: string): Promise<void> {
+  return api().noContent(`/v1/medicines/${encodeURIComponent(id)}`, { method: "DELETE" });
+}
