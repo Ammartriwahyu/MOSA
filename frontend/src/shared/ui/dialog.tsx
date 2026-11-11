@@ -96,7 +96,7 @@ export function Dialog({
                 {icon}
               </span>
             ) : null}
-            <RadixDialog.Title className="text-display">{title}</RadixDialog.Title>
+            <RadixDialog.Title className="max-w-full px-9 text-display break-words">{title}</RadixDialog.Title>
             {description ? (
               <RadixDialog.Description className="text-body">{description}</RadixDialog.Description>
             ) : null}

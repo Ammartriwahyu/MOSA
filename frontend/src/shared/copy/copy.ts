@@ -370,6 +370,23 @@ export const SIMPAN_OBAT = {
   baru: "Baru", // DRAFT
 } as const;
 
+/** Ubah/hapus: MOSA DRAFT B7, B20, A9, B25. */
+export const UBAH_OBAT = {
+  judul: "Ubah data obat", // DRAFT
+  tombol: "Ubah Data Obat", // DRAFT
+  petunjuk: "Perubahan berlaku untuk jadwal berikutnya. Riwayat lama tetap tersimpan.", // DRAFT
+  periksaJudul: "Periksa perubahan obat", // DRAFT
+  berhasil: "Perubahan obat berhasil disimpan", // DRAFT
+  hapus: "Hapus Obat", // DRAFT
+  hapusJudul: "Hapus obat ini?", // DRAFT
+  hapusPenjelasan: "Obat dinonaktifkan dan jadwal berikutnya dihentikan. Riwayat konsumsi tetap tersimpan. Tindakan ini tidak bisa dibatalkan.", // DRAFT D-g
+  yaHapus: "Ya, hapus obat", // DRAFT
+  menghapus: "Menonaktifkan obat…", // DRAFT
+  galatHapus: "Obat belum berhasil dinonaktifkan. Periksa koneksi, lalu coba lagi.", // DRAFT
+  dinonaktifkan: "Obat dinonaktifkan", // DRAFT
+  dinonaktifkanIsi: "Jadwal berikutnya dihentikan. Riwayat konsumsi tetap tersimpan.", // DRAFT
+} as const;
+
 /** "3 obat terdaftar" (Figma 16). */ // DRAFT
 export function jumlahObatTerdaftar(jumlah: number): string {
   return `${jumlah} obat terdaftar`; // DRAFT

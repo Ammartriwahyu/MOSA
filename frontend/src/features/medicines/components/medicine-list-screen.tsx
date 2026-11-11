@@ -3,7 +3,7 @@
 import { Check, ChevronRight, Pill, Plus } from "lucide-react";
 import Link from "next/link";
 import { medicineDetail, ROUTES } from "@/shared/config";
-import { AUTH, DRAFT, formatJamMinum, formatKekuatan, jumlahObatTerdaftar, OBAT, SIMPAN_OBAT } from "@/shared/copy";
+import { AUTH, DRAFT, formatJamMinum, formatKekuatan, jumlahObatTerdaftar, OBAT, SIMPAN_OBAT, UBAH_OBAT } from "@/shared/copy";
 import { Badge, Button, EmptyState, ErrorState, Notice, PageHeader, Skeleton, Spinner, cx } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
 import { useMedicines } from "../hooks/use-medicines";
@@ -58,13 +58,14 @@ function LoadingList() {
 }
 
 /** Daftar Obat (Figma MOSA DRAFT 16 · 135:4138): obat aktif milik akun, terurut saat dibuat. */
-export function MedicineListScreen({ savedId }: { savedId?: string } = {}) {
+export function MedicineListScreen({ savedId, removed = false }: { savedId?: string; removed?: boolean } = {}) {
   const medicines = useMedicines();
   const savedMedicine = medicines.data?.find((medicine) => medicine.id === savedId);
 
   return (
     <>
       <PageHeader title={OBAT.judulDaftar} />
+      {removed && medicines.isSuccess ? <Notice tone="brand" role="status"><p className="font-bold">{UBAH_OBAT.dinonaktifkan}</p><p>{UBAH_OBAT.dinonaktifkanIsi}</p></Notice> : null}
       {savedMedicine ? (
         <Notice tone="brand" role="status">
           <p className="font-bold">{SIMPAN_OBAT.berhasil}</p>

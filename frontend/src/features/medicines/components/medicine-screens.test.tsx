@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { AUTH, DRAFT, LABEL, OBAT, SIMPAN_OBAT } from "@/shared/copy";
+import { AUTH, DRAFT, LABEL, OBAT, SIMPAN_OBAT, UBAH_OBAT } from "@/shared/copy";
 import { ApiError } from "@/shared/lib";
 import type { Medicine } from "../api/medicines";
 import { MedicineDetailScreen } from "./medicine-detail-screen";
@@ -41,6 +41,7 @@ const METFORMIN: Medicine = {
 const backend = vi.hoisted(() => ({
   get: vi.fn<(path: string) => Promise<unknown>>(),
 }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: vi.fn() }) }));
 
 vi.mock("@/shared/lib", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/shared/lib")>();
@@ -71,6 +72,14 @@ beforeEach(() => {
 });
 
 describe("MedicineListScreen", () => {
+  test("obat terakhir dinonaktifkan: pemberitahuan dan daftar kosong tetap memiliki jalan keluar", async () => {
+    backend.get.mockResolvedValue({ medicines: [] });
+    renderWithQuery(<MedicineListScreen removed />);
+    await screen.findByText(UBAH_OBAT.dinonaktifkan);
+    expect(screen.getByRole("status")).toHaveTextContent(UBAH_OBAT.dinonaktifkanIsi);
+    expect(screen.getByText(OBAT.kosongJudul)).toBeVisible();
+    expect(screen.getByRole("link", { name: OBAT.tambahObat })).toBeVisible();
+  });
   test("hasil simpan memakai obat dari server dan menandai jalur tanpa AI", async () => {
     backend.get.mockResolvedValue({ medicines: [METFORMIN] });
     renderWithQuery(<MedicineListScreen savedId={METFORMIN.id} />);

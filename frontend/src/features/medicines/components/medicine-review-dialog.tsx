@@ -9,13 +9,14 @@ import type { MedicineFormOutput } from "../schemas/medicine-form";
 
 export type MedicineReview = { input: MedicineFormOutput; reviewed: ReviewedExplanation };
 
-export function MedicineReviewDialog({ review, saving, error, onConfirm, onEdit, returnFocusRef }: {
+export function MedicineReviewDialog({ review, saving, error, onConfirm, onEdit, returnFocusRef, title = SIMPAN_OBAT.periksaJudul }: {
   review: MedicineReview;
   saving: boolean;
   error: string | null;
   onConfirm: () => void;
   onEdit: () => void;
   returnFocusRef: RefObject<HTMLElement | null>;
+  title?: string;
 }) {
   const { input, reviewed } = review;
   const rows = [
@@ -33,7 +34,7 @@ export function MedicineReviewDialog({ review, saving, error, onConfirm, onEdit,
     <Dialog
       open
       onOpenChange={(open) => { if (!open && !saving) onEdit(); }}
-      title={SIMPAN_OBAT.periksaJudul}
+      title={title}
       description={KONFIRMASI_SIMPAN_OBAT}
       returnFocusRef={returnFocusRef}
       dismissOnOutsideClick={false}
