@@ -194,6 +194,19 @@ export const DRAFT = {
   deskripsiAplikasi: "MOSA: Medication Organizer, Scanner & Assistant", // DRAFT
 } as const;
 
+/** Pilihan keluaran Teks/Suara (Figma MOSA DRAFT 09 · 135:2902; label pilihan dari PRD §9.6). */
+export const PREFERENSI = {
+  judulLayar: "Pilihan Tampilan", // DRAFT
+  pertanyaan: "Pilih cara menerima informasi obat", // DRAFT
+  teksSaja: "Teks saja", // PRD §9.6
+  teksSajaKeterangan: "Informasi mudah dibaca di layar.", // DRAFT
+  teksSuara: "Teks + Suara Otomatis", // PRD §9.6
+  teksSuaraKeterangan: "Dibacakan setelah sentuhan layar.", // DRAFT
+  catatanUbah: "Pilihan ini dapat diubah dari Informasi Obat.", // DRAFT
+  simpanLihatHasil: "Simpan & Lihat Hasil", // DRAFT
+  simpanPilihan: "Simpan Pilihan", // DRAFT
+} as const;
+
 /** Layar masuk, daftar, onboarding, persetujuan (Figma MOSA DRAFT 01–03). Semua DRAFT. */
 export const AUTH = {
   tagline: "MOSA · Pendamping Minum Obat", // DRAFT
