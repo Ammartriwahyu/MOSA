@@ -5,6 +5,8 @@ import { loadEnv } from "../../src/config/env";
 const SUPABASE = {
   SUPABASE_URL: "http://127.0.0.1:54321",
   SUPABASE_SECRET_KEY: "kunci-uji",
+  GEMINI_API_KEY: "kunci-uji-gemini",
+  GEMINI_MODEL: "model-uji",
 };
 
 describe("loadEnv", () => {
@@ -20,7 +22,7 @@ describe("loadEnv", () => {
   });
 
   test("mewajibkan variabel Supabase", () => {
-    expect(() => loadEnv({})).toThrow("Environment tidak valid: SUPABASE_URL, SUPABASE_SECRET_KEY");
+    expect(() => loadEnv({})).toThrow("Environment tidak valid: SUPABASE_URL, SUPABASE_SECRET_KEY, GEMINI_API_KEY, GEMINI_MODEL");
   });
 
   test("menolak nilai tidak valid tanpa membocorkan nilainya", () => {
@@ -32,5 +34,11 @@ describe("loadEnv", () => {
   test("mengubah PORT menjadi angka dan menolak port tidak valid", () => {
     expect(loadEnv({ ...SUPABASE, PORT: "9000" }).PORT).toBe(9000);
     expect(() => loadEnv({ ...SUPABASE, PORT: "0" })).toThrow("PORT");
+  });
+
+  test("jatah AI harian: bawaan 20, harus bilangan bulat positif", () => {
+    expect(loadEnv(SUPABASE).AI_DAILY_LIMIT).toBe(20);
+    expect(loadEnv({ ...SUPABASE, AI_DAILY_LIMIT: "5" }).AI_DAILY_LIMIT).toBe(5);
+    expect(() => loadEnv({ ...SUPABASE, AI_DAILY_LIMIT: "0" })).toThrow("AI_DAILY_LIMIT");
   });
 });
