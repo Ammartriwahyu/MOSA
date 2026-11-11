@@ -1,15 +1,16 @@
 "use client";
 
-import { Pill, Sparkles } from "lucide-react";
+import { Pencil, Pill, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
-import { medicineDetail, outputPreferenceThen, ROUTES } from "@/shared/config";
-import { AUTH, DRAFT, formatJamMinum, formatKekuatan, LABEL, OBAT } from "@/shared/copy";
+import { medicineDetail, medicineEdit, outputPreferenceThen, ROUTES } from "@/shared/config";
+import { AUTH, DRAFT, formatJamMinum, formatKekuatan, LABEL, OBAT, UBAH_OBAT } from "@/shared/copy";
 import { isApiError } from "@/shared/lib";
 import { Button, Card, EmptyState, ErrorState, Notice, PageHeader, Skeleton, Spinner } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
 import { useMedicine } from "../hooks/use-medicines";
 import { LabelSourceChip } from "./label-source-chip";
+import { DeleteMedicineAction } from "./delete-medicine-action";
 
 function Identity({ medicine }: { medicine: Medicine }) {
   return (
@@ -93,10 +94,9 @@ function BackToList() {
 
 /**
  * Detail Obat (Figma MOSA DRAFT 21 · 135:4576). Bagian Figma yang menyusul:
- * "Jadwal berikutnya" (data dosis, P05/P10), Bacakan (P12), Ubah/Hapus
- * (feat/medicines-edit-delete).
+ * "Jadwal berikutnya" (data dosis, P05/P10) dan Bacakan (P12).
  */
-export function MedicineDetailScreen({ id }: { id: string }) {
+export function MedicineDetailScreen({ id, updated = false }: { id: string; updated?: boolean }) {
   const medicine = useMedicine(id);
 
   let body;
@@ -119,6 +119,7 @@ export function MedicineDetailScreen({ id }: { id: string }) {
   } else {
     body = (
       <>
+        {updated ? <Notice tone="brand" role="status">{UBAH_OBAT.berhasil}</Notice> : null}
         <Identity medicine={medicine.data} />
         <Button asChild variant="secondary">
           <Link href={outputPreferenceThen(medicineDetail(id))}>{OBAT.ubahPilihanKeluaran}</Link>
@@ -128,6 +129,11 @@ export function MedicineDetailScreen({ id }: { id: string }) {
         <h2 className="text-card-title">{OBAT.informasiAsli}</h2>
         <OriginalInfo medicine={medicine.data} />
         <Notice tone="plain">{OBAT.bukanSaranMedis}</Notice>
+        <Button asChild variant="secondary" size="lg">
+          <Link href={medicineEdit(id)}><Pencil aria-hidden="true" className="size-6" />{UBAH_OBAT.tombol}</Link>
+        </Button>
+        <p className="text-body text-ink-secondary">{UBAH_OBAT.petunjuk}</p>
+        <DeleteMedicineAction medicine={medicine.data} />
       </>
     );
   }
