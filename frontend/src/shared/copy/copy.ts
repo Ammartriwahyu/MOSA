@@ -151,6 +151,48 @@ export const KALIMAT_PITCHING =
 export const NAMA_APLIKASI = "TepatMinum";
 export const SUB_LABEL_APLIKASI = "MOSA";
 
+/** Dasbor Figma 04/05. Teks baru menunggu tinjauan PM. */
+export const DASBOR = {
+  sapaan: "Jadwal minum obat", // DRAFT
+  tanggalHariIni: "Tanggal hari ini", // DRAFT
+  kalender: "Hari di sekitar hari ini", // DRAFT
+  kosongJudul: "Belum ada obat terdaftar", // DRAFT
+  kosongPesan: "Minta apoteker atau keluarga untuk menambahkan obat pertama.", // DRAFT
+  tambahPertama: "Tambah Obat Pertama", // DRAFT
+  tip: "Tip: saat menebus obat di apotek, minta apoteker membantu mengisi data obat di HP ini.", // DRAFT
+  beberapaDosis: "Ada beberapa dosis yang waktunya diminum", // DRAFT
+  waktunyaMinum: "Waktunya minum", // DRAFT
+  jadwal: "Jadwal", // DRAFT
+  wib: "WIB", // DRAFT
+  jadwalBerikutnya: "Jadwal berikutnya", // DRAFT
+  tidakAdaJadwalBerikutnya: "Belum ada jadwal berikutnya", // DRAFT
+  tidakAdaSlotHariIni: "Tidak ada dosis terjadwal untuk hari ini.", // DRAFT
+  progresHariIni: "Progres Hari Ini", // DRAFT
+  tanpaScan: "Tanpa scan", // DRAFT
+  melaluiScan: "Melalui scan", // DRAFT
+  memuat: "Memuat jadwal obat…", // DRAFT
+  galatJudul: "Jadwal belum bisa ditampilkan", // DRAFT
+  galatPesan: "Periksa koneksi internet, lalu coba lagi.", // DRAFT
+} as const;
+
+/** DRAFT: penghitung dikirim backend; frontend hanya menyusun kalimat. */
+export function progresDosis(confirmed: number, total: number): string {
+  return `Sudah ${confirmed} dari ${total} dosis`;
+}
+
+/** DRAFT: data jadwal berikutnya dari backend, tanpa perhitungan jendela di klien. */
+export function waktuJadwalDasbor(next: JadwalBerikutnya): string {
+  return `${FRASA_WAKTU[next.tanggal][next.kelompok]} pukul ${formatJam(next.jam)} WIB.`;
+}
+
+export function tanggalDasbor(serverTime: string): string {
+  return new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "long" }).format(new Date(serverTime));
+}
+
+export function waktuDasbor(serverTime: string): string {
+  return `${new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(serverTime))} WIB`;
+}
+
 // ─── DRAFT: belum disetujui tim ───────────────────────────────────────────
 
 export const DRAFT = {

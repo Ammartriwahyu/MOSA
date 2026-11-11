@@ -137,6 +137,27 @@
   --container-app: 430px;
 }
 
+@layer components {
+  .dose-progress {
+    appearance: none;
+    border: 0;
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+  }
+  .dose-progress::-webkit-progress-bar {
+    background: var(--color-brand-soft);
+    border-radius: inherit;
+  }
+  .dose-progress::-webkit-progress-value {
+    background: var(--color-brand);
+    border-radius: inherit;
+  }
+  .dose-progress::-moz-progress-bar {
+    background: var(--color-brand);
+    border-radius: inherit;
+  }
+}
+
 @layer base {
   :root {
     /* Nama keluarga dari @fontsource-variable/plus-jakarta-sans (diimpor di app/layout.tsx). */
