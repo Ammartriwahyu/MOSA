@@ -82,6 +82,12 @@ Akun demo berisi obat fiktif yang siap diuji: **Amlodipin 5 mg** (07.00 dan 19.0
 
 Kredensial: *(diisi saat rilis)*
 
+### Tombol "Masuk dengan Akun Demo Juri"
+
+Halaman Masuk menampilkan tombol Quick Login bila `NEXT_PUBLIC_DEMO_EMAIL` dan `NEXT_PUBLIC_DEMO_PASSWORD` diisi di `frontend/.env.local` (nilainya sama dengan `DEMO_EMAIL`/`DEMO_PASSWORD` di `backend/.env`). Kosongkan keduanya untuk menyembunyikan tombol.
+
+Nilai ini sengaja publik: ikut terkirim ke browser, sama seperti kredensial yang ditulis di README untuk juri. Risikonya, siapa pun bisa mengubah data atau kata sandi akun demo. Akun tidak bisa dihapus (`DEMO_PROTECTED`), dan `seed:demo` mengembalikan data serta kata sandinya. Saat masuk dengan akun demo, aplikasi menampilkan penanda "Akun Demo Juri".
+
 ### Menyiapkan akun demo
 
 1. Isi `DEMO_EMAIL` dan `DEMO_PASSWORD` di `backend/.env`, bersama `SUPABASE_URL` dan `SUPABASE_SECRET_KEY`.
