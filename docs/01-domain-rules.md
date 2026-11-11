@@ -52,6 +52,7 @@ Aturan tambahan [USULAN]:
 - **Disetujui PM 11 Nov 2026 (Q2, opsi 2):** jendela dua dosis obat yang sama tidak dipotong. Bila keduanya terbuka, pengguna memilih slot yang dikonfirmasi; mengonfirmasi satu slot tidak mengonfirmasi slot lainnya.
 - Dua obat berjam sama: keduanya `jatuh_tempo`; scan satu hanya mengonfirmasi dosis obat itu.
 - Obat disimpan setelah J hari itu: slot J tidak dibuat untuk hari itu (hitungan harian 0/1, bukan 0/2 dengan satu terlewat).
+- **Disetujui PM 11 Nov 2026 (Q5):** perubahan jam langsung berlaku ketika disimpan. Jam yang dihapus tidak dapat dikonfirmasi lagi; jam baru hanya menghasilkan slot dengan J ≥ waktu pengaktifannya. Jam yang tidak berubah mempertahankan waktu aktif semula. Konfirmasi yang sudah tercatat tetap disimpan dan tetap dihitung pada tanggal jadwal asal, termasuk bila jamnya dihapus.
 - Hari berganti pukul 00.00 WIB.
 - Jendela yang melintasi tengah malam tetap berlaku sampai J+120 inklusif; slot dan konfirmasinya tetap memakai tanggal jadwal asal (flow alt #19). Jadwal 00.00–03.59 memakai tanggal kalender saat jadwal itu terjadi.
 - Kelompok waktu: Pagi 04.00–10.59, Siang 11.00–17.59, Malam 18.00–03.59.
@@ -59,6 +60,8 @@ Aturan tambahan [USULAN]:
 `Nanti dulu` [PRD §19 #9]: pop-up tutup, kembali ke dashboard, status tetap `belum`, hitungan tidak bertambah, banner tetap tampil selama masih dalam jendela; pengguna bisa menekan kartu jadwal lagi nanti.
 
 Hitungan progres per obat = dosis terkonfirmasi hari ini / total slot yang dibuat hari ini. Hanya bertambah setelah konfirmasi.
+
+Hitungan harian memakai tanggal jadwal, bukan tanggal konfirmasi. Slot kemarin yang masih terbuka dan slot besok yang sudah terbuka dini ditampilkan terpisah; keduanya tidak masuk penyebut hari ini. Mengubah jadwal dapat mengubah total slot hari ini sesuai aturan Q5.
 
 ## 4. Tingkat verifikasi [PRD §9.5, §16 #3]
 - `✓✓` (`scan_terverifikasi`): hasil scan **cocok** + pengguna menekan `Sudah saya minum`. Server mewajibkan `scanToken` HMAC (umur ±5 menit, berisi householdId, medicineId, slotId) dari hasil scan; klien tidak bisa mengklaim sendiri.

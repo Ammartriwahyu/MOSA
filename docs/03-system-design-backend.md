@@ -169,7 +169,7 @@ Modul `ai` bukan bounded context. AI adalah detail infrastruktur di balik dua po
 - **Hari** berganti pukul 00.00 WIB. Hitungan "1/2" dihitung dari slot hari itu: sudah dikonfirmasi per total slot yang dibuat hari itu.
 - **Port:** `DoseConfirmationRepository`, `MedicineScheduleReader` (membaca obat aktif dan jamnya dari modul `medication`), `ConfirmedDoseReader` (ID slot yang telah dikonfirmasi, tersaring rumah tangga/obat/tanggal), `Clock`.
 - **Use case:** `ListTodaysDoses`, `ConfirmDose`, `GetDoseContext` (dipakai `verification`), `GetNextDose` (jadwal J berikut setelah sekarang, sampai besok, melewati slot yang sudah dikonfirmasi dini; tanpa rute sendiri).
-- **Pembangkit slot:** `buildDailySlots` menerima snapshot jadwal dan tanggal WIB, menghasilkan slot aktif dengan J ≥ `createdAt`, ID stabil `{medicineId}:{yyyymmdd}:{HHmm}`. Panggil dengan tanggal asal untuk slot kemarin yang jendelanya masih terbuka sesudah tengah malam; hitungan harian tetap berdasarkan tanggal slot. Adapter database dan rute dirakit di branch `feat/be-dose-api`.
+- **Pembangkit slot:** `buildDailySlots` menerima snapshot jadwal dan tanggal WIB, menghasilkan slot aktif dengan J ≥ `max(createdAt, intakeTimeStartedAt[jam])`, ID stabil `{medicineId}:{yyyymmdd}:{HHmm}`. Sesuai Q5 (PM 11 Nov), jam baru langsung aktif saat disimpan dan tidak menciptakan slot masa lalu; jam tetap mempertahankan waktu aktif. Panggil dengan tanggal asal untuk slot kemarin yang jendelanya masih terbuka sesudah tengah malam; hitungan harian tetap berdasarkan tanggal slot. Konfirmasi yang sudah tersimpan digabung kembali walau jamnya telah dihapus. Adapter database dan rute dirakit di branch `feat/be-dose-api`.
 
 Ringkasan fungsi murni (implementasi dan konstanta di `backend/src/modules/dosing/domain/dose-window.ts`):
 
@@ -390,6 +390,18 @@ Prefiks `/v1`. Autentikasi: `Authorization: Bearer <access token Supabase>` kecu
 | `POST /v1/internal/reminders/run` | Dipanggil cron (header `x-cron-secret`) | SendDueReminders |
 | `GET /v1/health` | Cek hidup dan baca ringan ke database (keep-alive) | – |
 
+### Kontrak API dosis (P05)
+
+`GET /v1/doses/today` mengembalikan `{date, serverTime, summary, doses, carryoverDoses, earlyDoses, medicines}`. `date` adalah tanggal kalender WIB (`YYYY-MM-DD`); `serverTime` dan semua timestamp adalah ISO UTC dari server. Setiap ringkasan berbentuk `{confirmed, total}`.
+
+- `doses`: seluruh slot tanggal hari ini, terurut menurut jadwal lalu ID. Satu item memuat `{slotId, medicineId, scheduledDate, scheduledTime, scheduledAt, status, period, confirmation, medicine}`. `period` = `pagi|siang|malam`; `status` mengikuti docs/01. Informasi `medicine` hanya kolom publik untuk kartu/informasi obat, tanpa rumah tangga atau metadata internal jadwal.
+- `confirmation`: `null` atau `{id, slotId, medicineId, scheduledDate, scheduledTime, confirmedAt, level}`. `level` = `dasar|scan_terverifikasi`; penjelasan AI hanya dikirim bila `explanationOrigin=ai_dikonfirmasi`.
+- `carryoverDoses`: slot kemarin yang jendelanya masih terbuka; `earlyDoses`: slot besok yang sudah terbuka dini. Keduanya tetap memakai tanggal jadwal asal dan tidak masuk `summary` hari ini.
+- `medicines`: `{medicineId, summary, nextDose}` per obat aktif. `nextDose` = `null` atau `{tanggal: hari_ini|besok, kelompok: pagi|siang|malam, jam: HH:mm}`, mencari J yang ketat setelah waktu server dan melewati slot yang sudah dikonfirmasi dini.
+- Konfirmasi pada jam yang dihapus tetap masuk `doses`/hitungan tanggal asal selama obat masih aktif. Obat nonaktif dikeluarkan dari dashboard; baris riwayat tetap tersimpan. Galat DB menghasilkan 503, bukan daftar kosong.
+
+`POST /v1/doses/{slotId}/confirm` menerima `{mode: basic|verified, scanToken?}`; encode `slotId` sekali untuk URL. `householdId` diambil dari sesi; waktu dan `level` ditentukan server. Sukses: HTTP 201 `{status: sudah, serverTime, confirmation}`. Mode `verified` memerlukan token terikat rumah tangga, obat, slot dan waktu kedaluwarsa; implementasi produksi P05 menolak semua token sampai verifier HMAC P06 dirakit. Fake verifier hanya digunakan pada tes. Konfirmasi dasar yang sudah tercatat tidak dapat dinaikkan levelnya melalui replay.
+
 **Format kesalahan seragam:**
 
 ```json
@@ -410,6 +422,7 @@ Prefiks `/v1`. Autentikasi: `Authorization: Bearer <access token Supabase>` kecu
 | `PHOTO_UNREADABLE` | 422 | Foto tidak terbaca |
 | `AI_QUOTA_EXCEEDED` | 429 | Jatah AI harian habis atau 429 dari Gemini |
 | `AI_UNAVAILABLE` | 503 | Gemini gagal atau melewati batas waktu |
+| `DATABASE_UNAVAILABLE` | 503 | Database tidak terjangkau atau respons data tidak valid |
 
 Pemetaan galat domain ke HTTP dilakukan di satu tempat (`error-handler` di interface), bukan di setiap rute.
 
@@ -505,6 +518,8 @@ alter table ai_usage enable row level security;
 Catatan desain:
 - Status `belum_tiba`, `jatuh_tempo`, dan `terlewat` **tidak disimpan**. Dihitung dari jam jadwal, waktu sekarang, dan ada tidaknya baris di `dose_confirmations`. Tidak perlu tugas harian yang membuat baris dosis.
 - Batasan unik pada `dose_confirmations` adalah pagar terakhir terhadap minum ganda, sehingga konfirmasi ganda dari dua perangkat bertabrakan di database dan dibalas 409.
+- Migrasi `20261111180000_dose_confirmation_atomic.sql` menambah `medicines.intake_times_started_at` (JSONB internal `HH:mm → timestamptz`). Backfill memakai `created_at`; trigger mempertahankan jam tetap, menghapus metadata jam yang dihapus, dan memberi jam baru waktu perubahan. Metadata ini tidak diterima dari body API.
+- RPC `confirm_dose` mengunci baris obat (`FOR UPDATE`), lalu memeriksa pemilik, status aktif, jadwal terkini, waktu aktif slot, duplikat dan jendela sebelum INSERT dalam transaksi yang sama. Edit/hapus obat memakai kunci baris yang sama. Batas jendela dikirim dari konstanta domain oleh backend. Fungsi bersifat `security invoker`; hanya `service_role` diberi hak eksekusi, `public`/`anon`/`authenticated` dicabut.
 - Akses lewat `supabase-js` (REST), jadi tidak ada masalah kumpulan koneksi di serverless. Penyimpanan satu obat adalah satu `INSERT` karena jam minum berupa kolom larik, sehingga atomik tanpa transaksi.
 - Foto kemasan tidak disimpan.
 

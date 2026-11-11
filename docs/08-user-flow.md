@@ -146,6 +146,8 @@ Apabila dua perangkat yang menggunakan akun MOSA yang sama mencoba mengonfirmasi
 
 Ketika pengguna mengedit obat yang sudah memiliki riwayat konsumsi, sistem menampilkan formulir dengan informasi obat saat ini. Setelah pengguna melakukan perubahan dan menyimpannya, backend memperbarui informasi obat serta jadwal yang berlaku ke depan. Apabila perubahan memengaruhi penjelasan obat, AI menghasilkan penjelasan baru untuk ditinjau pengguna. Riwayat konsumsi sebelumnya tetap dipertahankan dan tidak ikut berubah.
 
+Keputusan PM 11 Nov 2026 (Q5): perubahan jam langsung berlaku ketika disimpan. Jam yang dihapus tidak lagi dapat dikonfirmasi. Jam baru tidak menciptakan dosis yang jadwalnya mendahului waktu perubahan, sedangkan jam yang tidak berubah tetap berlaku seperti semula. Konfirmasi yang sudah tercatat tetap tampil dan dihitung pada tanggal jadwal asal walau jamnya dihapus. Semua edit tetap melalui pemeriksaan penjelasan dan pop-up konfirmasi sesuai docs/01 §2.
+
 **17\. Pengguna menghapus obat aktif**
 
 Apabila pengguna memilih menghapus obat aktif, sistem menampilkan permintaan konfirmasi penghapusan. Setelah disetujui, backend menonaktifkan obat dan menghentikan jadwal konsumsi berikutnya. Obat tidak lagi muncul dalam daftar obat aktif, tetapi riwayat konsumsi sebelumnya tetap disimpan.

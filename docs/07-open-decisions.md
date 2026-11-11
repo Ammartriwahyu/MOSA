@@ -19,6 +19,7 @@ Kit ini memilih nilai bawaan agar pekerjaan tidak berhenti. Setiap nilai bawaan 
 | D13 | Layanan hosting backend | Vercel (Hono) | Saran PM | Satu target deploy |
 | D14 | Login | Email + password Supabase; sesi persisten | PRD §19.1 #1 | — |
 | D15 | Validasi pengguna (SM-05) | Di luar kode; jadwalkan wawancara | PRD §19.1 #4 | — |
+| D16 | Kapan perubahan jam minum berlaku? | Langsung saat disimpan; jam baru tidak menciptakan dosis masa lalu, jam tetap mempertahankan waktu aktif, konfirmasi lama dipertahankan | PM 11 Nov 2026 (Q5) | Metadata internal `intake_times_started_at`, trigger jadwal, pembangkit slot dan RPC konfirmasi |
 
 ## Klaim dokumen yang tidak dapat diverifikasi dari kode
 Bobot "Problem-Solution Fit 25%", "Ethics 10%", dan "waktu persiapan 1 menit" di PRD berasal dari guidebook lomba yang tidak ada di repo. Jangan menulis klaim itu di UI atau README tanpa memeriksa guidebook.

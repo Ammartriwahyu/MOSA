@@ -42,6 +42,8 @@ pnpm dev
 
 Untuk satu paket: `pnpm --filter frontend <skrip>` atau `pnpm --filter backend <skrip>`.
 
+Tes SQL dosing memakai dev dependency `@electric-sql/pglite` agar migrasi, trigger jadwal, batas waktu dan RPC konfirmasi dijalankan pada mesin PostgreSQL lokal tanpa Docker. Jalankan terarah dengan `pnpm --filter backend test tests/db/dosing-sql.test.ts`. Tes ini tidak menggantikan verifikasi koneksi, Auth dan PostgREST pada Supabase sesungguhnya.
+
 ## Variabel lingkungan
 
 Salin contoh lalu isi nilainya. Berkas `.env*` selain `.env.example` tidak pernah masuk git.
@@ -58,6 +60,8 @@ Backend berjalan di `http://localhost:8787` dan frontend di `http://localhost:30
 ## Database (Supabase)
 
 Skema ada di `backend/supabase/migrations/` (SQL berurutan). RLS aktif di semua tabel tanpa kebijakan, dan hak `anon`/`authenticated` dicabut: hanya backend (secret key) yang bisa mengakses data. Tidak ada kolom foto.
+
+Sebelum memakai API dosis, terapkan juga `20261111180000_dose_confirmation_atomic.sql`. Migrasi ini menambahkan waktu aktif per jam dan RPC `confirm_dose` untuk memeriksa jadwal serta menyimpan konfirmasi dalam satu transaksi. Perubahan jam langsung berlaku saat disimpan; konfirmasi lama dipertahankan. Jalur `basic` tersedia; jalur `verified` menolak token dengan `SCAN_TOKEN_INVALID` sampai penerbit dan verifier HMAC scan dirakit pada P06.
 
 Perintah Supabase CLI dijalankan dari folder `backend/` dengan `npx supabase@3.1.0 <perintah>`.
 
