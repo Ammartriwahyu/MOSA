@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Hanya variabel yang sudah dipakai kode. Variabel Gemini dan token scan
-// ditambahkan sebagai wajib di branch yang pertama kali memakainya.
+// Hanya variabel yang sudah dipakai kode. Token scan dan cron ditambahkan
+// sebagai wajib di branch yang pertama kali memakainya.
 const DEV_FRONTEND_ORIGIN = "http://localhost:3000";
 
 const envSchema = z.object({
@@ -11,6 +11,11 @@ const envSchema = z.object({
   SUPABASE_URL: z.url(),
   // Secret key (sb_secret_...) pengganti service_role; hanya di server.
   SUPABASE_SECRET_KEY: z.string().min(1),
+  // Nama model tidak ditulis di kode (docs/04, D8); kunci hanya di server.
+  GEMINI_API_KEY: z.string().min(1),
+  GEMINI_MODEL: z.string().min(1),
+  // Jatah panggilan AI per rumah tangga per hari WIB (D8). 20 = USULAN sampai uji kuota.
+  AI_DAILY_LIMIT: z.coerce.number().int().min(1).max(1_000).default(20),
 });
 
 export type Env = z.infer<typeof envSchema>;

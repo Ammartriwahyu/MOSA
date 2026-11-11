@@ -8,6 +8,8 @@ const TONE = {
   /** Hijau muda (Figma 02: "Anda tetap masuk di HP ini"). */
   brand: { box: "bg-brand-soft text-brand-ink", Icon: ShieldCheck },
   info: { box: "border-2 border-info-border bg-info-soft text-info", Icon: Info },
+  /** Putih bergaris tipis (Figma 09: catatan pilihan bisa diubah). */
+  plain: { box: "border-2 border-line bg-surface text-ink-secondary", Icon: Info },
 } as const;
 
 /** Kotak catatan berikon (Figma A3 "Catatan", A10 catatan akun demo). */

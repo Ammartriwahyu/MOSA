@@ -6,6 +6,8 @@ describe("entri src/index.ts", () => {
   beforeAll(() => {
     vi.stubEnv("SUPABASE_URL", "http://127.0.0.1:1");
     vi.stubEnv("SUPABASE_SECRET_KEY", "kunci-uji");
+    vi.stubEnv("GEMINI_API_KEY", "kunci-uji-gemini");
+    vi.stubEnv("GEMINI_MODEL", "model-uji");
   });
   afterAll(() => {
     vi.unstubAllEnvs();

@@ -6,9 +6,11 @@ import { BottomNav } from "./bottom-nav";
  * di desktop karena Figma DRAFT hanya punya versi mobile) + navigasi bawah tetap.
  * Ruang bawah konten menyisakan tempat untuk navigasi.
  */
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, top }: { children: ReactNode; top?: ReactNode }) {
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-app flex-col">
+      {/* Penanda di atas konten (mis. mode Akun Demo Juri). */}
+      {top}
       <main className="flex flex-1 flex-col gap-3 px-gutter pt-6 pb-36">{children}</main>
       <BottomNav />
     </div>

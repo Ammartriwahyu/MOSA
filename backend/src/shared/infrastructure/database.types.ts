@@ -131,7 +131,9 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            [_ in never]: never
+            "consume_ai_usage":
+{ Args: { "p_day": string,"p_household_id": string,"p_limit": number }; Returns: boolean
+                           }
           }
           Enums: {
             [_ in never]: never

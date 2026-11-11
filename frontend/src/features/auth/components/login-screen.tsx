@@ -1,10 +1,10 @@
 "use client";
 
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { ROUTES } from "@/shared/config";
+import { ROUTES, readDemoCredentials } from "@/shared/config";
 import { AUTH } from "@/shared/copy";
 import { Button, Notice, TextField } from "@/shared/ui";
 import { signIn } from "../api/auth-service";
@@ -13,7 +13,7 @@ import { BrandHeader } from "./brand-header";
 
 type FieldErrors = { email?: string; password?: string };
 
-/** Masuk akun (Figma MOSA DRAFT 02 · 135:2788). Tombol Akun Demo Juri: feat/demo-login. */
+/** Masuk akun + Quick Login Demo Juri (Figma MOSA DRAFT 02 · 135:2788). */
 export function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -21,6 +21,26 @@ export function LoginScreen() {
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const demo = readDemoCredentials();
+
+  async function enter(emailValue: string, passwordValue: string) {
+    setSubmitting(true);
+    const result = await signIn(emailValue, passwordValue);
+    setSubmitting(false);
+    if (!result.ok) {
+      setFormError(AUTH_FAILURE_MESSAGE[result.reason]);
+      return;
+    }
+    router.replace(ROUTES.home);
+  }
+
+  /** Quick Login Demo Juri (PRD §9.1): kredensial publik dari env, lihat readDemoCredentials. */
+  async function handleDemo() {
+    if (!demo) return;
+    setFieldErrors({});
+    setFormError(null);
+    await enter(demo.email, demo.password);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,14 +51,7 @@ export function LoginScreen() {
     setFormError(null);
     if (Object.keys(errors).length > 0) return;
 
-    setSubmitting(true);
-    const result = await signIn(email.trim(), password);
-    setSubmitting(false);
-    if (!result.ok) {
-      setFormError(AUTH_FAILURE_MESSAGE[result.reason]);
-      return;
-    }
-    router.replace(ROUTES.home);
+    await enter(email.trim(), password);
   }
 
   return (
@@ -77,6 +90,19 @@ export function LoginScreen() {
           {AUTH.masuk}
         </Button>
       </form>
+
+      {demo ? (
+        <>
+          <div className="flex items-center gap-3 text-body text-ink-secondary">
+            <span aria-hidden="true" className="h-0.5 flex-1 bg-line" />
+            {AUTH.atau}
+            <span aria-hidden="true" className="h-0.5 flex-1 bg-line" />
+          </div>
+          <Button variant="outline" size="lg" icon={<User />} disabled={submitting} onClick={() => void handleDemo()}>
+            {AUTH.masukDemo}
+          </Button>
+        </>
+      ) : null}
 
       <p className="flex flex-wrap items-center justify-center gap-1.5 text-body text-ink-secondary">
         {AUTH.belumPunyaAkun}

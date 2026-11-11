@@ -194,6 +194,41 @@ export const DRAFT = {
   deskripsiAplikasi: "MOSA: Medication Organizer, Scanner & Assistant", // DRAFT
 } as const;
 
+/** Pilihan keluaran Teks/Suara (Figma MOSA DRAFT 09 · 135:2902; label pilihan dari PRD §9.6). */
+export const PREFERENSI = {
+  judulLayar: "Pilihan Tampilan", // DRAFT
+  pertanyaan: "Pilih cara menerima informasi obat", // DRAFT
+  teksSaja: "Teks saja", // PRD §9.6
+  teksSajaKeterangan: "Informasi mudah dibaca di layar.", // DRAFT
+  teksSuara: "Teks + Suara Otomatis", // PRD §9.6
+  teksSuaraKeterangan: "Dibacakan setelah sentuhan layar.", // DRAFT
+  catatanUbah: "Pilihan ini dapat diubah dari Informasi Obat.", // DRAFT
+  simpanLihatHasil: "Simpan & Lihat Hasil", // DRAFT
+  simpanPilihan: "Simpan Pilihan", // DRAFT
+} as const;
+
+/** Pengaturan (Figma MOSA DRAFT 22 · 135:4687) dan pop-up hapus akun (A10 · 135:5854). */
+export const PENGATURAN = {
+  judul: "Pengaturan", // DRAFT
+  caraMenampilkan: "Cara menampilkan informasi", // DRAFT
+  teksSajaKeterangan: "Huruf besar di layar", // DRAFT
+  teksSuaraKeterangan: "Dibacakan setelah Anda menyentuh layar", // DRAFT
+  tersimpan: "Pilihan tersimpan.", // DRAFT
+  akunBersama: "Akun bersama", // DRAFT
+  labelNama: "Nama", // DRAFT
+  labelEmail: "Email", // DRAFT
+  labelTetapMasuk: "Tetap masuk", // DRAFT
+  tetapMasukAktif: "Aktif di HP ini", // DRAFT
+  dataPrivasi: "Data dan privasi", // DRAFT
+  privasiFoto: "Foto obat tidak disimpan", // DRAFT
+  privasiAi: "Nama dan identitas tidak dikirim ke AI", // DRAFT
+  hapusAkun: "Hapus Seluruh Data & Akun", // DRAFT
+  yaHapusSemua: "Ya, hapus semua", // DRAFT
+  demoDilindungi: "Akun demo juri dilindungi dan tidak bisa dihapus.", // DRAFT
+  labelKataSandiUlang: "Masukkan ulang kata sandi", // DRAFT
+  galatKataSandiHapus: "Kata sandi salah. Data tidak dihapus.", // DRAFT
+} as const;
+
 /** Layar masuk, daftar, onboarding, persetujuan (Figma MOSA DRAFT 01–03). Semua DRAFT. */
 export const AUTH = {
   tagline: "MOSA · Pendamping Minum Obat", // DRAFT
@@ -224,6 +259,11 @@ export const AUTH = {
   persetujuanIsi: "Sebelum memakai aplikasi, setujui penyimpanan data obat di akun ini.", // DRAFT
   setujuLanjutkan: "Setuju dan lanjutkan", // DRAFT
   keluar: "Keluar dari Akun", // DRAFT
+  /** Quick Login Demo Juri (Figma 02 · 135:2825). */
+  masukDemo: "Masuk dengan Akun Demo Juri", // DRAFT
+  atau: "atau", // DRAFT
+  /** Penanda akun demo di aplikasi (P08 tugas 2; tidak ada di Figma). */
+  modeDemo: "Akun Demo Juri: data contoh, tidak bisa dihapus.", // DRAFT
   // Galat formulir dan masuk
   galatNama: "Isi nama pasien.", // DRAFT
   galatEmail: "Isi email yang benar, misalnya nama@email.com.", // DRAFT
@@ -240,6 +280,84 @@ export const AUTH = {
   cekEmail: "Akun dibuat. Buka email Anda untuk konfirmasi, lalu masuk.", // DRAFT
   cobaLagi: "Coba lagi", // DRAFT
 } as const;
+
+/** Nama kelompok waktu (docs/01: Pagi 04.00–10.59, Siang 11.00–17.59, Malam 18.00–03.59). */
+const NAMA_KELOMPOK: Record<KelompokWaktu, string> = { pagi: "Pagi", siang: "Siang", malam: "Malam" };
+
+/** Kelompok waktu dari jam "HH:mm" (docs/01). Hanya untuk tampilan; jadwal dihitung backend. */
+export function kelompokWaktu(jam: string): KelompokWaktu {
+  const menit = Number(jam.slice(0, 2)) * 60 + Number(jam.slice(3, 5));
+  if (menit >= 4 * 60 && menit < 11 * 60) return "pagi";
+  if (menit >= 11 * 60 && menit < 18 * 60) return "siang";
+  return "malam";
+}
+
+/** Jam minum untuk daftar/detail: ["07:00","19:00"] → "Pagi 07.00 · Malam 19.00" (Figma 16, 21). */
+export function formatJamMinum(jam: readonly string[]): string {
+  return jam.map((j) => `${NAMA_KELOMPOK[kelompokWaktu(j)]} ${formatJam(j)}`).join(" · ");
+}
+
+/** Daftar dan detail obat (Figma MOSA DRAFT 16 · 135:4138, 21 · 135:4576). */
+export const OBAT = {
+  judulDaftar: "Daftar Obat", // DRAFT
+  tambahObat: "Tambah Obat", // DRAFT
+  kosongJudul: "Belum ada obat", // DRAFT
+  kosongPesan: "Tambahkan obat pertama agar jadwal minum muncul di layar Jadwal.", // DRAFT
+  judulDetail: "Detail Obat", // DRAFT
+  penjelasanSederhana: "Penjelasan Sederhana", // DRAFT
+  penjelasanDiperiksa: "Dibuat AI dan sudah diperiksa saat disimpan", // DRAFT
+  informasiAsli: "Informasi asli pengisi", // DRAFT
+  aturanPakai: "Aturan pakai", // DRAFT
+  jumlahPerMinum: "Jumlah per minum", // DRAFT
+  jamMinum: "Jam minum", // DRAFT
+  larangan: "Larangan / peringatan", // DRAFT
+  catatanPribadi: "Catatan pribadi", // DRAFT
+  bukanSaranMedis:
+    "Informasi ini berasal dari data yang diisi apoteker atau keluarga. Aplikasi tidak memberi saran medis.", // DRAFT
+  ubahPilihanKeluaran: "Ubah pilihan teks / suara", // DRAFT
+  tidakDitemukan: "Obat tidak ditemukan", // DRAFT
+  tidakDitemukanPesan: "Obat ini mungkin sudah dihapus.", // DRAFT
+  kembaliKeDaftar: "Kembali ke Daftar Obat", // DRAFT
+} as const;
+
+/** Label pilihan jam: "07:00" → "Pagi · 07.00" (Figma 17). */
+export function labelJamMinum(jam: string): string {
+  return `${NAMA_KELOMPOK[kelompokWaktu(jam)]} · ${formatJam(jam)}`;
+}
+
+/** Formulir Tambah/Ubah Obat (Figma MOSA DRAFT 17 · 135:4216). Label kolom memakai LABEL/OBAT. */
+export const FORM_OBAT = {
+  catatanIsi: "Isi sesuai resep atau etiket obat. Pilih sumber informasi sebelum melanjutkan.", // DRAFT
+  siapaMengisi: "Siapa yang mengisi?", // DRAFT
+  siapaMengisiPetunjuk: "Pilih sesuai orang yang mengisi data obat.", // DRAFT
+  dataObat: "Data obat", // DRAFT
+  namaObat: "Nama obat", // DRAFT
+  namaPetunjuk: "Pilih dari daftar atau tulis nama seperti yang tertera di kemasan.", // DRAFT
+  kekuatan: "Kekuatan", // DRAFT
+  kekuatanPetunjuk: "Salin angka dan satuan kekuatan pada kemasan.", // DRAFT
+  jamBisaDiubah: "Jam bisa diubah sesuai resep", // DRAFT
+  ubahJam: "Ubah jam", // DRAFT
+  jamLain: "Jam lain", // DRAFT
+  tambahJam: "Tambah jam lain", // DRAFT
+  privasiPetunjuk: "Jangan tulis nama atau data pribadi pasien di sini.", // DRAFT
+  catatanOpsional: "Catatan pribadi (opsional)", // DRAFT
+  catatanContoh: "Contoh: simpan di kotak obat biru", // DRAFT
+  kirimAi: "Hanya aturan pakai, peringatan, dan catatan dikirim ke AI. Jangan tulis identitas pasien.", // DRAFT
+  lanjut: "Lanjut: Periksa Data", // DRAFT
+  galatWajib: "Kolom ini wajib diisi.", // DRAFT
+  galatKekuatan: "Tulis angka dan satuannya, misalnya 5 mg.", // DRAFT
+  galatPanjang: "Tulisan terlalu panjang.", // DRAFT
+  galatSumber: "Pilih siapa yang mengisi.", // DRAFT
+  galatJamMinimal: "Pilih minimal satu jam minum.", // DRAFT
+  galatJamKosong: "Isi jamnya.", // DRAFT
+  galatJamSama: "Jam minum tidak boleh sama.", // DRAFT
+  galatRingkas: "Ada isian yang perlu diperbaiki.", // DRAFT
+} as const;
+
+/** "3 obat terdaftar" (Figma 16). */ // DRAFT
+export function jumlahObatTerdaftar(jumlah: number): string {
+  return `${jumlah} obat terdaftar`; // DRAFT
+}
 
 /** docs/06 [USULAN]: label status dosis (selalu bersama ikon dan warna). "Terlewat" baku (#11). */
 export const LABEL_STATUS = {

@@ -12,6 +12,8 @@ export type ChoiceOption<Value extends string> = {
 
 export type ChoiceCardsProps<Value extends string> = {
   legend: string;
+  /** Kelas teks legend; bawaan ukuran judul kartu. */
+  legendClassName?: string;
   name: string;
   options: ReadonlyArray<ChoiceOption<Value>>;
   value: Value | null;
@@ -24,6 +26,7 @@ export type ChoiceCardsProps<Value extends string> = {
  */
 export function ChoiceCards<Value extends string>({
   legend,
+  legendClassName = "text-card-title",
   name,
   options,
   value,
@@ -32,7 +35,7 @@ export function ChoiceCards<Value extends string>({
   const groupId = useId();
   return (
     <fieldset className="flex flex-col gap-3">
-      <legend className="mb-3 text-card-title">{legend}</legend>
+      <legend className={cx("mb-3", legendClassName)}>{legend}</legend>
       {options.map((option) => {
         const checked = option.value === value;
         const titleId = `${groupId}-${option.value}-judul`;

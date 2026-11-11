@@ -18,8 +18,8 @@ export type DialogProps = {
   iconTone?: "danger" | "brand" | "neutral";
   /** Isi tambahan di bawah deskripsi (ringkasan data, input). */
   children?: ReactNode;
-  /** Tombol aksi, tersusun vertikal. */
-  actions: ReactNode;
+  /** Tombol aksi, tersusun vertikal. Boleh kosong bila tombol ada di dalam `children` (formulir). */
+  actions?: ReactNode;
   /**
    * Elemen yang difokus saat dialog terbuka. Bawaan: kotak dialog itu sendiri,
    * sehingga tombol bahaya tidak pernah menjadi fokus bawaan (docs/06).
@@ -93,7 +93,7 @@ export function Dialog({
             ) : null}
           </div>
           {children}
-          <div className="flex flex-col gap-2.5 pt-1">{actions}</div>
+          {actions ? <div className="flex flex-col gap-2.5 pt-1">{actions}</div> : null}
         </RadixDialog.Content>
       </RadixDialog.Portal>
     </RadixDialog.Root>
