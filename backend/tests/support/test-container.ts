@@ -4,6 +4,15 @@ import { EnsureHousehold } from "../../src/modules/household/application/ensure-
 import { GetHousehold } from "../../src/modules/household/application/get-household.use-case";
 import { RecordConsent } from "../../src/modules/household/application/record-consent.use-case";
 import { UpdatePreferences } from "../../src/modules/household/application/update-preferences.use-case";
+import { ExplainMedicineText } from "../../src/modules/medication/application/explain-medicine-text.use-case";
+import {
+  CreateMedicine,
+  DeactivateMedicine,
+  GetMedicine,
+  ListMedicines,
+  UpdateMedicine,
+} from "../../src/modules/medication/application/medicine-use-cases";
+import type { PlainLanguageExplainer } from "../../src/modules/medication/application/ports/plain-language-explainer";
 import type { AccessTokenVerifier } from "../../src/shared/application/access-token-verifier";
 import { CheckHealth, type DatabasePing } from "../../src/shared/application/check-health.use-case";
 import type { LogEvent, Logger } from "../../src/shared/application/logger";
@@ -11,6 +20,7 @@ import { fixedClock } from "../../src/shared/domain/clock";
 import { domainError } from "../../src/shared/domain/domain-error";
 import { err, ok } from "../../src/shared/domain/result";
 import { InMemoryAccountEraser, InMemoryHouseholdRepository } from "./in-memory-household-repository";
+import { InMemoryMedicineRepository } from "./in-memory-medicine-repository";
 
 export const FRONTEND = "http://localhost:3000";
 export const TEST_NOW = Date.parse("2026-11-10T03:00:00Z");
@@ -21,6 +31,11 @@ export function memoryLogger(): MemoryLogger {
   const events: LogEvent[] = [];
   return { events, info: (e) => events.push(e), error: (e) => events.push(e) };
 }
+
+// Explainer palsu bawaan: membalas teks yang lolos pagar keluaran untuk sumber apa pun.
+export const echoExplainer: PlainLanguageExplainer = {
+  explain: async (_householdId, text) => ok(`Minum obat ini: ${text.aturanPakai}`),
+};
 
 export const healthyDb: DatabasePing = { ping: async () => ok(undefined) };
 
@@ -48,10 +63,13 @@ export function testContainer(
     tokens?: Record<string, string>;
     households?: InMemoryHouseholdRepository;
     eraser?: InMemoryAccountEraser;
+    medicines?: InMemoryMedicineRepository;
+    explainer?: PlainLanguageExplainer;
   } = {},
 ): Container & { logger: MemoryLogger } {
   const households = options.households ?? new InMemoryHouseholdRepository();
   const eraser = options.eraser ?? new InMemoryAccountEraser(households);
+  const medicines = options.medicines ?? new InMemoryMedicineRepository();
   return {
     frontendOrigin: FRONTEND,
     logger: memoryLogger(),
@@ -63,6 +81,14 @@ export function testContainer(
       recordConsent: new RecordConsent(households, fixedClock(TEST_NOW)),
       updatePreferences: new UpdatePreferences(households),
       deleteHouseholdData: new DeleteHouseholdData(households, eraser),
+    },
+    medication: {
+      explainMedicineText: new ExplainMedicineText(options.explainer ?? echoExplainer),
+      createMedicine: new CreateMedicine(medicines, fixedClock(TEST_NOW)),
+      updateMedicine: new UpdateMedicine(medicines),
+      listMedicines: new ListMedicines(medicines),
+      getMedicine: new GetMedicine(medicines),
+      deactivateMedicine: new DeactivateMedicine(medicines),
     },
   };
 }

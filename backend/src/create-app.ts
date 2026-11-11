@@ -4,6 +4,7 @@ import { requestId } from "hono/request-id";
 import type { Container } from "./composition-root";
 import { householdRoutes } from "./modules/household/interface/household.routes";
 import { resolveHousehold } from "./modules/household/interface/resolve-household.middleware";
+import { medicationRoutes } from "./modules/medication/interface/medication.routes";
 import { authenticate } from "./shared/interface/authenticate.middleware";
 import { createErrorHandler, handleNotFound } from "./shared/interface/error-handler";
 import { healthRoutes } from "./shared/interface/health.routes";
@@ -34,6 +35,7 @@ export function createApp(container: Container): Hono {
 
   app.route("/v1", healthRoutes(container.checkHealth));
   app.route("/v1", householdRoutes(container.household));
+  app.route("/v1", medicationRoutes(container.medication));
 
   app.notFound(handleNotFound);
   app.onError(createErrorHandler(container.logger));
