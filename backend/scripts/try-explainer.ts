@@ -21,9 +21,9 @@ if (!apiKey || !model) {
 // Data fiktif.
 const SAMPLE = {
   householdId: "uji-manual",
-  aturanPakai: "Diminum 2 x sehari 1 tablet sesudah makan pagi dan malam",
-  larangan: "Jangan dihentikan mendadak tanpa petunjuk dokter",
-  catatan: "Simpan di tempat kering, jauh dari sinar matahari langsung",
+  usageRule: "Diminum 2 x sehari 1 tablet sesudah makan pagi dan malam",
+  warnings: "Jangan dihentikan mendadak tanpa petunjuk dokter",
+  notes: "Simpan di tempat kering, jauh dari sinar matahari langsung",
 };
 
 const gemini = new GeminiJsonGenerator(createGeminiGenerateContent(apiKey), { model });

@@ -52,7 +52,7 @@ describe("ExplainMedicineText", () => {
     const explain = vi.fn<PlainLanguageExplainer["explain"]>(async () => ok("Minum obat ini sesudah makan."));
     const useCase = new ExplainMedicineText({ explain });
     // Properti tambahan (mis. nama obat, nama pasien) tidak boleh ikut terkirim.
-    const leaky = { householdId: "rumah-1", aturanPakai: " sesudah makan ", larangan: "Tidak ada larangan khusus", catatan: "", nama: "Amlodipin", namaPasien: "Ibu Uji" };
+    const leaky = { householdId: "rumah-1", usageRule: " sesudah makan ", warnings: "Tidak ada larangan khusus", notes: "", name: "Amlodipin", namaPasien: "Ibu Uji" };
 
     const result = await useCase.execute(leaky);
 
@@ -68,12 +68,12 @@ describe("ExplainMedicineText", () => {
     const useCase = new ExplainMedicineText({
       explain: async () => err(domainError("AI_UNAVAILABLE", "Layanan AI tidak tersedia.")),
     });
-    const result = await useCase.execute({ householdId: "rumah-1", aturanPakai: "sesudah makan", larangan: "x", catatan: null });
+    const result = await useCase.execute({ householdId: "rumah-1", usageRule: "sesudah makan", warnings: "x", notes: null });
     expect(result).toMatchObject({ ok: false, error: { code: "AI_UNAVAILABLE" } });
   });
 
   test("keluaran yang menambah angka atau anjuran baru ditolak sebagai AI gagal (docs/04)", async () => {
-    const input = { householdId: "rumah-1", aturanPakai: "1 tablet sesudah makan", larangan: "Tidak ada larangan khusus", catatan: null };
+    const input = { householdId: "rumah-1", usageRule: "1 tablet sesudah makan", warnings: "Tidak ada larangan khusus", notes: null };
     const added = new ExplainMedicineText({ explain: async () => ok("Minum 2 tablet sesudah makan.") });
     expect(await added.execute(input)).toMatchObject({ ok: false, error: { code: "AI_UNAVAILABLE" } });
     const advice = new ExplainMedicineText({ explain: async () => ok("Minum 1 tablet, konsultasi ke dokter.") });
@@ -82,7 +82,7 @@ describe("ExplainMedicineText", () => {
 
   test("aturan pakai kosong tidak dikirim ke AI", async () => {
     const explain = vi.fn<PlainLanguageExplainer["explain"]>(async () => ok("x"));
-    const result = await new ExplainMedicineText({ explain }).execute({ householdId: "rumah-1", aturanPakai: " ", larangan: "x", catatan: null });
+    const result = await new ExplainMedicineText({ explain }).execute({ householdId: "rumah-1", usageRule: " ", warnings: "x", notes: null });
     expect(result).toMatchObject({ ok: false, error: { code: "VALIDATION_FAILED" } });
     expect(explain).not.toHaveBeenCalled();
   });
