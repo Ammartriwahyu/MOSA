@@ -33,7 +33,10 @@ Kolom "Lapis" = tempat tes utama: **D** domain unit, **A** application (repo pal
 | AC-26 | [USULAN] Buka aplikasi lewat sesi tersimpan dengan mode suara aktif | Tidak ada suara otomatis sebelum sentuhan; tombol "Bacakan" menjadi jalur utama; tanpa suara id-ID → pesan D-d | M |
 
 ## Kasus batas waktu wajib (domain)
-J−31 mnt `belum_tiba`; J−30 `jatuh_tempo`; J+120 `jatuh_tempo`; J+121 `terlewat`; dua dosis berjarak 149 mnt vs 150 mnt; 23.59 vs 00.00 WIB berbeda hari; server di UTC tidak memengaruhi hasil.
+J−31 mnt `belum_tiba`; J−30 `jatuh_tempo`; J+120 tepat `jatuh_tempo`; J+120+1 ms dan J+121 `terlewat`; dua dosis berjarak 149 mnt maupun 150 mnt tetap terbuka bersama ketika masing-masing masih di dalam jendela (PM Q1/Q2, 11 Nov 2026); 23.59 vs 00.00 WIB berbeda hari, tanpa memotong jendela yang melintasi tengah malam; server di UTC tidak memengaruhi hasil.
+
+Pemeriksaan domain: `pnpm --filter backend test tests/unit/dosing tests/application/dosing`. Suite Vitest memakai `America/New_York`; jalankan juga `pnpm --filter backend dose:check-utc` untuk membuktikan slot WIB dan batas akhir lintas tengah malam pada proses berzona UTC.
 
 ## Daftar periksa HP nyata (manual)
+
 Android Chrome dan iPhone Safari: kamera `capture`, kompres foto, suara id-ID via tombol "Bacakan", sesi tetap setelah tutup browser, dua HP satu akun, layar kecil (360 px), teks besar, jaringan lambat (loading AI sampai 20 detik tetap jelas).

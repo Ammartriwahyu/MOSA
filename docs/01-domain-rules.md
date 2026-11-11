@@ -41,18 +41,19 @@ Setiap dosis punya jam jadwal **J** (WIB, UTC+7 tanpa DST). Status **tidak disim
 
 | Status | Aturan |
 |---|---|
-| `belum_tiba` | sebelum J − 30 menit **[USULAN; PRD tersirat J]** |
-| `jatuh_tempo` | J − 30 menit s.d. J + 120 menit |
+| `belum_tiba` | sebelum J − 30 menit **[disetujui PM 11 Nov 2026; mengubah ketentuan awal PRD/flow]** |
+| `jatuh_tempo` | J − 30 menit s.d. tepat J + 120 menit (kedua batas inklusif) |
 | `terlewat` | lewat J + 120 menit tanpa konfirmasi; tidak bisa dikonfirmasi lagi [PRD: 120 menit] |
 | `sudah` | ada konfirmasi (tingkat ✓ atau ✓✓) |
 
 Tampilan dashboard memetakan `belum_tiba` dan `jatuh_tempo` ke label "belum" [PRD §9.3].
 
 Aturan tambahan [USULAN]:
-- Dua dosis obat yang sama berjarak < 150 menit: jendela dosis awal berakhir saat jendela dosis berikutnya mulai.
+- **Disetujui PM 11 Nov 2026 (Q2, opsi 2):** jendela dua dosis obat yang sama tidak dipotong. Bila keduanya terbuka, pengguna memilih slot yang dikonfirmasi; mengonfirmasi satu slot tidak mengonfirmasi slot lainnya.
 - Dua obat berjam sama: keduanya `jatuh_tempo`; scan satu hanya mengonfirmasi dosis obat itu.
 - Obat disimpan setelah J hari itu: slot J tidak dibuat untuk hari itu (hitungan harian 0/1, bukan 0/2 dengan satu terlewat).
 - Hari berganti pukul 00.00 WIB.
+- Jendela yang melintasi tengah malam tetap berlaku sampai J+120 inklusif; slot dan konfirmasinya tetap memakai tanggal jadwal asal (flow alt #19). Jadwal 00.00–03.59 memakai tanggal kalender saat jadwal itu terjadi.
 - Kelompok waktu: Pagi 04.00–10.59, Siang 11.00–17.59, Malam 18.00–03.59.
 
 `Nanti dulu` [PRD §19 #9]: pop-up tutup, kembali ke dashboard, status tetap `belum`, hitungan tidak bertambah, banner tetap tampil selama masih dalam jendela; pengguna bisa menekan kartu jadwal lagi nanti.

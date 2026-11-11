@@ -158,38 +158,36 @@ Modul `ai` bukan bounded context. AI adalah detail infrastruktur di balik dua po
 ### 6.3 `dosing`
 - **DoseSlot** (value object, dihitung, tidak disimpan): `medicineId`, `scheduledAt` (J), `status`, `confirmation | null`. ID deterministik: `{medicineId}:{yyyymmdd}:{HHmm}`.
 - **DoseConfirmation** (entity yang disimpan): `id`, `householdId`, `medicineId`, `scheduledDate`, `scheduledTime`, `confirmedAt`, `level: 'dasar' | 'scan_terverifikasi'` (✓ dan ✓✓). Unik per `(medicineId, scheduledDate, scheduledTime)`.
-- **Domain service `DoseWindowPolicy` [ASUMSI]:**
+- **Domain `dose-window.ts` (Q1/Q2 disetujui PM 11 Nov 2026):**
   - `belum_tiba`: sebelum J − 30 menit
   - `jatuh_tempo`: J − 30 menit sampai J + 120 menit
   - `terlewat`: setelah J + 120 menit tanpa konfirmasi
-  - Dosis obat yang sama berjarak kurang dari 150 menit: jendela awal berakhir saat jendela berikutnya mulai
+  - Dosis obat yang sama boleh memiliki jendela terbuka bersamaan; pengguna memilih slot, tidak ada pemotongan otomatis
   - `sudah`: ada konfirmasi
   - Obat baru yang disimpan setelah J hari itu: slot J tidak dibuat untuk hari itu
 - **Invarian `ConfirmDose`:** tidak boleh dikonfirmasi bila `belum_tiba`, `terlewat`, atau `sudah`; level ✓✓ hanya dengan token verifikasi scan yang sah (Bagian 6.4).
 - **Hari** berganti pukul 00.00 WIB. Hitungan "1/2" dihitung dari slot hari itu: sudah dikonfirmasi per total slot yang dibuat hari itu.
-- **Port:** `DoseConfirmationRepository`, `MedicineScheduleReader` (membaca obat aktif dan jamnya dari modul `medication`), `Clock`.
-- **Use case:** `ListTodaysDoses`, `ConfirmDose`, `GetDoseContext` (dipakai `verification`).
+- **Port:** `DoseConfirmationRepository`, `MedicineScheduleReader` (membaca obat aktif dan jamnya dari modul `medication`), `ConfirmedDoseReader` (ID slot yang telah dikonfirmasi, tersaring rumah tangga/obat/tanggal), `Clock`.
+- **Use case:** `ListTodaysDoses`, `ConfirmDose`, `GetDoseContext` (dipakai `verification`), `GetNextDose` (jadwal J berikut setelah sekarang, sampai besok, melewati slot yang sudah dikonfirmasi dini; tanpa rute sendiri).
+- **Pembangkit slot:** `buildDailySlots` menerima snapshot jadwal dan tanggal WIB, menghasilkan slot aktif dengan J ≥ `createdAt`, ID stabil `{medicineId}:{yyyymmdd}:{HHmm}`. Panggil dengan tanggal asal untuk slot kemarin yang jendelanya masih terbuka sesudah tengah malam; hitungan harian tetap berdasarkan tanggal slot. Adapter database dan rute dirakit di branch `feat/be-dose-api`.
 
-Sketsa fungsi murni (belum dijalankan):
+Ringkasan fungsi murni (implementasi dan konstanta di `backend/src/modules/dosing/domain/dose-window.ts`):
 
 ```ts
 export type DoseStatus = 'belum_tiba' | 'jatuh_tempo' | 'terlewat' | 'sudah';
 const MIN = 60_000;
+// DOSE_WINDOW dari dose-window.ts; satu sumber angka jendela.
 
 export function classifyDose(p: {
   scheduledAt: number;          // J, epoch ms
-  nextScheduledAt?: number;     // J berikutnya obat yang sama
   now: number;
   confirmed: boolean;
 }): DoseStatus {
   if (p.confirmed) return 'sudah';
-  const opensAt = p.scheduledAt - 30 * MIN;
-  let closesAt = p.scheduledAt + 120 * MIN;
-  if (p.nextScheduledAt !== undefined && p.nextScheduledAt - p.scheduledAt < 150 * MIN) {
-    closesAt = p.nextScheduledAt - 30 * MIN;
-  }
+  const opensAt = p.scheduledAt - DOSE_WINDOW.opensBeforeMinutes * MIN;
+  const closesAt = p.scheduledAt + DOSE_WINDOW.closesAfterMinutes * MIN;
   if (p.now < opensAt) return 'belum_tiba';
-  if (p.now < closesAt) return 'jatuh_tempo';
+  if (p.now <= closesAt) return 'jatuh_tempo';
   return 'terlewat';
 }
 ```
@@ -537,7 +535,7 @@ Catatan desain:
 
 | Lapis | Alat | Yang diuji |
 |---|---|---|
-| Domain | Vitest, tanpa mock | `classifyDose` (batas J−30, J+120, tumpang tindih <150 menit, lewat tengah malam WIB), normalizer nama, `MedicineMatcher`, invarian `Medicine` |
+| Domain | Vitest, tanpa mock | `classifyDose` (batas J−30, J+120 inklusif, dua slot berjarak 149/150 menit tetap terbuka bersama, lewat tengah malam WIB), normalizer nama, `MedicineMatcher`, invarian `Medicine` |
 | Application | Vitest + repository dan port palsu (in-memory), `Clock` tetap | `ConfirmDose` (belum tiba, terlewat, ganda, token salah), `VerifyPackage` (semua hasil), `CreateMedicine` |
 | Infrastructure | Vitest + fixture rekaman respons Gemini | Parser keluaran AI, penanganan 429 dan batas waktu |
 | E2E | Satu skenario | Login demo → tambah obat → scan → konfirmasi ✓✓ |
@@ -643,7 +641,7 @@ nama-project/
 
 | No | Hal | Status |
 |---|---|---|
-| 1 | Jendela dosis (−30/+120 menit, tumpang tindih <150 menit) | **[ASUMSI]** perlu persetujuan tim |
+| 1 | Jendela dosis (−30/+120 menit inklusif, slot bertumpuk tidak dipotong) | **Disetujui PM 11 Nov 2026 (Q1/Q2)** |
 | 2 | Batas kelompok waktu Pagi/Siang/Malam | **[ASUMSI]** |
 | 3 | Aturan obat disimpan di tengah hari (slot yang sudah lewat tidak dibuat) | **[ASUMSI]** |
 | 4 | Backend di Vercel (Hono) vs layanan lain | Disarankan Vercel; layanan gratis lain yang tidur saat tidak aktif tidak cocok untuk demo dan cron |
