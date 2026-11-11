@@ -2,7 +2,7 @@
 
 > **ISI BAGIAN INI SEBELUM MEMULAI P07.**
 
-- **URL file Figma:** (https://www.figma.com/design/bLZRTuVVmkLWL9WGlmcExe/Logicodix?node-id=25-2&p=f&t=pqaDkpu1njQpGoLp-0) (KERJAKAN YANG DI PAGE MOSA DRAFT)
+- **URL file Figma:** (https://www.figma.com/design/bLZRTuVVmkLWL9WGlmcExe/Logicodix?node-id=135-2719&p=f&t=QBcRXHMpqvEnFNWu-0) (KERJAKAN YANG DI PAGE MOSA DRAFT)
 - **Halaman/frame utama** (opsional bila nama berbeda dari flow): `ISI`
 - **Mode desain:** mobile ukuran `ISI` px; ada versi desktop? `ISI`
 - **Komponen/tokens sudah dibuat di Figma (variables/styles)?** `ya / tidak`
