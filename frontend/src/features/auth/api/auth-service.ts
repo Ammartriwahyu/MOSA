@@ -66,6 +66,24 @@ export async function signUp(input: {
   }
 }
 
-export async function signOut(): Promise<void> {
-  await getSupabaseBrowserClient().auth.signOut();
+/**
+ * Keluar dari HP ini saja (`local`). Akun dipakai bersama di HP lansia dan wali
+ * (PRD §8), jadi keluar di satu HP tidak boleh mengeluarkan HP lain.
+ */
+export async function signOut(scope: "global" | "local" = "local"): Promise<void> {
+  try {
+    await getSupabaseBrowserClient().auth.signOut({ scope });
+  } catch {
+    // Jaringan putus: sesi lokal tetap dihapus oleh Supabase; penjaga rute mengarahkan keluar.
+  }
+}
+
+export type Account = { email: string | null; name: string | null };
+
+/** Email dan nama pasien (metadata Auth) dari sesi di HP ini; tanpa panggilan database. */
+export async function getAccount(): Promise<Account> {
+  const { data } = await getSupabaseBrowserClient().auth.getSession();
+  const user = data.session?.user;
+  const name = user?.user_metadata?.display_name;
+  return { email: user?.email ?? null, name: typeof name === "string" && name.trim() ? name : null };
 }

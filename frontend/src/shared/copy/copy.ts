@@ -207,6 +207,28 @@ export const PREFERENSI = {
   simpanPilihan: "Simpan Pilihan", // DRAFT
 } as const;
 
+/** Pengaturan (Figma MOSA DRAFT 22 · 135:4687) dan pop-up hapus akun (A10 · 135:5854). */
+export const PENGATURAN = {
+  judul: "Pengaturan", // DRAFT
+  caraMenampilkan: "Cara menampilkan informasi", // DRAFT
+  teksSajaKeterangan: "Huruf besar di layar", // DRAFT
+  teksSuaraKeterangan: "Dibacakan setelah Anda menyentuh layar", // DRAFT
+  tersimpan: "Pilihan tersimpan.", // DRAFT
+  akunBersama: "Akun bersama", // DRAFT
+  labelNama: "Nama", // DRAFT
+  labelEmail: "Email", // DRAFT
+  labelTetapMasuk: "Tetap masuk", // DRAFT
+  tetapMasukAktif: "Aktif di HP ini", // DRAFT
+  dataPrivasi: "Data dan privasi", // DRAFT
+  privasiFoto: "Foto obat tidak disimpan", // DRAFT
+  privasiAi: "Nama dan identitas tidak dikirim ke AI", // DRAFT
+  hapusAkun: "Hapus Seluruh Data & Akun", // DRAFT
+  yaHapusSemua: "Ya, hapus semua", // DRAFT
+  demoDilindungi: "Akun demo juri dilindungi dan tidak bisa dihapus.", // DRAFT
+  labelKataSandiUlang: "Masukkan ulang kata sandi", // DRAFT
+  galatKataSandiHapus: "Kata sandi salah. Data tidak dihapus.", // DRAFT
+} as const;
+
 /** Layar masuk, daftar, onboarding, persetujuan (Figma MOSA DRAFT 01–03). Semua DRAFT. */
 export const AUTH = {
   tagline: "MOSA · Pendamping Minum Obat", // DRAFT
