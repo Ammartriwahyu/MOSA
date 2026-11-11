@@ -21,6 +21,10 @@ export function medicineDetail(id: string): string {
   return `${ROUTES.medicines}/${encodeURIComponent(id)}`;
 }
 
+export function medicineEdit(id: string): string {
+  return `${medicineDetail(id)}/edit`;
+}
+
 /**
  * Layar pilihan Teks/Suara, lalu kembali ke `next` (mis. hasil scan pertama, docs/08 §1D).
  * Hanya alamat internal yang diterima agar tidak bisa dipakai mengalihkan ke situs lain.
