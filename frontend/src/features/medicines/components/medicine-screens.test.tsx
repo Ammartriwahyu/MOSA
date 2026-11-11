@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
 import type { ReactNode } from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { AUTH, DRAFT, LABEL, OBAT } from "@/shared/copy";
+import { AUTH, DRAFT, LABEL, OBAT, SIMPAN_OBAT } from "@/shared/copy";
 import { ApiError } from "@/shared/lib";
 import type { Medicine } from "../api/medicines";
 import { MedicineDetailScreen } from "./medicine-detail-screen";
@@ -71,6 +71,24 @@ beforeEach(() => {
 });
 
 describe("MedicineListScreen", () => {
+  test("hasil simpan memakai obat dari server dan menandai jalur tanpa AI", async () => {
+    backend.get.mockResolvedValue({ medicines: [METFORMIN] });
+    renderWithQuery(<MedicineListScreen savedId={METFORMIN.id} />);
+    await screen.findByText(SIMPAN_OBAT.berhasil);
+    expect(screen.getByRole("status")).toHaveTextContent(SIMPAN_OBAT.berhasil);
+    expect(screen.getByRole("status")).toHaveTextContent("Metformin 500 mg");
+    expect(screen.getByRole("status")).toHaveTextContent(DRAFT.penjelasanBelumTersedia);
+    expect(screen.getByText(SIMPAN_OBAT.baru)).toBeVisible();
+  });
+
+  test("savedId yang tidak ada tidak menghasilkan notifikasi sukses", async () => {
+    backend.get.mockResolvedValue({ medicines: [METFORMIN] });
+    renderWithQuery(<MedicineListScreen savedId="tidak-ada" />);
+    await screen.findByText("Metformin 500 mg");
+    expect(screen.queryByText(SIMPAN_OBAT.berhasil)).not.toBeInTheDocument();
+    expect(screen.queryByText(SIMPAN_OBAT.baru)).not.toBeInTheDocument();
+  });
+
   test("menampilkan obat dengan kekuatan, jumlah, jam berkelompok, dan label sumber baku", async () => {
     backend.get.mockResolvedValue({ medicines: [AMLODIPIN, METFORMIN] });
     renderWithQuery(<MedicineListScreen />);
