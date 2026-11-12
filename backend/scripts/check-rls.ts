@@ -1,6 +1,7 @@
 // Membuktikan klien publik (publishable/anon key) tidak bisa membaca atau menulis
 // tabel apa pun. Memakai nilai publik dari frontend/.env.local (lihat README).
 // Hanya mencetak nama tabel dan status HTTP, tidak pernah isi data atau kunci.
+import { probePublicTable } from "./lib/rls-probe";
 
 const TABLES = [
   "households",
@@ -21,33 +22,19 @@ if (!url || !key) {
   process.exit(1);
 }
 
-type Check = { table: string; action: "baca" | "tulis"; status: number; blocked: boolean };
-
-async function probe(table: string, action: Check["action"]): Promise<Check> {
-  const endpoint = `${url}/rest/v1/${table}${action === "baca" ? "?select=*&limit=1" : ""}`;
-  const res = await fetch(endpoint, {
-    method: action === "baca" ? "GET" : "POST",
-    headers: { apikey: key as string, "Content-Type": "application/json", Prefer: "return=minimal" },
-    body: action === "tulis" ? "{}" : undefined,
-  });
-  // Lolos hanya bila permintaan ditolak (tanpa hak / tabel tak terekspos).
-  return { table, action, status: res.status, blocked: !res.ok };
-}
-
 const results = await Promise.all(
-  TABLES.flatMap((t) => [probe(t, "baca"), probe(t, "tulis")]),
+  TABLES.flatMap((t) => [probePublicTable(url, key, t, "baca"), probePublicTable(url, key, t, "tulis")]),
 );
 
 for (const r of results) {
-  console.info(`${r.blocked ? "DITOLAK " : "TERBUKA!"} ${r.action.padEnd(5)} ${r.table} (HTTP ${r.status})`);
+  console.info(`${r.blocked ? "DITOLAK" : "BELUM TERBUKTI"} ${r.action.padEnd(5)} ${r.table} (${r.status === null ? "jaringan tidak tersedia" : `HTTP ${r.status}`})`);
 }
 
-const open = results.filter((r) => !r.blocked);
-if (open.length > 0) {
-  console.error(`RLS GAGAL: ${open.length} akses publik terbuka.`);
-  process.exit(1);
+const unproven = results.filter((r) => !r.blocked);
+if (unproven.length > 0) {
+  console.error(`RLS BELUM TERBUKTI: ${unproven.length} pemeriksaan belum membuktikan penolakan akses publik.`);
+  // Biarkan koneksi HTTP dan keluaran selesai dibersihkan sebelum proses tutup.
+  process.exitCode = 1;
+} else {
+  console.info("RLS OK: semua akses publik ditolak.");
 }
-console.info("RLS OK: semua akses publik ditolak.");
-
-// Menjadikan berkas modul ES agar top-level await sah.
-export {};
