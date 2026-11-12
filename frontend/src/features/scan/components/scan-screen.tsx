@@ -14,6 +14,7 @@ import { parseScanTarget, type ScanTarget } from "../lib/scan-target";
 import { ScanCaptureView } from "./scan-capture-view";
 import { ScanConsentDialog } from "./scan-consent-dialog";
 import { ScanRequestView } from "./scan-request-view";
+import { ScanOutcomeView } from "./scan-outcome-view";
 
 function ReadyCapture({ target, headingRef, userId }: { target: Exclude<ScanTarget, { mode: "invalid" }>; headingRef: RefObject<HTMLHeadingElement | null>; userId: string }) {
   const capture = usePhotoCapture();
@@ -27,6 +28,7 @@ function ReadyCapture({ target, headingRef, userId }: { target: Exclude<ScanTarg
   }, [client, userId]);
   const request = useScanRequest(onFailure);
   useEffect(() => { if (request.state.phase === "ready") headingRef.current?.focus(); }, [request.state.phase, headingRef]);
+  if (request.state.phase === "complete") return <ScanOutcomeView result={request.state.result} onAgain={request.reset} />;
   if (request.state.phase !== "ready") return <ScanRequestView state={request.state} onCancel={request.cancel} onAgain={request.reset} />;
   return <ScanCaptureView capture={{ ...capture, select: async (file) => { request.reset(); await capture.select(file); } }}
     target={target} headingRef={headingRef} notice={request.state.cancelled ? SCAN_REQUEST.cancelled : undefined}

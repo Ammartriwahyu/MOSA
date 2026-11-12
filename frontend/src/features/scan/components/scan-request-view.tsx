@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, FileSearch } from "lucide-react";
+import { Camera } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { ROUTES } from "@/shared/config";
@@ -9,7 +9,7 @@ import { Button, ErrorState } from "@/shared/ui";
 import type { ScanRequestState } from "../hooks/use-scan-request";
 
 export function ScanRequestView({ state, onCancel, onAgain }: {
-  state: Exclude<ScanRequestState, { phase: "ready" }>; onCancel: () => void; onAgain: () => void;
+  state: Extract<ScanRequestState, { phase: "pending" | "error" }>; onCancel: () => void; onAgain: () => void;
 }) {
   const title = useRef<HTMLHeadingElement>(null);
   useEffect(() => { title.current?.focus(); }, [state.phase]);
@@ -37,12 +37,4 @@ export function ScanRequestView({ state, onCancel, onAgain }: {
       </div>} />
     </>;
   }
-  // Tampilan khusus delapan hasil dipasang row38; hasil/token tetap di memori hook.
-  return <section className="flex flex-col items-center gap-4 rounded-card bg-surface p-5 text-center">
-    <FileSearch aria-hidden="true" className="size-16 text-muted" />
-    <h1 ref={title} tabIndex={-1} className="text-display outline-none">{SCAN_REQUEST.completeTitle}</h1>
-    <p role="status" className="text-body">{SCAN_REQUEST.completeMessage}</p>
-    <Button size="lg" onClick={onAgain}>{SCAN_REQUEST.again}</Button>
-    <Button asChild size="lg" variant="secondary"><Link href={ROUTES.home}>{SCAN_CAPTURE.backToSchedule}</Link></Button>
-  </section>;
 }
