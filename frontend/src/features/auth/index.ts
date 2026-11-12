@@ -10,3 +10,5 @@ export { RegisterScreen } from "./components/register-screen";
 export { WelcomeScreen } from "./components/welcome-screen";
 export { useAccount, useHousehold } from "./hooks/use-household";
 export { useSessionStatus, type SessionStatus } from "./hooks/use-session-status";
+export { useSessionIdentity } from "./hooks/use-session-identity";
+export { fetchHousehold, recordScanConsent } from "./api/household";
