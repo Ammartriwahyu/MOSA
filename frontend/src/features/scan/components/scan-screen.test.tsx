@@ -3,8 +3,12 @@ import { act, fireEvent, render, renderHook, screen, waitFor, within } from "@te
 import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import { fetchHousehold, recordScanConsent, useSessionIdentity, type Household } from "@/features/auth";
-import { PERSETUJUAN_SCAN, SCAN_CAPTURE, TOMBOL } from "@/shared/copy";
+import { fetchHousehold, recordScanConsent, signOut, useSessionIdentity, type Household } from "@/features/auth";
+import { AI_GAGAL, PERSETUJUAN_SCAN, SCAN_CAPTURE, SCAN_REQUEST, TOMBOL } from "@/shared/copy";
+import { ApiError } from "@/shared/lib";
+import { scanPackage } from "../api/scan";
+import { scanResponseFixture, scanSlotFixture } from "../testing/scan-response-fixtures";
+import { useScanRequest, SCAN_REQUEST_TIMEOUT_MS } from "../hooks/use-scan-request";
 import { compressPhoto } from "../lib/compress-photo";
 import { PHOTO_POLICY, PhotoError } from "../lib/photo-policy";
 import { usePhotoCapture } from "../hooks/use-photo-capture";
@@ -13,9 +17,11 @@ import { ScanScreen } from "./scan-screen";
 
 const { push } = vi.hoisted(() => ({ push: vi.fn() }));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
-vi.mock("@/features/auth", () => ({ fetchHousehold: vi.fn(), recordScanConsent: vi.fn(), useSessionIdentity: vi.fn(), householdQueryKey: ["household"] }));
+vi.mock("@/features/auth", () => ({ fetchHousehold: vi.fn(), recordScanConsent: vi.fn(), useSessionIdentity: vi.fn(), signOut: vi.fn(), householdQueryKey: ["household"] }));
 vi.mock("../lib/compress-photo", () => ({ compressPhoto: vi.fn() }));
+vi.mock("../api/scan", () => ({ scanPackage: vi.fn() }));
 const GET = vi.mocked(fetchHousehold); const POST = vi.mocked(recordScanConsent); const compress = vi.mocked(compressPhoto);
+const scanPost = vi.mocked(scanPackage);
 const NativeURL = URL; const revoke = vi.fn(); let nextUrl = 0;
 const clients: QueryClient[] = [];
 const household: Household = { dataConsentAt: "2026-11-12T00:00:00Z", scanConsentAt: "2026-11-12T00:01:00Z", outputMode: null, isDemo: false };
@@ -35,6 +41,7 @@ beforeEach(() => {
   GET.mockReset().mockResolvedValue(household); POST.mockReset().mockResolvedValue(household); compress.mockReset().mockResolvedValue(prepared());
   vi.mocked(useSessionIdentity).mockReturnValue("akun-a"); push.mockReset(); revoke.mockReset(); nextUrl = 0;
   localStorage.clear();
+  scanPost.mockReset().mockResolvedValue(scanResponseFixture()); vi.mocked(signOut).mockReset();
   vi.stubGlobal("URL", class extends NativeURL { static createObjectURL() { return `blob:uji-${++nextUrl}`; } static revokeObjectURL = revoke; });
 });
 afterEach(() => { clients.forEach((client) => client.clear()); clients.length = 0; vi.restoreAllMocks(); vi.unstubAllGlobals(); });
@@ -109,6 +116,7 @@ describe("foto sementara dan target scan", () => {
     expect(screen.queryByText("nama-pribadi.jpg")).not.toBeInTheDocument();
     expect(JSON.stringify(client.getQueryCache().getAll().map((query) => query.state.data))).not.toMatch(/blob:|nama-pribadi|jpeg-uji/);
     expect(Object.keys(localStorage)).toEqual([SCAN_CONSENT_STORAGE_KEY]);
+    expect(scanPost).not.toHaveBeenCalled();
   });
   test("mengganti dan meninggalkan layar melepaskan URL lama", async () => {
     const view = setup(); await upload();
@@ -188,5 +196,101 @@ describe("foto sementara dan target scan", () => {
     await user.click(within(dialog).getByRole("button", { name: SCAN_CAPTURE.agree }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
     expect((await axe.run(document.body, { rules: { "color-contrast": { enabled: false }, region: { enabled: false } } })).violations).toEqual([]);
+  });
+});
+
+describe("pengiriman scan tanpa pencatatan dosis", () => {
+  beforeEach(() => { localStorage.setItem(SCAN_CONSENT_STORAGE_KEY, "true"); });
+  test.each([undefined, scanSlotFixture.slotId])("jalur %s mengirim hanya sesudah Gunakan Foto Ini dan membuang preview", async (target) => {
+    const view = setup(target); await upload();
+    expect(scanPost).not.toHaveBeenCalled(); await view.user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    expect(scanPost).toHaveBeenCalledTimes(1);
+    expect(scanPost.mock.calls[0]?.[0].slotId).toBe(target);
+    expect(scanPost.mock.calls[0]?.[0].blob.type).toBe("image/jpeg");
+    expect(await screen.findByText(SCAN_REQUEST.completeTitle)).toBeInTheDocument();
+    expect(screen.queryByAltText(SCAN_CAPTURE.preview)).not.toBeInTheDocument(); expect(revoke).toHaveBeenCalledWith("blob:uji-1");
+    expect(screen.queryByRole("button", { name: TOMBOL.sudahSayaMinum })).not.toBeInTheDocument();
+    const cache = JSON.stringify([...view.client.getQueryCache().getAll().map((query) => query.state.data), ...view.client.getMutationCache().getAll().map((mutation) => mutation.state)]);
+    expect(cache).not.toMatch(/blob:|jpeg-uji|token-scan-uji|nama-pribadi/);
+  });
+  test("klik ganda hanya satu permintaan; Batal menolak hasil lama dan memulihkan fokus", async () => {
+    let finish!: (value: ReturnType<typeof scanResponseFixture>) => void;
+    scanPost.mockReturnValue(new Promise((resolve) => { finish = resolve; }));
+    const { user } = setup(); await upload(); await user.dblClick(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    expect(await screen.findByRole("heading", { name: SCAN_REQUEST.reading })).toHaveFocus(); expect(scanPost).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole("button", { name: TOMBOL.batal }));
+    expect(await screen.findByText(SCAN_REQUEST.cancelled)).toBeInTheDocument(); expect(scanPost.mock.calls[0]?.[0].signal.aborted).toBe(true);
+    await act(async () => { finish(scanResponseFixture()); });
+    expect(screen.queryByText(SCAN_REQUEST.completeTitle)).not.toBeInTheDocument(); expect(screen.getByRole("heading", { name: TOMBOL.scanObat })).toHaveFocus();
+  });
+  test.each(["NETWORK_ERROR", "TIMEOUT", "INVALID_RESPONSE", "AI_QUOTA_EXCEEDED", "AI_UNAVAILABLE"])("galat %s memakai #12 persis, tanpa retry otomatis", async (code) => {
+    scanPost.mockRejectedValue(new ApiError(code, null, "detail-uji-yang-tidak-boleh-tampil"));
+    const { user } = setup(); await upload(); await user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    expect(await screen.findByText(AI_GAGAL)).toBeInTheDocument(); expect(scanPost).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("detail-uji-yang-tidak-boleh-tampil")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: SCAN_REQUEST.again }));
+    expect(screen.getByRole("heading", { name: TOMBOL.scanObat })).toHaveFocus(); expect(scanPost).toHaveBeenCalledTimes(1);
+  });
+  test("401 keluar melalui penanganan auth; 404 tidak dialihkan ke scan generik", async () => {
+    scanPost.mockRejectedValueOnce(new ApiError("UNAUTHENTICATED", 401, "uji"));
+    const view = setup(); await upload(); await view.user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    expect(await screen.findByText(SCAN_REQUEST.session)).toBeInTheDocument(); expect(signOut).toHaveBeenCalledTimes(1);
+    view.unmount(); scanPost.mockRejectedValueOnce(new ApiError("NOT_FOUND", 404, "uji"));
+    const next = setup(scanSlotFixture.slotId); await upload(); await next.user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    expect(await screen.findByText(SCAN_REQUEST.target)).toBeInTheDocument(); expect(scanPost.mock.calls[1]?.[0].slotId).toBe(scanSlotFixture.slotId);
+    expect(screen.queryByRole("button", { name: SCAN_REQUEST.again })).not.toBeInTheDocument();
+  });
+  test("403 consent memuat ulang persetujuan akun dan tidak mengulang scan", async () => {
+    scanPost.mockRejectedValue(new ApiError("CONSENT_REQUIRED", 403, "uji"));
+    const { user } = setup(); await upload(); GET.mockResolvedValue({ ...household, scanConsentAt: null });
+    await user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    expect(await screen.findByRole("dialog", { name: SCAN_CAPTURE.consentTitle })).toBeInTheDocument(); expect(scanPost).toHaveBeenCalledTimes(1);
+  });
+  test("ganti akun saat pending membatalkan request dan mengabaikan hasil untuk akun lama", async () => {
+    let finish!: (value: ReturnType<typeof scanResponseFixture>) => void;
+    scanPost.mockReturnValue(new Promise((resolve) => { finish = resolve; }));
+    const view = setup(); await upload(); await view.user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    vi.mocked(useSessionIdentity).mockReturnValue("akun-b"); view.rerender(view.ui());
+    await waitFor(() => expect(screen.getByRole("heading", { name: TOMBOL.scanObat })).toBeInTheDocument());
+    expect(scanPost.mock.calls[0]?.[0].signal.aborted).toBe(true);
+    await act(async () => { finish(scanResponseFixture()); });
+    expect(screen.queryByText(SCAN_REQUEST.completeTitle)).not.toBeInTheDocument();
+  });
+  test("deadline total menyelesaikan UI meskipun transport mengabaikan abort", async () => {
+    vi.useFakeTimers();
+    try {
+      scanPost.mockReturnValue(new Promise(() => {}));
+      const { result, unmount } = renderHook(() => useScanRequest());
+      act(() => { void result.current.start({ blob: prepared().blob }); });
+      expect(result.current.state.phase).toBe("pending");
+      await act(async () => { await vi.advanceTimersByTimeAsync(SCAN_REQUEST_TIMEOUT_MS); });
+      expect(result.current.state).toEqual({ phase: "error", reason: "unavailable" }); expect(scanPost.mock.calls[0]?.[0].signal.aborted).toBe(true);
+      unmount();
+    } finally { vi.useRealTimers(); }
+  });
+  test("hasil request yang dibatalkan tidak mengganti hasil request berikutnya", async () => {
+    let first!: (value: ReturnType<typeof scanResponseFixture>) => void;
+    scanPost.mockReturnValueOnce(new Promise((resolve) => { first = resolve; }));
+    scanPost.mockResolvedValueOnce(scanResponseFixture("tidak_terbaca"));
+    const { result, unmount } = renderHook(() => useScanRequest());
+    act(() => { void result.current.start({ blob: prepared().blob }); });
+    act(() => { result.current.cancel(); });
+    await act(async () => { await result.current.start({ blob: prepared().blob }); });
+    await act(async () => { first(scanResponseFixture()); });
+    expect(result.current.state).toMatchObject({ phase: "complete", result: { outcome: "tidak_terbaca" } });
+    expect(scanPost).toHaveBeenCalledTimes(2); unmount();
+  });
+  test("loading, galat #12 dan tanda terima netral lolos axe", async () => {
+    let finish!: (value: ReturnType<typeof scanResponseFixture>) => void;
+    scanPost.mockReturnValueOnce(new Promise((resolve) => { finish = resolve; }));
+    const { user } = setup(); await upload(); await user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
+    const rules = { "color-contrast": { enabled: false }, region: { enabled: false } };
+    expect((await axe.run(document.body, { rules })).violations).toEqual([]);
+    await act(async () => { finish(scanResponseFixture()); });
+    expect((await axe.run(document.body, { rules })).violations).toEqual([]);
+    await user.click(screen.getByRole("button", { name: SCAN_REQUEST.again }));
+    scanPost.mockRejectedValue(new ApiError("AI_UNAVAILABLE", 503, "uji")); await upload();
+    await user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto })); await screen.findByText(AI_GAGAL);
+    expect((await axe.run(document.body, { rules })).violations).toEqual([]);
   });
 });

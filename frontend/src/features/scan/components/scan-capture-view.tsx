@@ -4,14 +4,15 @@ import { Camera, Clock, Info, ImagePlus, LoaderCircle, X } from "lucide-react";
 import Link from "next/link";
 import { useId, useRef, type RefObject } from "react";
 import { ROUTES } from "@/shared/config";
-import { SCAN_CAPTURE, TOMBOL, jadwalTargetScan } from "@/shared/copy";
+import { SCAN_CAPTURE, SCAN_REQUEST, TOMBOL, jadwalTargetScan } from "@/shared/copy";
 import { Button, IconLink, Notice, cx } from "@/shared/ui";
 import type { usePhotoCapture } from "../hooks/use-photo-capture";
 import type { ScanTarget } from "../lib/scan-target";
 
-export function ScanCaptureView({ capture, target, headingRef, enabled = true }: {
+export function ScanCaptureView({ capture, target, headingRef, enabled = true, onUsePhoto, notice }: {
   capture: ReturnType<typeof usePhotoCapture>; target: Exclude<ScanTarget, { mode: "invalid" }>;
   headingRef: RefObject<HTMLHeadingElement | null>; enabled?: boolean;
+  onUsePhoto?: () => void; notice?: string;
 }) {
   const camera = useRef<HTMLInputElement>(null);
   const upload = useRef<HTMLInputElement>(null);
@@ -28,6 +29,7 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true }:
       <h1 ref={headingRef} tabIndex={-1} className="flex-1 text-center text-section outline-none">{TOMBOL.scanObat}</h1>
       <span aria-hidden="true" className="size-touch" />
     </header>
+    {notice ? <Notice tone="plain" role="status">{notice}</Notice> : null}
     <div className={cx("flex items-start gap-2 rounded-note px-3 py-2 text-body", photo ? "bg-brand-soft text-brand-ink" : "bg-on-action/15")}>
       {target.mode === "selected" ? <Clock aria-hidden="true" className="mt-0.5 size-6 shrink-0" /> : <Info aria-hidden="true" className="mt-0.5 size-6 shrink-0" />}
       <p>{target.mode === "selected" ? <>{SCAN_CAPTURE.selectedMode}<br />{jadwalTargetScan(target.date, target.time)}</> : SCAN_CAPTURE.genericMode}</p>
@@ -51,7 +53,8 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true }:
     {error ? <Notice tone="danger" role="alert">{errorText}</Notice> : null}
     <input ref={camera} type="file" accept="image/*" capture="environment" hidden disabled={!enabled || processing} aria-label={SCAN_CAPTURE.camera} onChange={(event) => select(event.currentTarget)} />
     <input ref={upload} type="file" accept="image/*" hidden disabled={!enabled || processing} aria-label={SCAN_CAPTURE.upload} onChange={(event) => select(event.currentTarget)} />
-    {photo ? <Button size="lg" variant="brand" icon={<Camera />} onClick={() => { capture.clear(); camera.current?.click(); }}>{SCAN_CAPTURE.retake}</Button>
+    {photo && onUsePhoto ? <Button size="lg" variant="brand" disabled={!enabled || processing} onClick={onUsePhoto}>{SCAN_REQUEST.usePhoto}</Button> : null}
+    {photo ? <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<Camera />} onClick={() => { capture.clear(); camera.current?.click(); }}>{SCAN_CAPTURE.retake}</Button>
       : <div className="flex flex-col items-center gap-2"><button type="button" aria-label={SCAN_CAPTURE.camera} aria-describedby={instructionId} disabled={!enabled || processing}
         onClick={() => camera.current?.click()} className="flex size-22 items-center justify-center rounded-pill border-4 border-on-action disabled:opacity-50">
         <span aria-hidden="true" className="size-17 rounded-pill bg-on-action" />
