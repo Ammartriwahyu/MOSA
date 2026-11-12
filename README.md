@@ -82,11 +82,21 @@ Galat jaringan/timeout/AI/kuota/respons tidak sah memakai kalimat baku #12; sesi
 
 ### Hasil scan
 
-Delapan hasil terstruktur kini tampil memakai kalimat baku: tidak terbaca, belum terdaftar, kekuatan tidak terbaca/berbeda, sudah tercatat, bisa dikonfirmasi, tunggu dulu dan hanya informasi. Nama tebakan AI untuk obat belum terdaftar tidak ditampilkan; Tambah Obat membuka formulir kosong. Kekuatan berbeda membandingkan seluruh kandidat terdaftar tanpa memilihkan salah satunya. Bila beberapa slot obat yang sama terbuka, pengguna memilih satu tanggal/jam; tidak ada pilihan otomatis dan pemilihan itu belum mencatat dosis. Konfirmasi minum beserta kedaluwarsa token tetap tahap berikutnya (row 39).
+Delapan hasil terstruktur kini tampil memakai kalimat baku: tidak terbaca, belum terdaftar, kekuatan tidak terbaca/berbeda, sudah tercatat, bisa dikonfirmasi, tunggu dulu dan hanya informasi. Nama tebakan AI untuk obat belum terdaftar tidak ditampilkan; Tambah Obat membuka formulir kosong. Kekuatan berbeda membandingkan seluruh kandidat terdaftar tanpa memilihkan salah satunya. Bila beberapa slot obat yang sama terbuka, pengguna memilih satu tanggal/jam; tidak ada pilihan otomatis dan pemilihan itu belum mencatat dosis.
 
 Informasi obat memakai komponen yang sama dengan Detail Obat: identitas/sumber, jadwal berikutnya dari server, penjelasan yang sudah diperiksa, informasi asli dan catatan. Snapshot scan tidak membawa seluruh jam minum atau metode/jam konfirmasi lama, sehingga UI tidak menebak data tersebut maupun tanda ✓/✓✓. Semua tanggal slot ditampilkan secara eksplisit. Tautan Lihat Informasi Obat membuka bagian lokal dan dapat kembali ke hasil tanpa kehilangan pilihan slot. Foto ulang membuang hasil dan kembali ke capture. Pembacaan suara menyusul P12.
 
 Pesan #6 memakai jam dari `nextDose`; jika server mengirim `null`, varian DRAFT menyebut identitas dan obat jatuh tempo tanpa mengarang jam. Untuk beberapa slot obat lain, nama dalam pesan #6 disebut sekali per identitas obat, sedangkan tanggal/jam setiap slot tetap terlihat. UI tidak menghitung ulang jendela dosis atau mengubah hitungan. Tes komponen delapan hasil dan axe serta browser 360/390/430 px menggunakan data fiktif; nama panjang tanpa spasi juga diperiksa. Tidak ada pratinjau atau data tiruan pada jalur produksi.
+
+### Konfirmasi setelah scan
+
+Pada scan pertama yang cocok, Pilihan Tampilan tampil di alur yang sama dan disimpan melalui PATCH; hasil/token tetap di memori selama memilih, tanpa navigasi yang menghilangkannya. Form pilihan dipakai ulang dari layar preferensi. Respons harus mengembalikan pilihan yang sama agar dianggap tersimpan; tidak ada antrean offline atau retry otomatis. Pembacaan suara menyusul P12.
+
+Lanjut: Catat Minum Obat membuka dialog dengan kalimat baku #5, identitas obat dan tanggal/jam slot. GET jadwal terbaru memeriksa status, nama, kekuatan, jumlah dan aturan pakai sebelum konfirmasi diaktifkan. Sudah saya minum mengirim `{mode:'verified', scanToken}` ke slot yang dipilih; token tidak masuk URL, query/mutation cache, penyimpanan browser atau log. Klik ganda dicegah; penutupan dialog dinonaktifkan selama POST. Nanti dulu, Esc dan Tutup sebelum POST membuang hasil lalu kembali ke jadwal tanpa pencatatan; konfirmasi kemudian memerlukan scan baru.
+
+Expiry klien mengikuti selisih `expiresAt` dan `serverTime` serta waktu monoton sejak hasil diterima, termasuk saat memilih output. Pemeriksaan saat fokus kembali dan sebelum POST membatasi penggunaan hasil lama; backend tetap menjadi penentu token dan jendela dosis. GET pemeriksaan maupun POST memiliki deadline 25 detik; pembatalan/unmount mengabaikan respons terlambat. Token ditolak meminta scan ulang; jadwal berubah, konflik 409, serta hasil jaringan/timeout yang belum pasti tidak mengklaim sukses atau mengulang bukti yang sama.
+
+Hanya receipt sah dengan slot, identitas, tanggal/jam dan level `scan_terverifikasi` yang sama menampilkan ✓✓. GET lama dibatalkan dan query jadwal diinvalidasi; hitungan tetap berasal dari server. Receipt tetap terlihat bila pembaruan jadwal lambat/gagal. Uji browser mengirim JPEG sintetis melalui HTTP ke Hono/use case/HMAC nyata dengan Auth/AI/penyimpanan fiktif: Nanti dulu 0 POST/0 catatan, sukses 1 POST/1 catatan dan progres 1 dari 2, token yang kedaluwarsa di server ditolak tanpa catatan. Ini belum memverifikasi Supabase/Gemini/HP nyata; seluruh pratinjau sementara telah dibersihkan.
 
 ## Variabel lingkungan
 
