@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowLeft, Camera, Check, Clock, Package, Plus, SearchX, TriangleAlert, X, type LucideIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, Check, Clock, Package, Plus, SearchX, TriangleAlert, X, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { LabelSourceChip } from "@/features/medicines";
 import { ROUTES } from "@/shared/config";
-import { OBAT, SCAN_CAPTURE, SCAN_OUTCOME, SCAN_REQUEST, formatKekuatan, jadwalTargetScan } from "@/shared/copy";
+import { OBAT, SCAN_CAPTURE, SCAN_CONFIRM, SCAN_OUTCOME, SCAN_REQUEST, formatKekuatan, jadwalTargetScan } from "@/shared/copy";
+import type { ScanSlot } from "../hooks/use-scan-confirmation";
 import { Button, Card, ChoiceCards, IconLink, Notice, cx } from "@/shared/ui";
 import { scanOutcomeMessages } from "../lib/scan-outcome-message";
 import type { ScanResponse } from "../schemas/scan-response";
@@ -27,8 +28,10 @@ const TONE = {
   success: "border-success-border bg-success-soft text-success",
 };
 
-/** Hasil scan dan pemilihan slot tidak mencatat minum. POST konfirmasi dipasang row39. */
-export function ScanOutcomeView({ result, onAgain }: { result: ScanResponse; onAgain: () => void }) {
+/** Hasil scan dan pemilihan slot tidak mencatat minum. Lanjut membuka dialog terpisah. */
+export function ScanOutcomeView({ result, onAgain, onContinue, confirmationDisabled = false }: {
+  result: ScanResponse; onAgain: () => void; onContinue?: (slot: ScanSlot, button: HTMLButtonElement) => void; confirmationDisabled?: boolean;
+}) {
   const [infoOpen, setInfoOpen] = useState(false);
   const [chosenSlot, setChosenSlot] = useState<string | null>(null);
   const title = useRef<HTMLHeadingElement>(null);
@@ -78,6 +81,8 @@ export function ScanOutcomeView({ result, onAgain }: { result: ScanResponse; onA
       </Card> : null}
     </>}
     {result.outcome === "bisa_konfirmasi" ? <Notice tone="plain">{SCAN_OUTCOME.noNewDose}</Notice> : null}
+    {result.outcome === "bisa_konfirmasi" && onContinue ? <Button size="lg" variant="brand" icon={<ArrowRight />} disabled={!selected || confirmationDisabled}
+      onClick={(event) => { const slot = result.slots.find((row) => row.slotId === selected); if (slot) onContinue(slot, event.currentTarget); }}>{SCAN_CONFIRM.continue}</Button> : null}
     {"medicine" in result && result.outcome !== "hanya_info" ? <Button size="lg" variant="secondary" onClick={() => setInfoOpen(!infoOpen)}>{infoOpen ? SCAN_OUTCOME.backToResult : SCAN_OUTCOME.viewInfo}</Button> : null}
     {result.outcome === "tidak_terdaftar" ? <Button asChild size="lg" variant="brand"><Link href={ROUTES.newMedicine}><Plus aria-hidden="true" className="size-6 shrink-0" />{OBAT.tambahObat}</Link></Button> : null}
     <Button size="lg" icon={<Camera className="size-6" />} onClick={onAgain}>{result.outcome === "kekuatan_beda" || result.outcome === "tunggu_dulu" ? SCAN_OUTCOME.correctPhoto : result.outcome === "tidak_terbaca" || result.outcome === "kekuatan_tidak_terbaca" ? SCAN_OUTCOME.retryPhoto : SCAN_REQUEST.again}</Button>

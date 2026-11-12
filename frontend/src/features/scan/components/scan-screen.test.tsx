@@ -24,7 +24,7 @@ const GET = vi.mocked(fetchHousehold); const POST = vi.mocked(recordScanConsent)
 const scanPost = vi.mocked(scanPackage);
 const NativeURL = URL; const revoke = vi.fn(); let nextUrl = 0;
 const clients: QueryClient[] = [];
-const household: Household = { dataConsentAt: "2026-11-12T00:00:00Z", scanConsentAt: "2026-11-12T00:01:00Z", outputMode: null, isDemo: false };
+const household: Household = { dataConsentAt: "2026-11-12T00:00:00Z", scanConsentAt: "2026-11-12T00:01:00Z", outputMode: "teks", isDemo: false };
 const prepared = () => ({ blob: new Blob(["jpeg-uji"], { type: "image/jpeg" }), width: 1000, height: 600 });
 function setup(doseTarget?: string | string[]) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } }); clients.push(client);
