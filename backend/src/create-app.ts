@@ -18,7 +18,15 @@ import { requireDataConsent } from "./shared/interface/require-data-consent.midd
 export function createApp(container: Container): Hono {
   const app = new Hono();
 
-  app.use("*", requestId());
+  // ID selalu dibuat server: header klien bisa berisi identitas/data obat.
+  app.use("*", requestId({ headerName: "" }));
+  app.use("*", async (c, next) => {
+    await next();
+    c.header("X-Request-Id", c.get("requestId"));
+    c.header("Cache-Control", "no-store");
+    c.header("X-Content-Type-Options", "nosniff");
+    c.header("Referrer-Policy", "no-referrer");
+  });
   app.use("*", requestLogger(container.logger));
   // CORS sebelum autentikasi: preflight OPTIONS dijawab tanpa token.
   app.use(

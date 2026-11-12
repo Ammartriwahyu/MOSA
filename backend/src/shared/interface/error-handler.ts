@@ -4,6 +4,7 @@ import { routePath } from "hono/route";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
 import type { Logger } from "../application/logger";
 import type { DomainError, DomainErrorCode, DomainErrorDetails } from "../domain/domain-error";
+import { requestMethod } from "./request-method";
 
 // Format galat seragam (docs/03 §9).
 export type ErrorBody = {
@@ -66,7 +67,7 @@ export function createErrorHandler(logger: Logger): ErrorHandler {
       event: "unexpected_error",
       code: "INTERNAL_ERROR",
       requestId: c.get("requestId"),
-      method: c.req.method,
+      method: requestMethod(c.req.method),
       route: routePath(c, -1),
     });
     return c.json(errorBody("INTERNAL_ERROR", "Terjadi kesalahan di server."), 500);
