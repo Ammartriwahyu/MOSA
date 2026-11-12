@@ -2,6 +2,13 @@ import type { Container } from "../../src/composition-root";
 import { ConfirmDose } from "../../src/modules/dosing/application/confirm-dose.use-case";
 import { GetNextDose } from "../../src/modules/dosing/application/get-next-dose.use-case";
 import { ListTodaysDoses } from "../../src/modules/dosing/application/list-todays-doses.use-case";
+import { GetScanContext } from "../../src/modules/dosing/application/get-scan-context.use-case";
+import { VerifyPackage } from "../../src/modules/verification/application/verify-package.use-case";
+import { DosingScanContextReader, HouseholdScanConsentReader } from "../../src/modules/verification/infrastructure/scan-context-adapters";
+import { HmacScanTokens } from "../../src/modules/verification/infrastructure/hmac-scan-tokens";
+import type { PackageReader } from "../../src/modules/verification/application/ports/package-reader";
+import type { AiUsageLimiter } from "../../src/shared/application/ai-usage-limiter";
+import type { ScanTokenSigner } from "../../src/modules/verification/application/ports/scan-token-signer";
 import type { ScanTokenVerifier } from "../../src/modules/dosing/application/ports/scan-token-verifier";
 import { UnavailableScanTokenVerifier } from "../../src/modules/dosing/infrastructure/unavailable-scan-token-verifier";
 import type { Clock } from "../../src/shared/domain/clock";
@@ -75,6 +82,9 @@ export function testContainer(
     clock?: Clock;
     confirmations?: InMemoryDoseConfirmationRepository;
     scanTokens?: ScanTokenVerifier;
+    packageReader?: PackageReader;
+    aiUsage?: AiUsageLimiter;
+    scanSigner?: ScanTokenSigner;
   } = {},
 ): Container & { logger: MemoryLogger } {
   const households = options.households ?? new InMemoryHouseholdRepository();
@@ -90,6 +100,11 @@ export function testContainer(
     tokenVerifier: fakeTokenVerifier(options.tokens ?? {}),
     ensureHousehold: new EnsureHousehold(households),
     getNextDose: new GetNextDose(dosingMedicines, confirmations, clock),
+    scan: { verifyPackage: new VerifyPackage(new HouseholdScanConsentReader(new GetHousehold(households)),
+      options.aiUsage ?? { consume: async () => ok(undefined) },
+      options.packageReader ?? { read: async () => err(domainError("AI_UNAVAILABLE", "Pembaca uji belum dipasang.")) },
+      new DosingScanContextReader(new GetScanContext(dosingMedicines, confirmations)),
+      options.scanSigner ?? new HmacScanTokens("secret-only-for-tests-not-production", clock), clock) },
     dosing: {
       listTodaysDoses: new ListTodaysDoses(dosingMedicines, confirmations, clock),
       confirmDose: new ConfirmDose(dosingMedicines, confirmations, options.scanTokens ?? new UnavailableScanTokenVerifier(), clock),

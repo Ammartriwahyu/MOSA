@@ -2,9 +2,9 @@ import type { Env } from "./config/env";
 import { ConfirmDose } from "./modules/dosing/application/confirm-dose.use-case";
 import { GetNextDose } from "./modules/dosing/application/get-next-dose.use-case";
 import { ListTodaysDoses } from "./modules/dosing/application/list-todays-doses.use-case";
+import { GetScanContext } from "./modules/dosing/application/get-scan-context.use-case";
 import { SupabaseDoseConfirmationRepository } from "./modules/dosing/infrastructure/supabase-dose-confirmation.repository";
 import { SupabaseDosingMedicineReader } from "./modules/dosing/infrastructure/supabase-dosing-medicine-reader";
-import { UnavailableScanTokenVerifier } from "./modules/dosing/infrastructure/unavailable-scan-token-verifier";
 import type { DosingUseCases } from "./modules/dosing/interface/dosing.routes";
 import { DeleteHouseholdData } from "./modules/household/application/delete-household-data.use-case";
 import { EnsureHousehold } from "./modules/household/application/ensure-household.use-case";
@@ -26,6 +26,11 @@ import { RateLimitedExplainer } from "./modules/medication/application/rate-limi
 import { GeminiPlainLanguageExplainer } from "./modules/medication/infrastructure/gemini-plain-language-explainer";
 import { SupabaseMedicineRepository } from "./modules/medication/infrastructure/supabase-medicine.repository";
 import type { MedicationUseCases } from "./modules/medication/interface/medication.routes";
+import { VerifyPackage } from "./modules/verification/application/verify-package.use-case";
+import { GeminiPackageReader } from "./modules/verification/infrastructure/gemini-package-reader";
+import { HmacScanTokens, CurrentMedicineScanTokenVerifier } from "./modules/verification/infrastructure/hmac-scan-tokens";
+import { DosingScanContextReader, HouseholdScanConsentReader } from "./modules/verification/infrastructure/scan-context-adapters";
+import type { ScanUseCases } from "./modules/verification/interface/scan.routes";
 import type { AccessTokenVerifier } from "./shared/application/access-token-verifier";
 import { CheckHealth } from "./shared/application/check-health.use-case";
 import type { Logger } from "./shared/application/logger";
@@ -49,6 +54,7 @@ export type Container = {
   medication: MedicationUseCases;
   dosing: DosingUseCases;
   getNextDose: GetNextDose;
+  scan: ScanUseCases;
 };
 
 export function buildContainer(env: Env): Container {
@@ -58,12 +64,13 @@ export function buildContainer(env: Env): Container {
   const medicines = new SupabaseMedicineRepository(supabase);
   const dosingMedicines = new SupabaseDosingMedicineReader(supabase);
   const confirmations = new SupabaseDoseConfirmationRepository(supabase);
-  // Satu klien Gemini per proses, dipakai bersama penjelasan obat dan (nanti) baca kemasan.
+  // Satu klien Gemini per proses, dipakai bersama penjelasan obat dan baca kemasan.
   const gemini = new GeminiJsonGenerator(createGeminiGenerateContent(env.GEMINI_API_KEY), {
     model: env.GEMINI_MODEL,
   });
   const aiUsage = new SupabaseAiUsageLimiter(supabase, systemClock, env.AI_DAILY_LIMIT);
   const explainer = new RateLimitedExplainer(new GeminiPlainLanguageExplainer(gemini), aiUsage);
+  const scanTokens = new HmacScanTokens(env.SCAN_TOKEN_SECRET, systemClock);
 
   return {
     frontendOrigin: env.FRONTEND_ORIGIN,
@@ -72,9 +79,11 @@ export function buildContainer(env: Env): Container {
     tokenVerifier: new SupabaseAccessTokenVerifier(supabase),
     ensureHousehold: new EnsureHousehold(households),
     getNextDose: new GetNextDose(dosingMedicines, confirmations, systemClock),
+    scan: { verifyPackage: new VerifyPackage(new HouseholdScanConsentReader(new GetHousehold(households)), aiUsage,
+      new GeminiPackageReader(gemini), new DosingScanContextReader(new GetScanContext(dosingMedicines, confirmations)), scanTokens, systemClock) },
     dosing: {
       listTodaysDoses: new ListTodaysDoses(dosingMedicines, confirmations, systemClock),
-      confirmDose: new ConfirmDose(dosingMedicines, confirmations, new UnavailableScanTokenVerifier(), systemClock),
+      confirmDose: new ConfirmDose(dosingMedicines, confirmations, new CurrentMedicineScanTokenVerifier(scanTokens, dosingMedicines), systemClock),
     },
     household: {
       getHousehold: new GetHousehold(households),
