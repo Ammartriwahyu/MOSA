@@ -32,7 +32,7 @@ const INPUT: MedicineInput = {
   intakeTimes: ["07:00", "19:00"],
   labelSource: "apoteker",
   explanationOrigin: "ai_dikonfirmasi",
-  explanation: "Minum obat ini sesudah makan.",
+  explanation: "Minum obat ini sesudah makan. Jangan dihentikan mendadak.",
 };
 
 function setup() {
@@ -160,9 +160,9 @@ describe("kepemilikan, ubah, hapus lunak", () => {
     const result = await update.execute({
       householdId: "rumah-1",
       medicineId: mine.id,
-      medicine: { ...INPUT, intakeTimes: ["08:00"], labelSource: "keluarga", explanation: "Penjelasan baru yang dikonfirmasi." },
+      medicine: { ...INPUT, intakeTimes: ["08:00"], labelSource: "keluarga", explanation: "Penjelasan baru yang dikonfirmasi. Jangan dihentikan mendadak." },
     });
-    expect(result.ok && result.value).toMatchObject({ id: mine.id, createdAt: NOW, intakeTimes: ["08:00"], labelSource: "keluarga", explanation: "Penjelasan baru yang dikonfirmasi." });
+    expect(result.ok && result.value).toMatchObject({ id: mine.id, createdAt: NOW, intakeTimes: ["08:00"], labelSource: "keluarga", explanation: "Penjelasan baru yang dikonfirmasi. Jangan dihentikan mendadak." });
   });
 
   test("hapus lunak: obat tidak lagi bisa dibuka, baris tetap ada (riwayat aman)", async () => {

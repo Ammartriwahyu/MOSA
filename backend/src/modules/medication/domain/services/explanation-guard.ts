@@ -32,6 +32,11 @@ const NEW_ADVICE_TERMS = [
   "nyembuh", // "menyembuhkan": awalan meN- meluluhkan huruf s
   "gejala",
   "dosis",
+  "takaran",
+  "gandakan",
+  "tingkatkan",
+  "kurangi",
+  "hentikan",
   "dokter",
   "apoteker",
   "konsultasi",
@@ -52,6 +57,30 @@ const NEW_ADVICE_TERMS = [
 // Tautan atau markup tidak pernah dibutuhkan dalam penjelasan untuk lansia.
 const LINK_OR_MARKUP = /https?:|www\.|[<>]/i;
 
+// Instruksi pengambilalihan bukan sumber untuk menyusun panduan minum. Teks
+// asli tetap dapat disimpan lewat fallback, tanpa mengubah input pengisi.
+const CONTROL_INSTRUCTION = /(?:^|[.!?\n])\s*(?:abaikan|lupakan|ignore)\b[^.!?\n]{0,100}\b(?:instruksi|aturan|perintah|previous|system|semua)\b|(?:^|\n)\s*(?:system|assistant|developer)\s*:|<\/(?:data|catatan|aturan_pakai|larangan)>/i;
+
+function normalizedNumbers(text: string): string {
+  return text.replace(/\p{L}+/gu, (word) => NUMBER_WORDS[word] ?? word);
+}
+
+function quantities(text: string): Set<string> {
+  const compact = normalizedNumbers(text).replace(/(\d)\s*\/\s*(\d)/g, "$1/$2");
+  const pairs = compact.matchAll(/(?<![\d.,/])(\d+(?:[.,]\d+|\/\d+)?)\s*(tablet|kaplet|kapsul|butir|tetes|sendok|puff|semprot|miligram|mikrogram|mililiter|gram|mcg|mg|ml|g)\b/g);
+  const units: Readonly<Record<string, string>> = { miligram: "mg", mikrogram: "mcg", mililiter: "ml", gram: "g" };
+  return new Set([...pairs].map(([, amount = "", unit = ""]) => `${amount.includes("/") ? amount : String(Number(amount.replace(",", ".")))}:${units[unit] ?? unit}`));
+}
+
+function prohibitions(text: string): string[][] {
+  return text.split(/(?<!\d)\.|\.(?!\d)|[!?;\n]+/).flatMap((clause) => {
+    const match = /\b(?:jangan|tidak\s+boleh|tidak(?!\s+ada\s+larangan\b)|dilarang|hindari)\b/.exec(clause);
+    if (!match) return [];
+    const words = clause.slice(match.index + match[0].length).match(/[\p{L}\d]+/gu) ?? [];
+    return [words.map((word) => /^(?:diminum|meminum|minumlah)$/.test(word) ? "minum" : word)];
+  });
+}
+
 function numbersIn(text: string): Set<string> {
   // "07.00" menjadi "7" dan "0": jam yang ditulis ulang "7" tetap cocok.
   return new Set([...text.matchAll(/\d+/g)].map((m) => String(Number(m[0]))));
@@ -66,12 +95,22 @@ function allowedNumbers(source: string): Set<string> {
   return allowed;
 }
 
-/** true bila penjelasan tidak menambah angka, istilah medis, atau tautan yang tidak ada di sumber. */
+/** Pagar konservatif untuk angka, pasangan takaran, topik larangan dan kontrol prompt.
+ * Bukan pembuktian kesetiaan semantik; pemeriksaan manusia tetap wajib.
+ */
 export function isFaithfulExplanation(source: string, explanation: string): boolean {
   const from = source.toLowerCase();
   const out = explanation.toLowerCase();
 
-  if (LINK_OR_MARKUP.test(out)) return false;
+  if (CONTROL_INSTRUCTION.test(from) || LINK_OR_MARKUP.test(out)) return false;
+
+  // Angka yang sah sebagai frekuensi/jam tidak otomatis sah sebagai takaran.
+  const sourceQuantities = quantities(from);
+  for (const quantity of quantities(out)) if (!sourceQuantities.has(quantity)) return false;
+  const originals = prohibitions(from); const warnings = prohibitions(out);
+  const sameTopics = (a: string[], b: string[]) => a.every((word) => b.includes(word)) && b.every((word) => a.includes(word));
+  if (originals.some((original) => !warnings.some((warning) => sameTopics(original, warning)))
+    || warnings.some((warning) => !originals.some((original) => sameTopics(original, warning)))) return false;
 
   const allowed = allowedNumbers(from);
   for (const n of numbersIn(out)) {
