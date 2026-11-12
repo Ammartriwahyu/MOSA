@@ -68,6 +68,22 @@ PGlite menjalankan satu koneksi. Permintaan Promise.all menguji antrean/replay d
 
 `pnpm test` tetap menjalankan paket backend/frontend bersamaan. [maxWorkers Vitest](https://main.vitest.dev/config/maxworkers) membatasi backend satu pekerja agar inisialisasi beberapa PostgreSQL WASM tidak berebut sumber daya dengan impor entri aplikasi; frontend memakai 25% kapasitas pekerja. Isolasi antarberkas tetap aktif, timeout tes tetap 5 detik, tanpa retry atau skip. Batas ini juga berlaku saat tes dijalankan per paket.
 
+### Menguji alur lengkap lewat HTTP
+
+Jalankan `pnpm --filter backend test:e2e --reporter=dot`. Kedua berkas pada `backend/tests/e2e/` juga otomatis dijalankan oleh `pnpm test`. HTTP dipilih agar alur dapat diulang di CI tanpa browser, kredensial, atau layanan eksternal. Tidak ada dependensi baru atau flag tiruan pada aplikasi produksi.
+
+Suite menyalakan backend Hono pada port localhost sementara. Pendaftaran memakai SDK Supabase; transport Auth/PostgREST diganti khusus tes. Use case, SDK, repository/adaptor Supabase aplikasi, pembatas jatah SQL, HMAC scan, serta migrasi/trigger/RPC PostgreSQL PGlite tetap asli. Foto berupa header biner sintetis di memori dan kedua port AI memakai stub. Query atau filter di luar subset transport uji ditolak; hasil database tidak ditentukan dari fixture respons sukses. PGlite mempunyai satu koneksi dan transaksi transport diantrekan.
+
+`http-golden-flow.test.ts` membuktikan pendaftaran/persetujuan → pratinjau AI belum menyimpan → POST obat diperiksa → dasbor → persetujuan scan → kemasan cocok → POST verified menghasilkan ✓✓/1 dari 2 → malam basic menghasilkan ✓/2 dari 2. Scan tanpa POST tidak menulis dosis. Tes lain menghapus akun melalui adaptor Auth dan membuktikan keenam tabel kosong untuk akun itu, sesi tiruan lama ditolak, serta keluarga lain tetap tersedia.
+
+`http-safety-flows.test.ts` mencakup AI gagal/fallback asli, kedaluwarsa token, dua obat berjam sama, dua POST HTTP bersamaan/replay, kekuatan berbeda, hanya-info, akses lintas keluarga, edit/hapus lunak yang mempertahankan riwayat, dan perlindungan akun demo. Data awal push/pengingat pada tes penghapusan disiapkan lewat SQL karena API tahap P14 belum ada.
+
+Batas bukti: GoTrue, tanda tangan JWT Auth, PostgREST server, konfirmasi email/sesi browser, interaksi UI/kamera/suara, akurasi Gemini, Supabase deployment, dan race dua koneksi PostgreSQL belum diuji oleh suite ini. Pencabutan sesi berasal dari Auth tiruan. Pemeriksaan perangkat tercantum pada [checklist manual](docs/manual-test-checklist.md), seluruhnya masih berstatus belum diuji pada perangkat nyata. Uji asap Gemini nyata yang sudah ada tersedia sebagai langkah opsional di checklist.
+
+Audit salinan UI row43 memakai pencarian literal dan pemeriksaan JSX/atribut teks pada 73 berkas produk TSX di features, shared/ui dan app (tes/katalog dev dikecualikan). Tidak ditemukan teks JSX atau atribut teks literal yang mengandung huruf pada area tersebut; hasil pencarian awal berupa komentar/tipe/ekspresi, bukan kalimat baru. Audit ini tidak menggantikan pemeriksaan keterbacaan perangkat, kecocokan pesan pada setiap skenario, atau pemetaan AC row44.
+
+Verifikasi row43: `pnpm --filter backend test:e2e --reporter=dot` lulus 11 tes. `pnpm typecheck`, `pnpm lint`, dan `pnpm test` dari akar lulus seluruhnya (649 backend + 534 frontend). Pengaturan pekerja row42 tetap, tanpa retry, skip, perubahan timeout, atau dependensi baru.
+
 ### Memeriksa logika scan
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
