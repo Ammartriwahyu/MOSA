@@ -2,12 +2,13 @@
 
 import { Pencil, Pill } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { medicineDetail, medicineEdit, outputPreferenceThen, ROUTES } from "@/shared/config";
 import { AUTH, OBAT, UBAH_OBAT } from "@/shared/copy";
 import { isApiError } from "@/shared/lib";
-import { Button, EmptyState, ErrorState, Notice, PageHeader, Skeleton, Spinner } from "@/shared/ui";
+import { Bacakan, Button, EmptyState, ErrorState, Notice, PageHeader, Skeleton, Spinner } from "@/shared/ui";
 import { useMedicine } from "../hooks/use-medicines";
-import { MedicineIdentity, MedicineExplanation, MedicineOriginalInfo } from "./medicine-information";
+import { MedicineIdentity, MedicineExplanation, MedicineOriginalInfo, medicineInformationText } from "./medicine-information";
 import { DeleteMedicineAction } from "./delete-medicine-action";
 
 function LoadingDetail() {
@@ -31,10 +32,11 @@ function BackToList() {
 
 /**
  * Detail Obat (Figma MOSA DRAFT 21 · 135:4576). Bagian Figma yang menyusul:
- * "Jadwal berikutnya" (data dosis, P05/P10) dan Bacakan (P12).
+ * "Jadwal berikutnya" masih menggunakan sumber data dosis terpisah (P05/P10).
  */
 export function MedicineDetailScreen({ id, updated = false }: { id: string; updated?: boolean }) {
   const medicine = useMedicine(id);
+  const [deleting, setDeleting] = useState(false);
 
   let body;
   if (medicine.isPending) {
@@ -66,11 +68,12 @@ export function MedicineDetailScreen({ id, updated = false }: { id: string; upda
         <h2 className="text-card-title">{OBAT.informasiAsli}</h2>
         <MedicineOriginalInfo medicine={medicine.data} />
         <Notice tone="plain">{OBAT.bukanSaranMedis}</Notice>
+        <Bacakan text={medicineInformationText(medicine.data)} active={!deleting} contextKey={id} />
         <Button asChild variant="secondary" size="lg">
           <Link href={medicineEdit(id)}><Pencil aria-hidden="true" className="size-6" />{UBAH_OBAT.tombol}</Link>
         </Button>
         <p className="text-body text-ink-secondary">{UBAH_OBAT.petunjuk}</p>
-        <DeleteMedicineAction medicine={medicine.data} />
+        <DeleteMedicineAction medicine={medicine.data} onDialogChange={setDeleting} />
       </>
     );
   }

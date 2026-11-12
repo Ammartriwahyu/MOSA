@@ -14,7 +14,7 @@ import { MedicineDetailScreen } from "./medicine-detail-screen";
 type Request = { method: string; body?: unknown };
 const backend = vi.hoisted(() => ({ call: vi.fn<(path: string, request: Request) => Promise<unknown>>() }));
 const router = vi.hoisted(() => ({ replace: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => router }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => router }));
 vi.mock("@/shared/lib", async (importOriginal) => ({
   ...await importOriginal<typeof import("@/shared/lib")>(),
   api: () => ({

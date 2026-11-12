@@ -11,7 +11,7 @@ import { AddMedicineScreen } from "./add-medicine-screen";
 
 const backend = vi.hoisted(() => ({ post: vi.fn<(path: string, body: unknown, signal?: AbortSignal) => Promise<unknown>>() }));
 const router = vi.hoisted(() => ({ replace: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => router }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => router }));
 vi.mock("@/shared/lib", async (importOriginal) => ({
   ...await importOriginal<typeof import("@/shared/lib")>(),
   api: () => ({

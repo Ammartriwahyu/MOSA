@@ -3,7 +3,7 @@
 import { Check, Pencil, Sparkles } from "lucide-react";
 import type { RefObject } from "react";
 import { AI_GAGAL, DRAFT, FORM_OBAT, KONFIRMASI_SIMPAN_OBAT, LABEL, OBAT, SIMPAN_OBAT, TOMBOL, formatJamMinum, formatKekuatan } from "@/shared/copy";
-import { Button, Dialog, Notice, Spinner } from "@/shared/ui";
+import { Bacakan, Button, Dialog, Notice, Spinner } from "@/shared/ui";
 import type { ReviewedExplanation } from "../api/medicines";
 import type { MedicineFormOutput } from "../schemas/medicine-form";
 
@@ -29,6 +29,12 @@ export function MedicineReviewDialog({ review, saving, error, onConfirm, onEdit,
     ...(input.notes ? [{ label: OBAT.catatanPribadi, value: input.notes }] : []),
     { label: SIMPAN_OBAT.sumber, value: input.labelSource === "apoteker" ? LABEL.diisiApoteker : LABEL.diisiKeluarga },
   ];
+  // Pratinjau ini masih harus diperiksa pengisi: jangan menambahkan label "telah diperiksa".
+  const reading = [title, KONFIRMASI_SIMPAN_OBAT, SIMPAN_OBAT.dataAsli,
+    ...rows.flatMap(({ label, value }) => [label, value]),
+    ...(reviewed.explanationOrigin === "ai_dikonfirmasi" ? [SIMPAN_OBAT.penjelasanAi, reviewed.explanation] : [AI_GAGAL, DRAFT.penjelasanBelumTersedia, SIMPAN_OBAT.tanpaAi]),
+    ...(error ? [error] : []),
+  ].join("\n");
 
   return (
     <Dialog
@@ -77,6 +83,7 @@ export function MedicineReviewDialog({ review, saving, error, onConfirm, onEdit,
           </Notice>
         </>
       )}
+      <Bacakan text={reading} active={!saving} contextKey="medicine-review" />
       {saving ? <Spinner label={SIMPAN_OBAT.menyimpan} visibleLabel /> : null}
       {error ? <Notice tone="danger" role="alert">{error}</Notice> : null}
     </Dialog>
