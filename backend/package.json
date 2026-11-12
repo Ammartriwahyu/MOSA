@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
+    "test:e2e": "vitest run tests/e2e",
     "dose:check-utc": "tsx scripts/check-dose-timezone.ts",
     "ai:try-explainer": "tsx --env-file-if-exists=.env scripts/try-explainer.ts",
     "db:check-rls": "tsx --env-file-if-exists=../frontend/.env.local scripts/check-rls.ts",
