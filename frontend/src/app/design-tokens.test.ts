@@ -28,7 +28,11 @@ function contrast(foreground: string, background: string): number {
   return ((light ?? 0) + 0.05) / ((dark ?? 0) + 0.05);
 }
 
-const px = (name: string) => Number.parseFloat(token(name));
+const px = (name: string, rootSize = 16) => {
+  const value = token(name);
+  if (!/^[\d.]+(?:px|rem)$/.test(value)) throw new Error(`satuan token --${name} tidak didukung`);
+  return Number.parseFloat(value) * (value.endsWith("rem") ? rootSize : 1);
+};
 
 // Pasangan teks/latar yang dipakai di layar Figma DRAFT.
 const TEXT_PAIRS: Array<[string, string]> = [
@@ -44,6 +48,8 @@ const TEXT_PAIRS: Array<[string, string]> = [
   ["color-success-border", "color-camera-surface"],
   ["color-on-brand", "color-brand-strong"],
   ["color-on-brand", "color-brand"],
+  ["color-on-brand", "color-brand-light"],
+  ["color-on-brand", "color-brand-glow"],
   ["color-brand", "color-surface"],
   ["color-brand-ink", "color-brand-soft"],
   ["color-success", "color-success-soft"],
@@ -70,6 +76,16 @@ describe("kontras teks ≥ 4,5:1 (docs/06)", () => {
 });
 
 describe("ukuran minimum (docs/06)", () => {
+  test("seluruh skala teks mengikuti preferensi ukuran akar 200%", () => {
+    const names = [...css.matchAll(/--(text-[\w-]+):\s*([\d.]+)(px|rem);/g)].map((match) => match[1]!);
+    expect(names).toContain("text-body");
+    for (const name of names) expect(px(name, 32)).toBe(px(name) * 2);
+  });
+
+  test("batas isian terlihat pada surface dan canvas dengan kontras ≥ 3:1", () => {
+    expect(contrast("color-field-border", "color-surface")).toBeGreaterThanOrEqual(3);
+    expect(contrast("color-field-border", "color-canvas")).toBeGreaterThanOrEqual(3);
+  });
   test("tombol utama ≥ 56 px dan target sentuh ≥ 48 px", () => {
     expect(px("spacing-action")).toBeGreaterThanOrEqual(56);
     expect(px("spacing-action-lg")).toBeGreaterThanOrEqual(56);

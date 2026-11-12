@@ -13,8 +13,8 @@ export type BannerProps = {
 
 /**
  * Banner pengingat dosis jatuh tempo (Figma 05: gradasi hijau). `aria-live`
- * agar pembaca layar mengumumkan perubahan (docs/06). Teks diletakkan di bagian
- * atas gradasi; ujung terang (#3d8466) hanya 4,48:1 untuk teks putih (screen-map S6).
+ * agar pembaca layar mengumumkan perubahan (docs/06). Kedua ujung gradasi
+ * memenuhi kontras teks putih; chip memakai latar pekat saat teks diperbesar.
  */
 export function Banner({ title, eyebrow, children, actions }: BannerProps) {
   return (
@@ -24,7 +24,7 @@ export function Banner({ title, eyebrow, children, actions }: BannerProps) {
       className="flex flex-col gap-2 rounded-card bg-linear-to-b from-brand-strong to-brand-light px-5 py-4 text-on-brand"
     >
       {eyebrow ? (
-        <span className="inline-flex w-fit items-center gap-1.5 rounded-pill bg-on-brand/20 px-3 py-1.5 text-body font-semibold">
+        <span className="inline-flex w-fit max-w-full items-center gap-1.5 rounded-pill bg-brand-strong px-3 py-1.5 text-body font-semibold [overflow-wrap:anywhere]">
           {eyebrow}
         </span>
       ) : null}

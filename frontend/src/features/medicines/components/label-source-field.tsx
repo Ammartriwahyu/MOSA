@@ -29,7 +29,7 @@ export function LabelSourceField({
   const errorId = `${id}-galat`;
   return (
     <fieldset
-      className="flex flex-col gap-2"
+      className="flex min-w-0 flex-col gap-2"
       // Penanda untuk fokus otomatis ke galat pertama (radio tidak mendukung aria-invalid).
       data-invalid={error ? true : undefined}
       aria-describedby={error ? `${hintId} ${errorId}` : hintId}
@@ -37,7 +37,7 @@ export function LabelSourceField({
       <legend className="pb-2 text-card-title">{FORM_OBAT.siapaMengisi}</legend>
       <div
         className={cx(
-          "flex gap-1.5 rounded-pill border-2 bg-surface p-1.5",
+          "flex flex-wrap gap-1.5 rounded-pill border-2 bg-surface p-1.5",
           error ? "border-danger" : "border-field-border",
         )}
       >
@@ -47,7 +47,7 @@ export function LabelSourceField({
             <label
               key={option.value}
               className={cx(
-                "flex h-13 flex-1 cursor-pointer items-center justify-center rounded-pill px-2 text-center text-body font-bold",
+                "flex min-h-13 min-w-0 flex-1 basis-32 cursor-pointer items-center justify-center rounded-pill px-2 py-2 text-center text-body font-bold",
                 "has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand",
                 checked ? "bg-action text-on-action" : "text-ink-secondary",
               )}

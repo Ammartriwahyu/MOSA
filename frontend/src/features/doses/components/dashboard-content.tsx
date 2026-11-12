@@ -11,14 +11,14 @@ import type { DoseActionProps } from "./dose-actions";
 function ScanButton({ due = [], onChooseScan, disabled = false }: { due?: readonly Dose[]; onChooseScan?: (trigger: HTMLButtonElement) => void; disabled?: boolean }) {
   const contents = <>
     <span aria-hidden="true" className="flex size-touch shrink-0 items-center justify-center rounded-field bg-surface text-action"><Camera className="size-6.5" /></span>
-    <span className="min-w-0 flex-1 text-left">{TOMBOL.scanObat}</span>
-    <span aria-hidden="true" className="flex shrink-0 -space-x-2.5"><ChevronRight className="size-5 opacity-40" /><ChevronRight className="size-5 opacity-70" /><ChevronRight className="size-5" /></span>
+    <span className="min-w-0 flex-1 text-left @max-[16em]:order-3 @max-[16em]:basis-full">{TOMBOL.scanObat}</span>
+    <span aria-hidden="true" className="ml-auto flex shrink-0 -space-x-2.5"><ChevronRight className="size-5 opacity-40" /><ChevronRight className="size-5 opacity-70" /><ChevronRight className="size-5" /></span>
   </>;
   if (disabled || (due.length > 1 && onChooseScan)) return (
-    <Button size="lg" className="justify-start gap-3.5 pl-2 pr-5.5" disabled={disabled} onClick={(event) => onChooseScan?.(event.currentTarget)}>{contents}</Button>
+    <Button size="lg" className="justify-start gap-3.5 pl-2 pr-5.5 @max-[16em]:flex-wrap" disabled={disabled} onClick={(event) => onChooseScan?.(event.currentTarget)}>{contents}</Button>
   );
   return (
-    <Button asChild size="lg" className="justify-start gap-3.5 pl-2 pr-5.5">
+    <Button asChild size="lg" className="justify-start gap-3.5 pl-2 pr-5.5 @max-[16em]:flex-wrap">
       <Link href={due.length === 1 ? scanForDose(due[0].slotId) : ROUTES.scan}>{contents}</Link>
     </Button>
   );

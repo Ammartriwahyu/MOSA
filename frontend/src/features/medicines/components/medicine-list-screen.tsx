@@ -22,15 +22,15 @@ function AddButton() {
 
 function MedicineItem({ medicine, saved }: { medicine: Medicine; saved: boolean }) {
   return (
-    <li>
+    <li className="@container">
       <Link
         href={medicineDetail(medicine.id)}
-        className={cx("flex items-center gap-3.5 rounded-card bg-surface p-4.5 shadow-card", saved && "ring-2 ring-success-border")}
+        className={cx("flex items-center gap-3.5 rounded-card bg-surface p-4.5 shadow-card @max-[16em]:flex-wrap", saved && "ring-2 ring-success-border")}
       >
         <span aria-hidden="true" className="flex size-13 shrink-0 items-center justify-center rounded-pill bg-brand-soft text-brand">
           <Pill className="size-6.5" />
         </span>
-        <span className="flex min-w-0 flex-1 flex-col items-start gap-1.5">
+        <span className="flex min-w-0 flex-1 flex-col items-start gap-1.5 @max-[16em]:order-3 @max-[16em]:basis-full">
           <span className="text-card-title break-words">
             {medicine.name} {formatKekuatan(medicine.strength)}
           </span>
@@ -40,7 +40,7 @@ function MedicineItem({ medicine, saved }: { medicine: Medicine; saved: boolean 
           <LabelSourceChip source={medicine.labelSource} />
           {saved ? <Badge tone="success" icon={<Check />}>{SIMPAN_OBAT.baru}</Badge> : null}
         </span>
-        <ChevronRight aria-hidden="true" className="size-6.5 shrink-0 text-ink" />
+        <ChevronRight aria-hidden="true" className="ml-auto size-6.5 shrink-0 text-ink" />
       </Link>
     </li>
   );

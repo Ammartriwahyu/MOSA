@@ -98,6 +98,12 @@ Verifikasi row44: `pnpm typecheck`, `pnpm lint`, dan `pnpm test` lulus (649 back
 
 Proses hapus akun juga dibatalkan ketika layar dilepas agar kelanjutan lama tidak mengirim DELETE atau logout pada sesi baru. Verifikasi row47: `pnpm typecheck`, `pnpm lint`, `pnpm test` lulus (671 backend + 540 frontend, termasuk 11 HTTP E2E). `pnpm audit --prod --json` melaporkan nol advisori pada semua tingkat saat audit. Tidak ada dependency, migrasi, atau kalimat UI baru.
 
+### Audit aksesibilitas
+
+[Laporan row48](docs/a11y-audit.md) mencatat perbaikan fokus dialog, kontras, ukuran teks yang mengikuti preferensi pengguna, serta reflow kontrol/kartu/navigasi/panel foto pada 200%. Audit desktop mencakup 40 pemeriksaan axe dan 120 kombinasi tata letak. Gradasi diperiksa terpisah karena axe tidak dapat menentukan kontrasnya; perangkat dan pembaca layar nyata tetap belum diuji. Matriks AC dan hasil perangkat tidak dinyatakan selesai oleh audit ini.
+
+Verifikasi row48: `pnpm typecheck`, `pnpm lint`, dan `pnpm test` lulus (671 backend + 559 frontend, termasuk 11 HTTP E2E). Matriks baru memeriksa semantik seluruh 12 halaman produk dalam shell yang sesuai, dengan data fiktif dan tanpa layanan eksternal.
+
 ### Memeriksa logika scan
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.

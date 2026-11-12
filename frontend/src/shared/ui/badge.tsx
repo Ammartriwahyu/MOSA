@@ -26,7 +26,7 @@ export function Badge({ tone, icon, children }: { tone: BadgeTone; icon: ReactNo
   return (
     <span
       className={cx(
-        "inline-flex items-center gap-1.5 rounded-pill border-2 px-3 py-1.5 text-body font-semibold",
+        "inline-flex max-w-full min-w-0 flex-wrap items-center gap-1.5 rounded-pill border-2 px-3 py-1.5 text-body font-semibold",
         BADGE_TONE[tone],
       )}
     >

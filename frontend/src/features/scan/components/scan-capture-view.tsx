@@ -35,7 +35,7 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true, o
       <p>{target.mode === "selected" ? <>{SCAN_CAPTURE.selectedMode}<br />{jadwalTargetScan(target.date, target.time)}</> : SCAN_CAPTURE.genericMode}</p>
     </div>
     <div className={photo ? "rounded-tile bg-surface p-5" : undefined}>
-    <div className={cx("relative flex aspect-[6/5] w-full items-center justify-center overflow-hidden rounded-sheet bg-camera-surface", photo ? "p-4" : "p-10")}>
+    <div className={cx("relative flex w-full items-center justify-center overflow-hidden rounded-sheet bg-camera-surface", photo ? "aspect-[6/5] p-4" : "p-10")}>
       {photo ?
         // Foto lokal tidak melalui optimasi/proxy Next Image agar tidak terkirim ke server.
         // eslint-disable-next-line @next/next/no-img-element
