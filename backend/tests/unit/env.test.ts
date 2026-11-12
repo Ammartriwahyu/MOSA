@@ -7,6 +7,7 @@ const SUPABASE = {
   SUPABASE_SECRET_KEY: "kunci-uji",
   GEMINI_API_KEY: "kunci-uji-gemini",
   GEMINI_MODEL: "model-uji",
+  SCAN_TOKEN_SECRET: "secret-only-for-tests-not-production",
 };
 
 describe("loadEnv", () => {
@@ -22,7 +23,7 @@ describe("loadEnv", () => {
   });
 
   test("mewajibkan variabel Supabase", () => {
-    expect(() => loadEnv({})).toThrow("Environment tidak valid: SUPABASE_URL, SUPABASE_SECRET_KEY, GEMINI_API_KEY, GEMINI_MODEL");
+    expect(() => loadEnv({})).toThrow("Environment tidak valid: SUPABASE_URL, SUPABASE_SECRET_KEY, GEMINI_API_KEY, GEMINI_MODEL, SCAN_TOKEN_SECRET");
   });
 
   test("menolak nilai tidak valid tanpa membocorkan nilainya", () => {
@@ -40,5 +41,9 @@ describe("loadEnv", () => {
     expect(loadEnv(SUPABASE).AI_DAILY_LIMIT).toBe(20);
     expect(loadEnv({ ...SUPABASE, AI_DAILY_LIMIT: "5" }).AI_DAILY_LIMIT).toBe(5);
     expect(() => loadEnv({ ...SUPABASE, AI_DAILY_LIMIT: "0" })).toThrow("AI_DAILY_LIMIT");
+  });
+
+  test.each([undefined, "", "pendek"])("mewajibkan rahasia HMAC panjang tanpa mencetak nilainya", (secret) => {
+    expect(() => loadEnv({ ...SUPABASE, SCAN_TOKEN_SECRET: secret })).toThrow("Environment tidak valid: SCAN_TOKEN_SECRET");
   });
 });

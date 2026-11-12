@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-// Hanya variabel yang sudah dipakai kode. Token scan dan cron ditambahkan
-// sebagai wajib di branch yang pertama kali memakainya.
+// Hanya variabel yang sudah dipakai kode; rahasia cron menunggu fitur cron.
 const DEV_FRONTEND_ORIGIN = "http://localhost:3000";
 
 const envSchema = z.object({
@@ -16,6 +15,7 @@ const envSchema = z.object({
   GEMINI_MODEL: z.string().min(1),
   // Jatah panggilan AI per rumah tangga per hari WIB (D8). 20 = USULAN sampai uji kuota.
   AI_DAILY_LIMIT: z.coerce.number().int().min(1).max(1_000).default(20),
+  SCAN_TOKEN_SECRET: z.string().min(32),
 });
 
 export type Env = z.infer<typeof envSchema>;

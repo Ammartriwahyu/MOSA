@@ -37,6 +37,9 @@ export class InMemoryDoseConfirmationRepository implements DoseConfirmationRepos
     const current = await this.medicines.findActive(input.householdId, input.slot.medicineId);
     if (!current.ok) return current;
     if (!current.value) return err(domainError("NOT_FOUND", "Obat tidak ditemukan."));
+    if (input.level === "scan_terverifikasi" && (!input.scanMedicine || current.value.name !== input.scanMedicine.name || current.value.strength !== input.scanMedicine.strength)) {
+      return err(domainError("SCAN_TOKEN_INVALID", "Identitas kemasan sudah berubah."));
+    }
     if (this.rows.has(input.slot.slotId)) return err(domainError("DOSE_ALREADY_CONFIRMED", "Dosis sudah tercatat."));
     const slots = buildDailySlots([current.value], input.slot.scheduledDate);
     if (!slots.ok) return slots;

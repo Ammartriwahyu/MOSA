@@ -8,6 +8,7 @@ describe("entri src/index.ts", () => {
     vi.stubEnv("SUPABASE_SECRET_KEY", "kunci-uji");
     vi.stubEnv("GEMINI_API_KEY", "kunci-uji-gemini");
     vi.stubEnv("GEMINI_MODEL", "model-uji");
+    vi.stubEnv("SCAN_TOKEN_SECRET", "secret-only-for-tests-not-production");
   });
   afterAll(() => {
     vi.unstubAllEnvs();

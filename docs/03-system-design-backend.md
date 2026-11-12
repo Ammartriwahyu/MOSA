@@ -169,7 +169,7 @@ Modul `ai` bukan bounded context. AI adalah detail infrastruktur di balik dua po
 - **Invarian `ConfirmDose`:** tidak boleh dikonfirmasi bila `belum_tiba`, `terlewat`, atau `sudah`; level ✓✓ hanya dengan token verifikasi scan yang sah (Bagian 6.4).
 - **Hari** berganti pukul 00.00 WIB. Hitungan "1/2" dihitung dari slot hari itu: sudah dikonfirmasi per total slot yang dibuat hari itu.
 - **Port:** `DoseConfirmationRepository`, `MedicineScheduleReader` (membaca obat aktif dan jamnya dari modul `medication`), `ConfirmedDoseReader` (ID slot yang telah dikonfirmasi, tersaring rumah tangga/obat/tanggal), `Clock`.
-- **Use case:** `ListTodaysDoses`, `ConfirmDose`, `GetDoseContext` (dipakai `verification`), `GetNextDose` (jadwal J berikut setelah sekarang, sampai besok, melewati slot yang sudah dikonfirmasi dini; tanpa rute sendiri).
+- **Use case:** `ListTodaysDoses`, `ConfirmDose`, `GetScanContext` (dipakai `verification`), `GetNextDose` (jadwal J berikut setelah sekarang, sampai besok, melewati slot yang sudah dikonfirmasi dini; tanpa rute sendiri).
 - **Pembangkit slot:** `buildDailySlots` menerima snapshot jadwal dan tanggal WIB, menghasilkan slot aktif dengan J ≥ `max(createdAt, intakeTimeStartedAt[jam])`, ID stabil `{medicineId}:{yyyymmdd}:{HHmm}`. Sesuai Q5 (PM 11 Nov), jam baru langsung aktif saat disimpan dan tidak menciptakan slot masa lalu; jam tetap mempertahankan waktu aktif. Panggil dengan tanggal asal untuk slot kemarin yang jendelanya masih terbuka sesudah tengah malam; hitungan harian tetap berdasarkan tanggal slot. Konfirmasi yang sudah tersimpan digabung kembali walau jamnya telah dihapus. Adapter database dan rute dirakit di branch `feat/be-dose-api`.
 
 Ringkasan fungsi murni (implementasi dan konstanta di `backend/src/modules/dosing/domain/dose-window.ts`):
@@ -204,15 +204,15 @@ export function classifyDose(p: {
 - Dua identitas terdaftar yang sama-sama cocok tidak dipilih berdasarkan urutan database atau jadwal: `VALIDATION_FAILED`, `details: {field: 'medicineId', reason: 'ambiguous_match'}`. Ini kegagalan validasi, bukan hasil scan kesembilan; tidak ada token/konfirmasi. Nama tidak terdaftar tidak membawa tebakan AI ke respons.
 - **Domain service `decideOutcome`:** menerima hasil matcher dan `DoseContext` milik verification, tanpa impor domain dosing. Snapshot setiap slot membawa `{slotId, medicineId, scheduledAt, status, windowOpen}`; status dan jendela dihitung dosing dari satu waktu server. `nextDose` harus milik obat yang cocok. Fungsi mengembalikan `Result<VerificationOutcome, DomainError>` dengan delapan hasil di bawah; keterbacaan/nama/kekuatan selalu diperiksa sebelum konteks dosis.
 - Target `selected` mempertahankan slot eksplisit: tidak beralih ke slot lain bila slot itu sudah tercatat, belum tiba, terlewat, atau milik obat lain. Target yang tidak ditemukan menghasilkan `NOT_FOUND`. Mode `generic` mencari semua slot obat cocok yang jatuh tempo; bila kosong, mengenali konfirmasi obat itu hanya pada jendela yang masih terbuka. Konfirmasi jadwal lama tidak menghalangi dosis berikutnya. Beberapa slot terbuka dikembalikan dalam `slots` terurut, tanpa memilih salah satu (Q2); bila tidak ada yang jatuh tempo tetapi beberapa sudah tercatat, semua slot relevan dikembalikan. Semua slot obat lain yang jatuh tempo dibawa dalam `otherDueSlots` untuk `tunggu_dulu`.
-- **Use case `VerifyPackage`** (input: gambar, `slotId?` opsional): gambar → `PackageReader` → `MedicineMatcher` → `GetDoseContext` → `VerificationOutcome` berupa union terdiskriminasi. Perutean ganda (PRD 19 #10): bila `slotId` diberikan (dari kartu dosis atau banner, rute `/scan?dosis=...`) mode verifikasi memakai slot itu; bila tidak ada, kode mencari dosis yang sedang jatuh tempo untuk obat yang terbaca. Setiap hasil membawa data terstruktur (nama, kekuatan, jam, `nextDose`, penjelasan terverifikasi, label sumber), **bukan kalimat jadi**; frontend merakit kalimat baku dari `copy.ts`. Daftar hasil:
+- **Use case `VerifyPackage`** (input: gambar, `slotId?` opsional): gambar → `PackageReader` → `MedicineMatcher` → `GetScanContext` → `VerificationOutcome` berupa union terdiskriminasi. Perutean ganda (PRD 19 #10): bila `slotId` diberikan (dari kartu dosis atau banner, rute `/scan?dosis=...`) mode verifikasi memakai slot itu; bila tidak ada, kode mencari dosis yang sedang jatuh tempo untuk obat yang terbaca. Setiap hasil membawa data terstruktur (nama, kekuatan, jam, `nextDose`, penjelasan terverifikasi, label sumber), **bukan kalimat jadi**; frontend merakit kalimat baku dari `copy.ts`. Daftar hasil:
   - `bisa_konfirmasi` (ada dosis jatuh tempo untuk obat itu; domain mengembalikan kandidat `slots`, lapisan aplikasi menerbitkan **scanToken** yang terikat pada slot; pengguna memilih bila lebih dari satu)
   - `dosis_sudah_tercatat`
   - `tunggu_dulu` (ada obat lain jatuh tempo; daftar dipisah "dan")
   - `hanya_info` (obat terdaftar, bukan waktunya)
   - `tidak_terdaftar`, `tidak_terbaca`, `kekuatan_tidak_terbaca`, `kekuatan_beda`
-- `belum_waktunya`/`waktunya_lain` dalam rancangan lama dipetakan ke `hanya_info`/`tunggu_dulu`, sesuai delapan hasil docs/01 §5 dan instruksi P06. Domain tidak menerbitkan token, menyimpan konfirmasi, atau menyusun kalimat UI. Pembaca foto dan perakitan API/token dikerjakan terpisah pada row 18/19.
-- **scanToken:** token bertanda tangan HMAC berisi `{householdId, medicineId, slotId, exp}` dengan masa berlaku singkat (sekitar 5 menit). `ConfirmDose` dengan `mode: 'verified'` memeriksa token itu. Klien tidak bisa mengklaim ✓✓ tanpa hasil scan yang sah.
-- **Port:** `PackageReader`, `MedicineReader`, `DoseContextReader`, `ScanTokenSigner`.
+- `belum_waktunya`/`waktunya_lain` dalam rancangan lama dipetakan ke `hanya_info`/`tunggu_dulu`, sesuai delapan hasil docs/01 §5 dan instruksi P06. Domain tidak menerbitkan token, menyimpan konfirmasi, atau menyusun kalimat UI.
+- **scanToken:** `v1.<payload base64url>.<HMAC-SHA256 base64url>`. Payload `{householdId, medicineId, slotId, exp, fingerprint}`, `exp` epoch ms; fingerprint SHA-256 dari nama+kekuatan asli, tanpa menaruh nama mentah di payload. Masa berlaku 5 menit dari konstanta `SCAN_TOKEN_POLICY.ttlMs`; tepat expiry sudah ditolak. Secret server minimal 32 karakter. Digest 32 byte dibandingkan memakai `timingSafeEqual`; token rusak/kedaluwarsa ditolak tanpa detail sensitif. `CurrentMedicineScanTokenVerifier` memeriksa fingerprint terhadap obat aktif sebelum mengembalikan identitas bagi `ConfirmDose`. RPC `confirm_scanned_dose` memeriksa identitas itu lagi di bawah kunci baris yang sama dengan INSERT, menutup celah perubahan obat sesudah verifier membaca. Klien tidak bisa mengklaim ✓✓ tanpa hasil scan yang sah.
+- **Port verification:** `PackageReader`, `ScanConsentReader`, `ScanContextReader`, `ScanTokenSigner`. Adapter hanya memakai application household/dosing. `GetScanContext` di dosing menghitung slot kemarin/hari ini/besok dan tanggal target eksplisit, menyertakan konfirmasi lama pada jam yang dihapus, menerapkan waktu aktif per jam (Q5) dan `findNextDose`. `VerifyPackage` mengambil Clock sesudah AI selesai; tidak mengimpor domain modul lain.
 
 ### 6.5 `notification` (Tahap 2)
 - **PushSubscription** (aggregate): `id`, `householdId`, `endpoint` (unik), `p256dh`, `auth`.
@@ -327,7 +327,7 @@ sequenceDiagram
   participant V as VerifyPackage
   participant AI as PackageReader (Gemini)
   participant M as MedicineMatcher
-  participant D as GetDoseContext
+  participant D as GetScanContext
   participant K as ConfirmDose
   participant DB as Supabase
 
@@ -342,7 +342,7 @@ sequenceDiagram
   FE->>K: POST /v1/doses/{slotId}/confirm {mode:'verified', scanToken}
   K->>DB: INSERT dose_confirmations (unik)
   DB-->>K: ok | pelanggaran unik
-  K-->>FE: 200 ✓✓ | 409 sudah tercatat
+  K-->>FE: 201 ✓✓ | 409 sudah tercatat
 ```
 
 AI hanya mengembalikan nama dan kekuatan. Pencocokan, jendela waktu, dan keputusan boleh-tidaknya konfirmasi dihitung kode.
@@ -384,7 +384,7 @@ Prefiks `/v1`. Autentikasi: `Authorization: Bearer <access token Supabase>` kecu
 | `DELETE /v1/medicines/{id}` | Hapus (soft delete) | DeleteMedicine |
 | `GET /v1/doses/today` | Kartu dosis hari ini + hitungan 1/2 | ListTodaysDoses |
 | `POST /v1/doses/{slotId}/confirm` | Konfirmasi minum | ConfirmDose |
-| `POST /v1/scan` | Baca kemasan dan tentukan tindak lanjut (body: foto, `slotId?`) | VerifyPackage |
+| `POST /v1/scan` | Baca kemasan; JSON `{image:{mimeType,data:base64},slotId?}` | VerifyPackage |
 | `GET /v1/household` | Status persetujuan dan preferensi output (membuat rumah tangga bila belum ada) | EnsureHousehold, GetHousehold |
 | `POST /v1/household/consents` | Catat persetujuan `data` atau `scan` | RecordConsent |
 | `PATCH /v1/household/preferences` | Ubah mode output Teks/Suara | UpdatePreferences |
@@ -404,7 +404,11 @@ Prefiks `/v1`. Autentikasi: `Authorization: Bearer <access token Supabase>` kecu
 - `medicines`: `{medicineId, summary, nextDose}` per obat aktif. `nextDose` = `null` atau `{tanggal: hari_ini|besok, kelompok: pagi|siang|malam, jam: HH:mm}`, mencari J yang ketat setelah waktu server dan melewati slot yang sudah dikonfirmasi dini.
 - Konfirmasi pada jam yang dihapus tetap masuk `doses`/hitungan tanggal asal selama obat masih aktif. Obat nonaktif dikeluarkan dari dashboard; baris riwayat tetap tersimpan. Galat DB menghasilkan 503, bukan daftar kosong.
 
-`POST /v1/doses/{slotId}/confirm` menerima `{mode: basic|verified, scanToken?}`; encode `slotId` sekali untuk URL. `householdId` diambil dari sesi; waktu dan `level` ditentukan server. Sukses: HTTP 201 `{status: sudah, serverTime, confirmation}`. Mode `verified` memerlukan token terikat rumah tangga, obat, slot dan waktu kedaluwarsa; implementasi produksi P05 menolak semua token sampai verifier HMAC P06 dirakit. Fake verifier hanya digunakan pada tes. Konfirmasi dasar yang sudah tercatat tidak dapat dinaikkan levelnya melalui replay.
+`POST /v1/doses/{slotId}/confirm` menerima `{mode: basic|verified, scanToken?}`; encode `slotId` sekali untuk URL. `householdId` diambil dari sesi; waktu dan `level` ditentukan server. Sukses: HTTP 201 `{status: sudah, serverTime, confirmation}`. Mode `verified` memakai HMAC serta identitas obat yang telah dicek verifier; RPC scan memeriksa identitas/jadwal/jendela/duplikat secara atomik. Fake verifier hanya digunakan pada tes. Konfirmasi dasar yang sudah tercatat tidak dapat dinaikkan levelnya melalui replay. Migrasi `20261112040000_scan_confirmation_identity.sql` harus diterapkan sesudah migrasi dosing.
+
+`POST /v1/scan` menerima JSON base64 standar (tanpa awalan data URL), `Content-Type: application/json`, maksimal 1.500.000 byte gambar sebelum encoding. Stream JSON dibatasi hingga panjang base64 maksimum + 4.096 byte, tidak hanya mengandalkan Content-Length. `slotId` body adalah ID mentah, tidak di-decode lagi. Consent scan diperiksa pada use case, jatah harian atomik per rumah tangga dikonsumsi sebelum AI. Data obat/dosis dimuat kembali setelah AI; foto tidak disimpan atau dicatat di log. Semua respons rute memiliki `Cache-Control: no-store`.
+
+Respons scan HTTP 200 selalu `{outcome, serverTime, ...}`; delapan nilai outcome mengikuti §6.4. `tidak_terbaca`/`tidak_terdaftar` tidak membawa tebakan AI. Kekuatan hilang/beda membawa `medicines` kandidat terdaftar, ditambah `readStrength` bentuk normal bila terbaca. Hasil yang cocok membawa `medicine`, `readStrength`, `nextDose` (`null` atau `{slotId,medicineId,scheduledAt,scheduledDate,scheduledTime,tanggal,kelompok,jam}`). Hanya `bisa_konfirmasi` membawa `slots: [{slotId,medicineId,scheduledAt,scheduledDate,scheduledTime,scanToken,expiresAt}]`; bentuk larik sama saat satu atau beberapa slot, tanpa token tingkat atas. `dosis_sudah_tercatat` membawa `slots` tanpa token. `tunggu_dulu` membawa seluruh `otherDueSlots`, masing-masing dengan data obat; frontend mengelompokkan nama obat untuk kalimat #6. Tanggal/waktu ISO dan jam/tanggal WIB berasal dari backend. Tidak ada household, fingerprint, metadata jadwal internal atau penjelasan AI yang belum dikonfirmasi pada respons.
 
 **Format kesalahan seragam:**
 
