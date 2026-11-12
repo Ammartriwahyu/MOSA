@@ -16,9 +16,9 @@ const OUTPUT_OPTIONS = [
 
 function AccountRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex gap-3">
-      <dt className="w-30 shrink-0 text-body text-ink-secondary">{label}</dt>
-      <dd className="min-w-0 flex-1 text-body font-bold break-words">{value}</dd>
+    <div className="flex flex-wrap gap-3">
+      <dt className="w-30 max-w-full shrink-0 text-body text-ink-secondary">{label}</dt>
+      <dd className="min-w-0 flex-1 basis-32 text-body font-bold break-words">{value}</dd>
     </div>
   );
 }
