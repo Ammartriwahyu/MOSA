@@ -160,6 +160,18 @@ Seed boleh dijalankan berulang. Setiap kali dijalankan, akun demo kembali ke kea
 
 `pnpm --filter backend seed:demo-due` menggeser jadwal Metformin ke menit saat perintah dijalankan (WIB), sehingga dosisnya langsung jatuh tempo dan bisa dikonfirmasi selama 120 menit. Jalankan `pnpm --filter backend seed:demo` untuk mengembalikan jadwal normal.
 
+### Komponen pembacaan suara
+
+`shared/ui/Bacakan` dan `shared/hooks/useSpeech` menyediakan tombol Bacakan/Berhenti tanpa autoplay. `text` harus sama persis dengan teks yang ditampilkan di dekat tombol; tidak dipangkas, diringkas atau ditambahi instruksi. `active={false}` menghentikan suara ketika dialog ditutup; `contextKey` membedakan akun atau slot walaupun teksnya sama. Perubahan teks, pathname, konteks, unmount, pagehide atau halaman tersembunyi menghentikan pemutaran. Integrasi ke hasil scan, detail, pop-up dan banner menyusul row 41; row 40 dapat dicoba pada bagian Suara di `/_dev/ui` (404 di produksi).
+
+Mesin memakai Web Speech API dengan `lang='id-ID'` dan hanya memilih suara Indonesia yang dilaporkan `localService=true`; tidak mengganti ke bahasa lain atau memakai suara jarak jauh. Daftar awal kosong ditunggu maksimum 2 detik, lalu D-d ditampilkan; `voiceschanged` dapat memulihkan tombol tanpa memulai audio. Tidak ada API TTS aplikasi, penyimpanan teks, analitik atau log suara. Pemilihan layanan lokal mengikuti [MDN localService](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisVoice/localService); ketersediaan suara bergantung pada perangkat/peramban.
+
+Satu pemutar aktif dibagi antar-komponen karena [cancel mengosongkan seluruh antrean](https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis/cancel). Memulai bacaan baru menghentikan bacaan lama; unmount pemilik lama tidak membatalkan pemilik baru. Callback terlambat diabaikan dan listener/timer dibersihkan. Bila mesin tidak mengirim start dalam 5 detik, UI kembali ke pesan gagal dengan retry manual; penolakan `not-allowed` dan galat mesin tidak memutar ulang otomatis. Teks tetap terlihat saat suara tidak tersedia atau gagal.
+
+Tes hook/komponen memakai mesin suara tiruan, termasuk SSR, mulai/berhenti, suara terlambat, pergantian konteks/pemilik dan galat. Peramban lokal diuji 360/390/430 px: fallback D-d tampil, tombol 56 px, teks tetap terlihat, konsol bersih. Suara Indonesia lokal tidak tersedia pada peramban uji ini, sehingga audio nyata serta Android Chrome/iOS Safari belum diverifikasi. Demo katalog memakai Web Speech API asli, bukan hasil suara palsu.
+
+Verifikasi row 40: `pnpm typecheck` dan `pnpm lint` lulus. `pnpm test` paralel dua kali melewati timeout 5 detik pada tes entri backend yang sudah ada; tes entri terpisah lulus. Seluruh suite lulus saat paket dijalankan berurutan: `pnpm -r --workspace-concurrency=1 --if-present run test` (547 backend + 514 frontend). Timeout tidak diubah; kestabilan runner paralel perlu diperiksa pada P13.
+
 ## Deploy (Vercel)
 
 > Langkah ini disusun dari dokumentasi resmi Vercel dan belum diuji pada proyek ini.
