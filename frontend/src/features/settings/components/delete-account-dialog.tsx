@@ -1,7 +1,7 @@
 "use client";
 
 import { Lock, Trash2 } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { signIn, signOut } from "@/features/auth";
 import { AUTH, DRAFT, PENGATURAN, TOMBOL } from "@/shared/copy";
 import { isApiError } from "@/shared/lib";
@@ -19,6 +19,12 @@ export function DeleteAccountDialog({ open, onOpenChange, email }: Props) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const lifetime = useRef<AbortController | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    lifetime.current = controller;
+    return () => controller.abort();
+  }, []);
 
   function close(next: boolean) {
     if (busy) return;
@@ -31,6 +37,8 @@ export function DeleteAccountDialog({ open, onOpenChange, email }: Props) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const signal = lifetime.current?.signal;
+    if (!signal || signal.aborted) return;
     if (!email || password.length === 0) {
       setError(AUTH.galatKataSandiKosong);
       return;
@@ -40,6 +48,9 @@ export function DeleteAccountDialog({ open, onOpenChange, email }: Props) {
 
     // Langkah keamanan: kata sandi harus benar sebelum data dihapus.
     const verified = await signIn(email, password);
+    // Pergantian akun melepas dialog: proses lama tidak boleh mengambil token
+    // akun baru, meneruskan DELETE, atau mengeluarkan sesi yang baru masuk.
+    if (signal.aborted) return;
     if (!verified.ok) {
       setBusy(false);
       setError(verified.reason === "invalid_credentials" ? PENGATURAN.galatKataSandiHapus : AUTH.galatJaringan);
@@ -47,14 +58,15 @@ export function DeleteAccountDialog({ open, onOpenChange, email }: Props) {
     }
 
     try {
-      await deleteHouseholdData();
+      await deleteHouseholdData(signal);
     } catch (failure) {
+      if (signal.aborted) return;
       setBusy(false);
       setError(isApiError(failure, "DEMO_PROTECTED") ? PENGATURAN.demoDilindungi : AUTH.galatUmum);
       return;
     }
     // Akun sudah tidak ada di server: hapus sesi lokal; penjaga rute membuka onboarding.
-    await signOut("local");
+    if (!signal.aborted) await signOut("local");
   }
 
   return (

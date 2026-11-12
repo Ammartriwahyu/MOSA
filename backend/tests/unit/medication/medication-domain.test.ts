@@ -88,7 +88,7 @@ const VALID: MedicineInput = {
   intakeTimes: ["19:00", "07:00"],
   labelSource: "apoteker",
   explanationOrigin: "ai_dikonfirmasi",
-  explanation: "Minum obat ini sesudah makan.",
+  explanation: "Minum obat ini sesudah makan. Jangan dihentikan mendadak.",
 };
 
 function fields(input: MedicineInput): unknown {

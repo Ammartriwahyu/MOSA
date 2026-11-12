@@ -56,7 +56,7 @@ describe("log permintaan", () => {
     const [event] = logger.events;
     expect(event).toMatchObject({
       event: "http_request",
-      requestId: "req-1",
+      requestId: expect.stringMatching(/^[0-9a-f-]{36}$/i),
       method: "GET",
       route: "/v1/health",
       status: 200,

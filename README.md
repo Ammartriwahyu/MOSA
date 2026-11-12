@@ -92,6 +92,12 @@ Verifikasi row43: `pnpm --filter backend test:e2e --reporter=dot` lulus 11 tes. 
 
 Verifikasi row44: `pnpm typecheck`, `pnpm lint`, dan `pnpm test` lulus (649 backend + 534 frontend); tes terarah copy 69 dan HTTP E2E 11 lulus. Seluruh 26 baris AC, 15 penanda manual dan 105 tautan lokal telah diperiksa. Perubahan row44 hanya dokumentasi.
 
+### Audit keamanan dan privasi
+
+[Laporan row47](docs/security-privacy-audit.md) mencatat lima perbaikan: pemisahan cache per akun, pagar takaran/larangan AI, batas body JSON umum 32 KiB, metadata log yang dikendalikan server, dan header no-store seluruh respons API. Laporan menyertakan bukti regresi, pemeriksaan rahasia/dependensi, delapan pengaman AI serta batas tes layanan/perangkat. P14 notifikasi/PWA/push dilewati karena gerbang MVP stabil belum terbukti; audit aksesibilitas dan kinerja masih tahap berikutnya.
+
+Proses hapus akun juga dibatalkan ketika layar dilepas agar kelanjutan lama tidak mengirim DELETE atau logout pada sesi baru. Verifikasi row47: `pnpm typecheck`, `pnpm lint`, `pnpm test` lulus (671 backend + 540 frontend, termasuk 11 HTTP E2E). `pnpm audit --prod --json` melaporkan nol advisori pada semua tingkat saat audit. Tidak ada dependency, migrasi, atau kalimat UI baru.
+
 ### Memeriksa logika scan
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.

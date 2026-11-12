@@ -5,6 +5,6 @@ import { api } from "@/shared/lib";
  * obat, catatan minum, dan rumah tangga ikut terhapus (ON DELETE CASCADE).
  * Akun demo dibalas 403 DEMO_PROTECTED.
  */
-export function deleteHouseholdData(): Promise<void> {
-  return api().noContent("/v1/household", { method: "DELETE" });
+export function deleteHouseholdData(signal: AbortSignal): Promise<void> {
+  return api().noContent("/v1/household", { method: "DELETE", signal });
 }
