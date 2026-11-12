@@ -41,7 +41,7 @@ const METFORMIN: Medicine = {
 const backend = vi.hoisted(() => ({
   get: vi.fn<(path: string) => Promise<unknown>>(),
 }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: vi.fn() }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ replace: vi.fn() }) }));
 
 vi.mock("@/shared/lib", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@/shared/lib")>();

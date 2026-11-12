@@ -16,7 +16,7 @@ import { SCAN_CONSENT_STORAGE_KEY } from "../lib/device-consent";
 import { ScanScreen } from "./scan-screen";
 
 const { push } = vi.hoisted(() => ({ push: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push }) }));
 vi.mock("@/features/auth", () => ({ fetchHousehold: vi.fn(), recordScanConsent: vi.fn(), useSessionIdentity: vi.fn(), signOut: vi.fn(), householdQueryKey: ["household"] }));
 vi.mock("../lib/compress-photo", () => ({ compressPhoto: vi.fn() }));
 vi.mock("../api/scan", () => ({ scanPackage: vi.fn() }));

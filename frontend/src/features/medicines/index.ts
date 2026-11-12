@@ -5,4 +5,4 @@ export { MedicineDetailScreen } from "./components/medicine-detail-screen";
 export { MedicineListScreen } from "./components/medicine-list-screen";
 export { medicinesQueryKey } from "./hooks/use-medicines";
 export { LabelSourceChip } from "./components/label-source-chip";
-export { MedicineIdentity, MedicineExplanation, MedicineOriginalInfo } from "./components/medicine-information";
+export { MedicineIdentity, MedicineExplanation, MedicineOriginalInfo, medicineInformationText } from "./components/medicine-information";

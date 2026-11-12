@@ -1,13 +1,15 @@
 import { Clock } from "lucide-react";
-import { MedicineExplanation, MedicineIdentity, MedicineOriginalInfo } from "@/features/medicines";
+import { MedicineExplanation, MedicineIdentity, MedicineOriginalInfo, medicineInformationText } from "@/features/medicines";
 import { DASBOR, OBAT, jadwalBerikutnya, jadwalTargetScan } from "@/shared/copy";
-import { Card, Notice } from "@/shared/ui";
+import { Bacakan, Card, Notice } from "@/shared/ui";
 import type { ScanResponse } from "../schemas/scan-response";
 
 type MatchedResult = Extract<ScanResponse, { medicine: unknown }>;
 
 /** Seluruh informasi berasal dari snapshot server yang sudah dicocokkan, tanpa menampilkan bacaan AI mentah. */
-export function ScanMedicineInfo({ result }: { result: MatchedResult }) {
+export function ScanMedicineInfo({ result, speechActive = true, contextKey }: { result: MatchedResult; speechActive?: boolean; contextKey?: string }) {
+  const reading = medicineInformationText(result.medicine, [DASBOR.jadwalBerikutnya, jadwalBerikutnya(result.nextDose),
+    ...(result.nextDose ? [jadwalTargetScan(result.nextDose.scheduledDate, result.nextDose.scheduledTime)] : [])]);
   return <>
     <MedicineIdentity medicine={result.medicine} />
     <Card tone="brand" className="p-5">
@@ -20,5 +22,6 @@ export function ScanMedicineInfo({ result }: { result: MatchedResult }) {
     <h2 className="text-card-title">{OBAT.informasiAsli}</h2>
     <MedicineOriginalInfo medicine={result.medicine} />
     <Notice tone="plain">{OBAT.bukanSaranMedis}</Notice>
+    <Bacakan text={reading} active={speechActive} contextKey={contextKey} />
   </>;
 }

@@ -1,20 +1,24 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { DRAFT } from "@/shared/copy";
+import { Bacakan } from "@/shared/ui";
+import userEvent from "@testing-library/user-event";
+import { installSpeechEngine } from "@/shared/testing/speech-engine";
+import { afterEach } from "vitest";
+import { DRAFT, TOMBOL } from "@/shared/copy";
 import { AuthGuard } from "./auth-guard";
 
 // Supabase Auth palsu: menyimpan listener dan bisa memancarkan event sesi.
 const auth = vi.hoisted(() => {
-  let listener: ((event: string, session: object | null) => void) | undefined;
+  const listeners = new Set<(event: string, session: object | null) => void>();
   return {
     unsubscribe: vi.fn(),
     emit(event: string, session: object | null) {
-      listener?.(event, session);
+      listeners.forEach((listener) => listener(event, session));
     },
     onAuthStateChange(callback: (event: string, session: object | null) => void) {
-      listener = callback;
-      return { data: { subscription: { unsubscribe: this.unsubscribe } } };
+      listeners.add(callback);
+      return { data: { subscription: { unsubscribe: () => { listeners.delete(callback); this.unsubscribe(); } } } };
     },
   };
 });
@@ -27,7 +31,7 @@ vi.mock("@/shared/lib", () => ({
 }));
 
 const router = vi.hoisted(() => ({ replace: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => router }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => router }));
 
 function renderGuard(requireConsent?: boolean) {
   const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -57,7 +61,7 @@ describe("AuthGuard", () => {
 
   test("sesi ada dan sudah setuju → isi tampil", async () => {
     renderGuard();
-    act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
+    act(() => auth.emit("INITIAL_SESSION", { access_token: "t", user: { id: "akun-a" } }));
     expect(await screen.findByText("Isi terlindungi")).toBeInTheDocument();
     expect(router.replace).not.toHaveBeenCalled();
   });
@@ -65,7 +69,7 @@ describe("AuthGuard", () => {
   test("sesi ada tetapi belum setuju → dialihkan ke /consent tanpa menampilkan isi", async () => {
     backend.household.dataConsentAt = null;
     renderGuard();
-    act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
+    act(() => auth.emit("INITIAL_SESSION", { access_token: "t", user: { id: "akun-a" } }));
     await waitFor(() => expect(router.replace).toHaveBeenCalledWith("/consent"));
     expect(screen.queryByText("Isi terlindungi")).not.toBeInTheDocument();
   });
@@ -73,7 +77,7 @@ describe("AuthGuard", () => {
   test("requireConsent=false tidak memeriksa persetujuan (layar persetujuan itu sendiri)", () => {
     backend.household.dataConsentAt = null;
     renderGuard(false);
-    act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
+    act(() => auth.emit("INITIAL_SESSION", { access_token: "t", user: { id: "akun-a" } }));
     expect(screen.getByText("Isi terlindungi")).toBeInTheDocument();
   });
 
@@ -86,7 +90,7 @@ describe("AuthGuard", () => {
 
   test("keluar di tengah sesi → cache data dihapus lalu dialihkan", async () => {
     const { queryClient } = renderGuard();
-    act(() => auth.emit("INITIAL_SESSION", { access_token: "t" }));
+    act(() => auth.emit("INITIAL_SESSION", { access_token: "t", user: { id: "akun-a" } }));
     await screen.findByText("Isi terlindungi");
     act(() => auth.emit("SIGNED_OUT", null));
     expect(queryClient.getQueryData(["data-lain"])).toBeUndefined();
@@ -98,4 +102,17 @@ describe("AuthGuard", () => {
     unmount();
     expect(auth.unsubscribe).toHaveBeenCalled();
   });
+});
+
+
+afterEach(() => { vi.unstubAllGlobals(); });
+test("pergantian akun signed-in melepas pembacaan lama; refresh token akun yang sama tidak memulai ulang", async () => {
+  const engine = installSpeechEngine();
+  const client = new QueryClient();
+  render(<QueryClientProvider client={client}><AuthGuard requireConsent={false}><Bacakan text="Teks uji terlihat" /><p>Teks uji terlihat</p></AuthGuard></QueryClientProvider>);
+  act(() => auth.emit("INITIAL_SESSION", { user: { id: "akun-a" } }));
+  await userEvent.click(screen.getByRole("button", { name: TOMBOL.bacakan })); const calls = engine.cancel.mock.calls.length;
+  act(() => auth.emit("TOKEN_REFRESHED", { user: { id: "akun-a" } })); expect(engine.cancel).toHaveBeenCalledTimes(calls);
+  act(() => auth.emit("SIGNED_IN", { user: { id: "akun-b" } })); expect(engine.cancel.mock.calls.length).toBeGreaterThan(calls); expect(engine.speak).toHaveBeenCalledTimes(1);
+  expect(screen.getByRole("button", { name: TOMBOL.bacakan })).toBeEnabled(); client.clear();
 });

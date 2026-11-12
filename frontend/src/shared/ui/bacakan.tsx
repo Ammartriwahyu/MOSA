@@ -17,7 +17,7 @@ export function Bacakan({ text, active = true, contextKey }: { text: string; act
     <Button variant="info" icon={speech.busy ? <Square className="size-6" /> : <Volume2 className="size-6" />}
       aria-describedby={message && active ? statusId : undefined} disabled={!speech.busy && !speech.canSpeak}
       onClick={speech.busy ? speech.stop : speech.speak}>{speech.busy ? SUARA.stop : TOMBOL.bacakan}</Button>
-    {message && active ? <div id={statusId} role="status" className={unavailable ? "rounded-tile bg-notice-soft p-4 text-body text-muted" : "text-body text-ink-secondary"}>
+    {message && active ? <div id={statusId} role="status" className={unavailable ? "rounded-tile bg-notice-soft p-4 text-body text-muted" : "rounded-tile bg-surface p-3 text-body text-ink-secondary"}>
       {unavailable ? <p className="mb-2 text-card-title text-ink">{SUARA.readable}</p> : null}
       <p>{message}</p>
     </div> : null}
