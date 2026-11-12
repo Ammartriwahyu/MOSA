@@ -16,17 +16,19 @@ const TONE = {
 export function Notice({
   tone = "neutral",
   role,
+  icon,
   children,
 }: {
   tone?: keyof typeof TONE;
   /** "alert" untuk galat yang harus langsung dibacakan (docs/06). */
   role?: "alert" | "status";
+  icon?: ReactNode;
   children: ReactNode;
 }) {
   const { box, Icon } = TONE[tone];
   return (
     <div role={role} className={cx("flex items-start gap-3 rounded-note p-4 text-body", box)}>
-      <Icon aria-hidden="true" className="mt-0.5 size-6 shrink-0" />
+      {icon ? <span aria-hidden="true" className="mt-0.5 flex size-6 shrink-0 items-center justify-center">{icon}</span> : <Icon aria-hidden="true" className="mt-0.5 size-6 shrink-0" />}
       <div className="min-w-0 flex-1">{children}</div>
     </div>
   );
