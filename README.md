@@ -42,6 +42,12 @@ pnpm dev
 
 Untuk satu paket: `pnpm --filter frontend <skrip>` atau `pnpm --filter backend <skrip>`.
 
+### Memeriksa dasbor
+
+Setelah env dan migrasi database tersedia, jalankan `pnpm dev`, masuk, lalu buka `/`. Akun tanpa obat menampilkan Tambah Obat Pertama. Dengan data demo jatuh tempo (`pnpm --filter backend seed:demo-due`), banner dan progres memakai respons `GET /v1/doses/today`; tanggal/jam ditampilkan dalam WIB. Kegagalan mengambil jadwal menampilkan Coba lagi. Tes terarah: `pnpm --filter frontend test src/features/doses`.
+
+Dasbor mencakup banner, tombol Scan Obat, progres serta kartu Pagi/Siang/Malam. Kartu menampilkan status, label pengisi, progres per obat dan waktu pencatatan ✓/✓✓ dari backend. Slot hari sebelumnya dan jadwal besok yang sudah terbuka ditampilkan terpisah dengan tanggal asal. Konfirmasi tanpa scan, tautan scan untuk slot tertentu, serta polling dikerjakan pada branch P10 berikutnya; layar scan menyusul P11.
+
 Tes SQL dosing memakai dev dependency `@electric-sql/pglite` agar migrasi, trigger jadwal, batas waktu dan RPC konfirmasi dijalankan pada mesin PostgreSQL lokal tanpa Docker. Jalankan terarah dengan `pnpm --filter backend test tests/db/dosing-sql.test.ts`. Tes ini tidak menggantikan verifikasi koneksi, Auth dan PostgREST pada Supabase sesungguhnya.
 
 ## Variabel lingkungan

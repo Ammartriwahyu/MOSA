@@ -151,6 +151,48 @@ export const KALIMAT_PITCHING =
 export const NAMA_APLIKASI = "TepatMinum";
 export const SUB_LABEL_APLIKASI = "MOSA";
 
+/** Dasbor Figma 04/05. Teks baru menunggu tinjauan PM. */
+export const DASBOR = {
+  sapaan: "Jadwal minum obat", // DRAFT
+  tanggalHariIni: "Tanggal hari ini", // DRAFT
+  kalender: "Hari di sekitar hari ini", // DRAFT
+  kosongJudul: "Belum ada obat terdaftar", // DRAFT
+  kosongPesan: "Minta apoteker atau keluarga untuk menambahkan obat pertama.", // DRAFT
+  tambahPertama: "Tambah Obat Pertama", // DRAFT
+  tip: "Tip: saat menebus obat di apotek, minta apoteker membantu mengisi data obat di HP ini.", // DRAFT
+  beberapaDosis: "Ada beberapa dosis yang waktunya diminum", // DRAFT
+  waktunyaMinum: "Waktunya minum", // DRAFT
+  jadwal: "Jadwal", // DRAFT
+  wib: "WIB", // DRAFT
+  jadwalBerikutnya: "Jadwal berikutnya", // DRAFT
+  tidakAdaJadwalBerikutnya: "Belum ada jadwal berikutnya", // DRAFT
+  tidakAdaSlotHariIni: "Tidak ada dosis terjadwal untuk hari ini.", // DRAFT
+  progresHariIni: "Progres Hari Ini", // DRAFT
+  tanpaScan: "Tanpa scan", // DRAFT
+  melaluiScan: "Melalui scan", // DRAFT
+  memuat: "Memuat jadwal obat…", // DRAFT
+  galatJudul: "Jadwal belum bisa ditampilkan", // DRAFT
+  galatPesan: "Periksa koneksi internet, lalu coba lagi.", // DRAFT
+} as const;
+
+/** DRAFT: penghitung dikirim backend; frontend hanya menyusun kalimat. */
+export function progresDosis(confirmed: number, total: number): string {
+  return `Sudah ${confirmed} dari ${total} dosis`;
+}
+
+/** DRAFT: data jadwal berikutnya dari backend, tanpa perhitungan jendela di klien. */
+export function waktuJadwalDasbor(next: JadwalBerikutnya): string {
+  return `${FRASA_WAKTU[next.tanggal][next.kelompok]} pukul ${formatJam(next.jam)} WIB.`;
+}
+
+export function tanggalDasbor(serverTime: string): string {
+  return new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "long" }).format(new Date(serverTime));
+}
+
+export function waktuDasbor(serverTime: string): string {
+  return `${new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(serverTime))} WIB`;
+}
+
 // ─── DRAFT: belum disetujui tim ───────────────────────────────────────────
 
 export const DRAFT = {
@@ -399,6 +441,38 @@ export const LABEL_STATUS = {
   sudahTanpaScan: "Sudah, tanpa scan", // DRAFT
   terlewat: LABEL.terlewat,
 } as const;
+
+/** Kartu dosis Figma 05, A7, A8, B11. Teks baru menunggu tinjauan PM. */
+export const DOSIS = {
+  jadwalHariIni: "Jadwal hari ini", // DRAFT
+  belumJatuhTempo: "Belum · Waktunya minum", // DRAFT
+  belumWaktunya: "Belum waktunya", // DRAFT
+  terlewatKeterangan: "Dosis ini tidak dapat dikonfirmasi lagi.", // DRAFT
+  jadwalSebelumnya: "Jadwal dari hari sebelumnya", // DRAFT
+  jadwalDini: "Jadwal besok", // DRAFT
+  lintasTanggal: "Tetap tercatat pada tanggal jadwal asal.", // DRAFT
+  diniKeterangan: "Jadwal besok ditampilkan terpisah dari progres hari ini.", // DRAFT
+} as const;
+
+/** Nama kelompok dipilih dari period backend, tanpa menghitung ulang batas jam. */
+export function namaKelompokDosis(period: KelompokWaktu): string {
+  return NAMA_KELOMPOK[period];
+}
+
+export function tanggalDosis(date: string): string {
+  return new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" }).format(new Date(`${date}T12:00:00+07:00`));
+}
+
+/** DRAFT: tanggal konfirmasi tetap jelas bila melintasi tengah malam. */
+export function waktuPencatatanDosis(confirmedAt: string): string {
+  const date = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" }).format(new Date(confirmedAt));
+  return `Dicatat pada ${date} pukul ${waktuDasbor(confirmedAt)}.`;
+}
+
+/** DRAFT: nama aksesibel kartu membedakan obat/jam/tanggal pada slot bertumpuk. */
+export function labelKartuDosis(p: { nama: string; kekuatan: string; date: string; jam: string }): string {
+  return `${obat(p.nama, p.kekuatan)}, ${tanggalDosis(p.date)}, pukul ${formatJam(p.jam)} WIB`;
+}
 
 /** D-a Scan obat yang dosisnya sudah tercatat. */ // DRAFT
 export function dosisSudahTercatat(p: { nama: string; jam: string; jamBerikutnya: string | null }): string {
