@@ -1,10 +1,10 @@
-import { toWib } from "../../../shared/domain/wib-time";
+import { formatTimeOfDay, toWib } from "../../../shared/domain/wib-time";
 import type { VerifyPackageResult } from "../application/verify-package.use-case";
 import type { VerificationSlot } from "../domain/verification-outcome";
 
 function slotResponse(slot: VerificationSlot) {
   const wib = toWib(slot.scheduledAt);
-  return { slotId: slot.slotId, medicineId: slot.medicineId, scheduledAt: new Date(slot.scheduledAt).toISOString(), scheduledDate: wib.date, scheduledTime: wib.time };
+  return { slotId: slot.slotId, medicineId: slot.medicineId, scheduledAt: new Date(slot.scheduledAt).toISOString(), scheduledDate: wib.date, scheduledTime: formatTimeOfDay(wib.time) };
 }
 
 export function scanResponse(result: VerifyPackageResult) {
