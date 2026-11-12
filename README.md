@@ -56,7 +56,11 @@ Tes SQL dosing memakai dev dependency `@electric-sql/pglite` agar migrasi, trigg
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
 
-Nama dan kekuatan memakai normalizer yang sama dengan penyimpanan obat. Kecocokan beberapa identitas obat ditolak untuk diperjelas, sedangkan beberapa jadwal terbuka pada satu obat dikembalikan sebagai pilihan pengguna. Alias Parasetamol/Paracetamol belum ditambahkan. Branch matcher hanya menambah logika domain; pembaca foto, endpoint scan dan penerbit token menyusul. Jalur konfirmasi `verified` tetap menolak token sampai perakitan HMAC selesai.
+Nama dan kekuatan memakai normalizer yang sama dengan penyimpanan obat. Kecocokan beberapa identitas obat ditolak untuk diperjelas, sedangkan beberapa jadwal terbuka pada satu obat dikembalikan sebagai pilihan pengguna. Alias Parasetamol/Paracetamol belum ditambahkan. Logika domain dan adaptor pembaca foto tersedia; endpoint scan dan penerbit token menyusul. Jalur konfirmasi `verified` tetap menolak token sampai perakitan HMAC selesai.
+
+Adaptor `GeminiPackageReader` menerima JPEG/PNG/WebP maksimal **1.500.000 byte** sebelum base64, memeriksa MIME dan signature, lalu mengirim byte melalui `inlineData` ([dokumentasi Google](https://aistudio.google.com/docs/image-understanding?generate-content=true)). Tidak memakai Files API, disk, storage, atau log gambar; tidak mengirim metadata akun/jadwal. Pemeriksaan signature bukan dekode penuh gambar. JSON rusak/tidak sesuai skema menjadi `{names: [], strength: null, legible: false}`; jaringan/timeout/kuota tetap galat. Batas waktu total 20 detik termasuk maksimal satu retry 429/503.
+
+Tes adaptor: `pnpm --filter backend test tests/infrastructure/gemini-package-reader.test.ts tests/infrastructure/gemini-json-generator.test.ts tests/unit/verification/package-image.test.ts`. Fixture berupa header biner dan respons sintetis di memori; belum ada uji akurasi/latensi foto nyata. Adaptor belum dirakit ke API; row 19 wajib memeriksa consent dan jatah harian melalui `AiUsageLimiter` sebelum AI dipanggil.
 
 ## Variabel lingkungan
 

@@ -49,9 +49,12 @@ Data dikirim terpisah dalam penanda, misalnya:
 ```
 
 ## Pemanggilan B: baca kemasan
-- **Input**: gambar (JPEG/PNG/WebP, ≤ ±1,5 MB setelah kompres klien), tanpa teks pengguna.
+- **Input**: gambar (JPEG/PNG/WebP, maksimum **1.500.000 byte** setelah kompres klien dan sebelum base64), tanpa teks pengguna. Batas tunggal `PACKAGE_IMAGE_LIMITS.maxBytes` di domain verification. `createPackageImage` memeriksa ukuran, MIME dan signature biner, bukan dekode penuh gambar; adaptor memeriksa ulang sebelum pengiriman.
 - **Output**: JSON `{ "names": string[], "strength": string | null, "legible": boolean }`, divalidasi zod. Hasil rusak = `legible:false`.
 - Suhu rendah. Batas waktu 15–20 detik.
+- **Implementasi row 18:** port `PackageReader.read(PackageImage)` tidak menerima identitas akun, daftar obat atau jadwal. `GeminiPackageReader` memakai `GeminiJsonGenerator` bersama dengan `inlineData` base64 dalam memori, tanpa Files API/URL/cache/disk/log ([API gambar resmi](https://aistudio.google.com/docs/image-understanding?generate-content=true)). Tidak ada dependency baru.
+- **Validasi lokal:** hanya tiga kolom keluaran diizinkan; maksimum 20 nama (masing-masing 200 karakter), kekuatan 80 karakter, `legible` boolean. `legible=true` memerlukan nama yang tidak kosong. Keluaran tidak valid atau `legible=false` dibersihkan menjadi `{names: [], strength: null, legible: false}`. Kekuatan null dengan nama terbaca tetap diteruskan ke matcher. Tidak ada keputusan/token dari AI yang diterima.
+- JSON kosong/rusak dapat dikembalikan pemanggil bersama sebagai null hanya melalui opsi eksplisit `invalidJson: 'null'` milik scan. Perilaku explainer tetap galat. Timeout/jaringan/kuota tidak diubah menjadi bacaan sukses; deadline total 20 detik berlaku juga pada jeda retry dan respons SDK terlambat. Maksimal satu retry, hanya 429/503. Row 19 merakit consent, jatah harian `AiUsageLimiter`, API dan token; belum ada endpoint scan pada row 18.
 
 Draf `systemInstruction`:
 ```

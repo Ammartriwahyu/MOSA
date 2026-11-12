@@ -11,6 +11,8 @@ export type GeminiJsonRequest = {
   readonly systemInstruction: string;
   readonly contents: GenerateContentParameters["contents"];
   readonly responseJsonSchema: Readonly<Record<string, unknown>>;
+  /** Konsumen scan memvalidasi null sebagai bacaan gagal; default penjelasan tetap galat. */
+  readonly invalidJson?: "null";
 };
 
 export type GeminiJsonOptions = {
@@ -35,14 +37,45 @@ function statusOf(error: unknown): number | null {
   return typeof error.status === "number" ? error.status : null;
 }
 
-const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
+function wait(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve) => {
+    const finish = () => {
+      clearTimeout(timer);
+      signal.removeEventListener("abort", finish);
+      resolve();
+    };
+    const timer = setTimeout(finish, ms);
+    signal.addEventListener("abort", finish, { once: true });
+    if (signal.aborted) finish();
+  });
+}
 
-function parseJson(text: string | undefined): Result<unknown, DomainError> {
-  if (!text) return err(unavailable());
+/** Deadline tetap berlaku bila implementasi SDK mengabaikan sinyal batal. */
+async function generateBeforeDeadline(
+  generate: GenerateContent,
+  params: GenerateContentParameters,
+  signal: AbortSignal,
+): ReturnType<GenerateContent> {
+  let onAbort = () => {};
+  try {
+    return await new Promise<Awaited<ReturnType<GenerateContent>>>((resolve, reject) => {
+      onAbort = () => reject(unavailable());
+      signal.addEventListener("abort", onAbort, { once: true });
+      if (signal.aborted) onAbort();
+      else void generate(params).then(resolve, reject);
+    });
+  } finally {
+    signal.removeEventListener("abort", onAbort);
+  }
+}
+
+function parseJson(text: string | undefined, invalidJson?: "null"): Result<unknown, DomainError> {
+  const invalid = () => invalidJson === "null" ? ok(null) : err(unavailable());
+  if (!text) return invalid();
   try {
     return ok(JSON.parse(text));
   } catch {
-    return err(unavailable());
+    return invalid();
   }
 }
 
@@ -86,13 +119,16 @@ export class GeminiJsonGenerator {
 
     for (let attempt = 1; ; attempt += 1) {
       try {
-        const response = await this.generate(params);
-        return parseJson(response.text);
+        const response = await generateBeforeDeadline(this.generate, params, signal);
+        if (signal.aborted) return err(unavailable());
+        return parseJson(response.text, request.invalidJson);
       } catch (error) {
+        if (signal.aborted) return err(unavailable());
         const status = statusOf(error);
         if (attempt === 1 && status !== null && RETRYABLE_STATUS.has(status) && !signal.aborted) {
-          await wait(this.retryDelayMs);
-          if (!signal.aborted) continue;
+          await wait(this.retryDelayMs, signal);
+          if (signal.aborted) return err(unavailable());
+          continue;
         }
         return err(status === 429 ? quotaExceeded() : unavailable());
       }
