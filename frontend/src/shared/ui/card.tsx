@@ -3,6 +3,8 @@ import { cx } from "./cx";
 
 const TONE = {
   default: "bg-surface shadow-card",
+  /** Jadwal berikutnya (Figma 15): hijau muda bergaris, tanpa bayangan. */
+  brand: "border-2 border-brand-border bg-brand-soft",
   /** Kartu dosis jatuh tempo (Figma 05: bingkai kuning). */
   due: "border-3 border-warning-border bg-surface shadow-card",
   /** Pesan peringatan (Figma A3: kotak merah muda bergaris merah). */
