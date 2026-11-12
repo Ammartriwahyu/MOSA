@@ -454,6 +454,29 @@ export const DOSIS = {
   diniKeterangan: "Jadwal besok ditampilkan terpisah dari progres hari ini.", // DRAFT
 } as const;
 
+export const CATAT_DOSIS = {
+  tanpaScan: "Sudah minum tanpa scan", // PRD §9.5
+  scanDosis: "Scan Obat untuk dosis ini", // DRAFT
+  judul: "Catat tanpa foto kemasan?", // DRAFT
+  keterangan: "Dicatat sebagai Sudah ✓ tanpa scan, setelah Anda menyetujui konfirmasi.", // DRAFT
+  mencatat: "Sedang mencatat…", // DRAFT
+  memeriksa: "Memeriksa jadwal terbaru…", // DRAFT
+  periksaJadwal: "Periksa jadwal", // DRAFT
+  belumPasti: "Pencatatan belum dapat dipastikan. Periksa jadwal sebelum mencoba lagi.", // DRAFT
+  jadwalBerubah: "Jadwal atau status dosis sudah berubah. Tutup pop-up dan periksa jadwal terbaru.", // DRAFT
+  gagalMuat: "Jadwal terbaru belum dapat dimuat. Periksa koneksi internet, lalu coba lagi.", // DRAFT
+  sudahTercatat: "Dosis ini sudah tercatat. Jadwal dimuat ulang.", // DRAFT
+  berhasil: "Dicatat tanpa foto kemasan", // DRAFT
+  pilihJadwal: "Pilih jadwal dosis", // DRAFT
+  pilihKeterangan: "Ada beberapa dosis yang masih dapat dikonfirmasi. Pilih jadwal yang Anda maksud untuk scan.", // DRAFT
+  tidakAdaPilihan: "Tidak ada dosis yang dapat dipilih untuk konfirmasi saat ini.", // DRAFT
+} as const;
+
+/** DRAFT: hanya ditampilkan setelah respons konfirmasi sah dari server. */
+export function catatanDosisBerhasil(p: { nama: string; kekuatan: string; date: string; jam: string }): string {
+  return `${obat(p.nama, p.kekuatan)} untuk jadwal ${tanggalDosis(p.date)} pukul ${formatJam(p.jam)} WIB sudah tercatat tanpa scan.`;
+}
+
 /** Nama kelompok dipilih dari period backend, tanpa menghitung ulang batas jam. */
 export function namaKelompokDosis(period: KelompokWaktu): string {
   return NAMA_KELOMPOK[period];
