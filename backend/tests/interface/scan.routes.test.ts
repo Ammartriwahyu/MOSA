@@ -88,6 +88,11 @@ describe("HTTP scan → konfirmasi dengan HMAC sungguhan dan penyimpanan in-memo
 });
 
 describe("delapan respons scan", () => {
+  test("jam slot dan jadwal berikutnya memakai string HH:mm sesuai kontrak frontend", async () => {
+    const system = scanTestSystem();
+    const response = await scan(system);
+    expect(await response.json()).toMatchObject({ outcome: "bisa_konfirmasi", slots: [{ scheduledDate: "2026-11-11", scheduledTime: "07:00" }], nextDose: { scheduledTime: "19:00", jam: "19:00" } });
+  });
   test.each(["tidak_terbaca", "tidak_terdaftar", "kekuatan_tidak_terbaca", "kekuatan_beda", "dosis_sudah_tercatat", "bisa_konfirmasi", "tunggu_dulu", "hanya_info"])("%s hanya menerbitkan token bila bisa_konfirmasi", async (outcome) => {
     const system = scanTestSystem();
     if (outcome === "tidak_terbaca") system.setReading(ok({ names: [], strength: null, legible: false }));

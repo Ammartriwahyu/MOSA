@@ -107,6 +107,23 @@ export const SCAN_CAPTURE = {
   invalidTarget: "Jadwal pada tautan ini tidak valid. Kembali ke jadwal dan pilih dosis lagi.", // DRAFT
 } as const;
 
+/** Pengiriman scan P11; kalimat #12 tetap AI_GAGAL persis. */
+export const SCAN_REQUEST = {
+  usePhoto: "Gunakan Foto Ini", // DRAFT
+  reading: "Sedang membaca kemasan obat…", // DRAFT: Figma 08/14
+  waiting: "Mohon tunggu sebentar. Foto tidak kami simpan.", // DRAFT: Figma 08/14
+  cancelHint: "Batal menghentikan penantian di HP ini. Foto yang sudah terkirim mungkin tetap diproses dan jatah scan dapat terpakai.", // DRAFT
+  cancelled: "Pemindaian dibatalkan di HP ini. Tidak ada dosis yang dicatat.", // DRAFT
+  failedTitle: "Foto belum dapat diperiksa", // DRAFT
+  consent: "Persetujuan scan perlu diperiksa lagi sebelum mengirim foto.", // DRAFT
+  session: "Sesi Anda sudah berakhir. Silakan masuk lagi.", // DRAFT
+  target: "Jadwal yang dipilih sudah tidak tersedia. Kembali ke jadwal dan pilih dosis lagi.", // DRAFT
+  invalid: "Pemindaian belum dapat diproses. Pilih foto lain atau periksa data obat dan jadwal Anda.", // DRAFT
+  again: "Foto lagi", // DRAFT
+  completeTitle: "Pemeriksaan foto selesai", // DRAFT
+  completeMessage: "Tidak ada dosis yang dicatat dari pemeriksaan foto ini.", // DRAFT
+} as const;
+
 const FRASA_WAKTU: Record<JadwalBerikutnya["tanggal"], Record<KelompokWaktu, string>> = {
   hari_ini: { pagi: "pagi ini", siang: "siang ini", malam: "malam ini" },
   besok: { pagi: "besok pagi", siang: "besok siang", malam: "besok malam" },
