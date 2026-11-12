@@ -120,9 +120,42 @@ export const SCAN_REQUEST = {
   target: "Jadwal yang dipilih sudah tidak tersedia. Kembali ke jadwal dan pilih dosis lagi.", // DRAFT
   invalid: "Pemindaian belum dapat diproses. Pilih foto lain atau periksa data obat dan jadwal Anda.", // DRAFT
   again: "Foto lagi", // DRAFT
-  completeTitle: "Pemeriksaan foto selesai", // DRAFT
-  completeMessage: "Tidak ada dosis yang dicatat dari pemeriksaan foto ini.", // DRAFT
 } as const;
+
+/** Hasil scan P11. Teks tambahan Figma/keadaan tanpa frame; belum disetujui PM. */
+export const SCAN_OUTCOME = {
+  title: "Hasil Scan", // DRAFT
+  infoTitle: "Informasi Obat", // DRAFT
+  matched: "Obat sudah sesuai", // DRAFT
+  unreadable: "Foto belum bisa dibaca", // DRAFT
+  unregistered: "Obat belum terdaftar", // DRAFT
+  missingStrength: "Kekuatan obat belum terbaca", // DRAFT
+  differentStrength: "Hati-hati, kekuatan obat berbeda", // DRAFT
+  wait: "Tunggu dulu", // DRAFT
+  recorded: "Dosis sudah tercatat", // DRAFT
+  matching: "Hasil pencocokan", // DRAFT
+  name: "Nama obat", // DRAFT
+  strength: "Kekuatan", // DRAFT
+  schedule: "Jadwal dosis", // DRAFT
+  photographed: "Kekuatan yang terbaca", // DRAFT
+  registered: "Yang terdaftar", // DRAFT
+  currentMedicines: "Obat untuk sekarang", // DRAFT
+  chooseSlot: "Pilih jadwal dosis", // DRAFT
+  chooseSlotHint: "Ada beberapa jadwal untuk obat ini. Pilih satu jadwal dosis yang Anda maksud.", // DRAFT
+  noNewDose: "Tidak ada dosis yang dicatat dari pemeriksaan foto ini.", // DRAFT
+  noConfirmation: "Tidak perlu dikonfirmasi lagi", // DRAFT
+  viewInfo: "Lihat Informasi Obat", // DRAFT
+  backToResult: "Kembali ke Hasil Scan", // DRAFT
+  retryPhoto: "Foto Ulang Kemasan", // DRAFT
+  correctPhoto: "Foto Obat yang Benar", // DRAFT
+  goodPhoto: "Foto strip, bungkus, atau plastik yang ada tulisan nama obat", // DRAFT
+  avoidLoosePills: "Foto butir tablet atau kapsul saja", // DRAFT
+} as const;
+
+/** DRAFT: #6 membutuhkan jam. Bila server tidak punya nextDose, jangan menebak jamnya. */
+export function tungguDuluTanpaJadwal(p: { nama: string; kekuatan: string; jatuhTempo: ObatJatuhTempo[] }): string {
+  return `Tunggu dulu. Ini ${obat(p.nama, p.kekuatan)}. Obat untuk sekarang adalah ${p.jatuhTempo.map((o) => obat(o.nama, o.kekuatan)).join(" dan ")}.`; // DRAFT
+}
 
 const FRASA_WAKTU: Record<JadwalBerikutnya["tanggal"], Record<KelompokWaktu, string>> = {
   hari_ini: { pagi: "pagi ini", siang: "siang ini", malam: "malam ini" },

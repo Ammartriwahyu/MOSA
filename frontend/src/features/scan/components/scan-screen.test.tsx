@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { fetchHousehold, recordScanConsent, signOut, useSessionIdentity, type Household } from "@/features/auth";
-import { AI_GAGAL, PERSETUJUAN_SCAN, SCAN_CAPTURE, SCAN_REQUEST, TOMBOL } from "@/shared/copy";
+import { AI_GAGAL, PERSETUJUAN_SCAN, SCAN_CAPTURE, SCAN_OUTCOME, SCAN_REQUEST, TOMBOL } from "@/shared/copy";
 import { ApiError } from "@/shared/lib";
 import { scanPackage } from "../api/scan";
 import { scanResponseFixture, scanSlotFixture } from "../testing/scan-response-fixtures";
@@ -207,7 +207,7 @@ describe("pengiriman scan tanpa pencatatan dosis", () => {
     expect(scanPost).toHaveBeenCalledTimes(1);
     expect(scanPost.mock.calls[0]?.[0].slotId).toBe(target);
     expect(scanPost.mock.calls[0]?.[0].blob.type).toBe("image/jpeg");
-    expect(await screen.findByText(SCAN_REQUEST.completeTitle)).toBeInTheDocument();
+    expect(await screen.findByText(SCAN_OUTCOME.matched)).toBeInTheDocument();
     expect(screen.queryByAltText(SCAN_CAPTURE.preview)).not.toBeInTheDocument(); expect(revoke).toHaveBeenCalledWith("blob:uji-1");
     expect(screen.queryByRole("button", { name: TOMBOL.sudahSayaMinum })).not.toBeInTheDocument();
     const cache = JSON.stringify([...view.client.getQueryCache().getAll().map((query) => query.state.data), ...view.client.getMutationCache().getAll().map((mutation) => mutation.state)]);
@@ -221,7 +221,7 @@ describe("pengiriman scan tanpa pencatatan dosis", () => {
     await user.click(screen.getByRole("button", { name: TOMBOL.batal }));
     expect(await screen.findByText(SCAN_REQUEST.cancelled)).toBeInTheDocument(); expect(scanPost.mock.calls[0]?.[0].signal.aborted).toBe(true);
     await act(async () => { finish(scanResponseFixture()); });
-    expect(screen.queryByText(SCAN_REQUEST.completeTitle)).not.toBeInTheDocument(); expect(screen.getByRole("heading", { name: TOMBOL.scanObat })).toHaveFocus();
+    expect(screen.queryByText(SCAN_OUTCOME.matched)).not.toBeInTheDocument(); expect(screen.getByRole("heading", { name: TOMBOL.scanObat })).toHaveFocus();
   });
   test.each(["NETWORK_ERROR", "TIMEOUT", "INVALID_RESPONSE", "AI_QUOTA_EXCEEDED", "AI_UNAVAILABLE"])("galat %s memakai #12 persis, tanpa retry otomatis", async (code) => {
     scanPost.mockRejectedValue(new ApiError(code, null, "detail-uji-yang-tidak-boleh-tampil"));
@@ -254,7 +254,7 @@ describe("pengiriman scan tanpa pencatatan dosis", () => {
     await waitFor(() => expect(screen.getByRole("heading", { name: TOMBOL.scanObat })).toBeInTheDocument());
     expect(scanPost.mock.calls[0]?.[0].signal.aborted).toBe(true);
     await act(async () => { finish(scanResponseFixture()); });
-    expect(screen.queryByText(SCAN_REQUEST.completeTitle)).not.toBeInTheDocument();
+    expect(screen.queryByText(SCAN_OUTCOME.matched)).not.toBeInTheDocument();
   });
   test("deadline total menyelesaikan UI meskipun transport mengabaikan abort", async () => {
     vi.useFakeTimers();
@@ -280,7 +280,7 @@ describe("pengiriman scan tanpa pencatatan dosis", () => {
     expect(result.current.state).toMatchObject({ phase: "complete", result: { outcome: "tidak_terbaca" } });
     expect(scanPost).toHaveBeenCalledTimes(2); unmount();
   });
-  test("loading, galat #12 dan tanda terima netral lolos axe", async () => {
+  test("loading, galat #12 dan hasil cocok lolos axe", async () => {
     let finish!: (value: ReturnType<typeof scanResponseFixture>) => void;
     scanPost.mockReturnValueOnce(new Promise((resolve) => { finish = resolve; }));
     const { user } = setup(); await upload(); await user.click(screen.getByRole("button", { name: SCAN_REQUEST.usePhoto }));
