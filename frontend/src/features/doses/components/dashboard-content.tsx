@@ -1,20 +1,25 @@
 import { Camera, Check, CheckCheck, ChevronRight, Clock, Info, Pill, Plus } from "lucide-react";
 import Link from "next/link";
-import { ROUTES } from "@/shared/config";
+import { ROUTES, scanForDose } from "@/shared/config";
 import { bannerJatuhTempo, DASBOR, formatJam, formatKekuatan, OBAT, progresDosis, TOMBOL, waktuJadwalDasbor } from "@/shared/copy";
 import { Banner, Button, Card } from "@/shared/ui";
-import type { TodaysDoses } from "../schemas/todays-doses";
+import type { Dose, TodaysDoses } from "../schemas/todays-doses";
 import { DashboardDay } from "./dashboard-day";
 import { DoseGroups } from "./dose-groups";
+import type { DoseActionProps } from "./dose-actions";
 
-function ScanButton() {
+function ScanButton({ due = [], onChooseScan, disabled = false }: { due?: readonly Dose[]; onChooseScan?: (trigger: HTMLButtonElement) => void; disabled?: boolean }) {
+  const contents = <>
+    <span aria-hidden="true" className="flex size-touch shrink-0 items-center justify-center rounded-field bg-surface text-action"><Camera className="size-6.5" /></span>
+    <span className="min-w-0 flex-1 text-left">{TOMBOL.scanObat}</span>
+    <span aria-hidden="true" className="flex shrink-0 -space-x-2.5"><ChevronRight className="size-5 opacity-40" /><ChevronRight className="size-5 opacity-70" /><ChevronRight className="size-5" /></span>
+  </>;
+  if (disabled || (due.length > 1 && onChooseScan)) return (
+    <Button size="lg" className="justify-start gap-3.5 pl-2 pr-5.5" disabled={disabled} onClick={(event) => onChooseScan?.(event.currentTarget)}>{contents}</Button>
+  );
   return (
     <Button asChild size="lg" className="justify-start gap-3.5 pl-2 pr-5.5">
-      <Link href={ROUTES.scan}>
-        <span aria-hidden="true" className="flex size-touch shrink-0 items-center justify-center rounded-field bg-surface text-action"><Camera className="size-6.5" /></span>
-        <span className="min-w-0 flex-1 text-left">{TOMBOL.scanObat}</span>
-        <span aria-hidden="true" className="flex shrink-0 -space-x-2.5"><ChevronRight className="size-5 opacity-40" /><ChevronRight className="size-5 opacity-70" /><ChevronRight className="size-5" /></span>
-      </Link>
+      <Link href={due.length === 1 ? scanForDose(due[0].slotId) : ROUTES.scan}>{contents}</Link>
     </Button>
   );
 }
@@ -50,7 +55,7 @@ function EmptyDashboard() {
 }
 
 /** Status dan hitungan hanya dibaca dari backend; pemilihan di sini untuk presentasi banner. */
-export function DashboardContent({ data }: { data: TodaysDoses }) {
+export function DashboardContent({ data, onChooseScan, ...actions }: DoseActionProps & { data: TodaysDoses; onChooseScan?: (trigger: HTMLButtonElement) => void }) {
   const empty = data.medicines.length === 0;
   const due = [...data.carryoverDoses, ...data.doses, ...data.earlyDoses].filter((dose) => dose.status === "jatuh_tempo");
   const next = data.medicines.flatMap((row) => row.nextDose ? [row.nextDose] : []).sort((a, b) =>
@@ -66,7 +71,7 @@ export function DashboardContent({ data }: { data: TodaysDoses }) {
             <Banner
               title={due.length === 1 ? bannerJatuhTempo(due[0].medicine.name) : DASBOR.beberapaDosis}
               eyebrow={<><Clock aria-hidden="true" className="size-5 shrink-0" />{DASBOR.waktunyaMinum}</>}
-              actions={<ScanButton />}
+              actions={<ScanButton due={due} onChooseScan={onChooseScan} disabled={actions.actionsDisabled} />}
             >
               <ul className="flex flex-col gap-3">
                 {due.map((dose) => (
@@ -89,7 +94,7 @@ export function DashboardContent({ data }: { data: TodaysDoses }) {
           )}
           <DailyProgress summary={data.summary} />
           <Button asChild variant="secondary"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
-          <DoseGroups data={data} />
+          <DoseGroups data={data} {...actions} />
         </>
       )}
     </div>

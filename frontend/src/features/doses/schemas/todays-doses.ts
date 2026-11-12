@@ -13,7 +13,7 @@ const medicine = z.object({
   labelSource: z.enum(["apoteker", "keluarga"]), explanationOrigin: z.enum(["ai_dikonfirmasi", "teks_pengisi"]),
   explanation: z.string().nullable(),
 });
-const confirmation = z.object({
+export const confirmationSchema = z.object({
   id: z.string().min(1), slotId: z.string().min(1), medicineId: z.string().min(1),
   scheduledDate: date, scheduledTime: time, confirmedAt: timestamp,
   level: z.enum(["dasar", "scan_terverifikasi"]),
@@ -23,7 +23,7 @@ export const doseSchema = z.object({
   slotId: z.string().min(1), medicineId: z.string().min(1), scheduledDate: date,
   scheduledTime: time, scheduledAt: timestamp, period,
   status: z.enum(["belum_tiba", "jatuh_tempo", "terlewat", "sudah"]),
-  confirmation: confirmation.nullable(), medicine,
+  confirmation: confirmationSchema.nullable(), medicine,
 }).refine((value) => (value.status === "sudah") === (value.confirmation !== null));
 
 export const todaysDosesSchema = z.object({

@@ -29,6 +29,8 @@ export type DialogProps = {
   returnFocusRef?: RefObject<HTMLElement | null>;
   /** false = tidak tertutup lewat klik latar (dialog penting). Esc tetap menutup. */
   dismissOnOutsideClick?: boolean;
+  /** Penulisan sedang berlangsung: jangan menutup sebelum hasil server diketahui. */
+  closeDisabled?: boolean;
 };
 
 const ICON_TONE = {
@@ -53,6 +55,7 @@ export function Dialog({
   initialFocusRef,
   returnFocusRef,
   dismissOnOutsideClick = true,
+  closeDisabled = false,
 }: DialogProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -76,12 +79,14 @@ export function Dialog({
             }
           }}
           onPointerDownOutside={(event) => {
-            if (!dismissOnOutsideClick) event.preventDefault();
+            if (!dismissOnOutsideClick || closeDisabled) event.preventDefault();
           }}
+          onEscapeKeyDown={(event) => { if (closeDisabled) event.preventDefault(); }}
           className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] w-full max-w-app flex-col gap-3 overflow-y-auto rounded-t-sheet bg-surface px-6 pt-3.5 pb-6 outline-none"
         >
           <div aria-hidden="true" className="mx-auto h-1.5 w-12 rounded-pill bg-field-border" />
           <RadixDialog.Close
+            disabled={closeDisabled}
             aria-label={DRAFT.tutup}
             className="absolute top-3 right-3 inline-flex size-touch items-center justify-center rounded-pill text-ink-secondary"
           >
@@ -98,7 +103,7 @@ export function Dialog({
             ) : null}
             <RadixDialog.Title className="max-w-full px-9 text-display break-words">{title}</RadixDialog.Title>
             {description ? (
-              <RadixDialog.Description className="text-body">{description}</RadixDialog.Description>
+              <RadixDialog.Description className="max-w-full text-body [overflow-wrap:anywhere]">{description}</RadixDialog.Description>
             ) : null}
           </div>
           {children}

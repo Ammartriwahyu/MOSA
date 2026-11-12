@@ -2,30 +2,31 @@ import { Moon, Sun, Sunrise } from "lucide-react";
 import { DOSIS, formatJam, namaKelompokDosis, type KelompokWaktu } from "@/shared/copy";
 import type { Dose, TodaysDoses } from "../schemas/todays-doses";
 import { DoseCard } from "./dose-card";
+import type { DoseActionProps } from "./dose-actions";
 
 const PERIODS: readonly KelompokWaktu[] = ["pagi", "siang", "malam"];
 const ICONS = { pagi: Sunrise, siang: Sun, malam: Moon } as const;
 const bySchedule = (a: Dose, b: Dose) => a.scheduledAt.localeCompare(b.scheduledAt) || a.slotId.localeCompare(b.slotId);
 
-function NearbyDoses({ doses, title, description }: { doses: readonly Dose[]; title: string; description: string }) {
+function NearbyDoses({ doses, title, description, ...actions }: DoseActionProps & { doses: readonly Dose[]; title: string; description: string }) {
   if (doses.length === 0) return null;
   return (
     <section aria-label={title} className="flex flex-col gap-3">
       <h2 className="text-section">{title}</h2>
       <p className="text-body text-ink-secondary">{description}</p>
       <ul className="flex flex-col gap-3">
-        {[...doses].sort(bySchedule).map((dose) => <li key={dose.slotId}><DoseCard dose={dose} showDate /></li>)}
+        {[...doses].sort(bySchedule).map((dose) => <li key={dose.slotId}><DoseCard dose={dose} showDate {...actions} /></li>)}
       </ul>
     </section>
   );
 }
 
 /** Kelompok dan ringkasan dari backend; hanya urutan penyajian yang ditata di sini. */
-export function DoseGroups({ data }: { data: TodaysDoses }) {
+export function DoseGroups({ data, ...actions }: DoseActionProps & { data: TodaysDoses }) {
   const summaries = new Map(data.medicines.map((medicine) => [medicine.medicineId, medicine.summary]));
   return (
     <>
-      <NearbyDoses doses={data.carryoverDoses} title={DOSIS.jadwalSebelumnya} description={DOSIS.lintasTanggal} />
+      <NearbyDoses doses={data.carryoverDoses} title={DOSIS.jadwalSebelumnya} description={DOSIS.lintasTanggal} {...actions} />
       {data.doses.length > 0 ? (
         <section aria-label={DOSIS.jadwalHariIni} className="flex flex-col gap-4">
           {PERIODS.map((period) => {
@@ -41,14 +42,14 @@ export function DoseGroups({ data }: { data: TodaysDoses }) {
                   <p className="text-body text-ink-secondary">{times}</p>
                 </div>
                 <ul className="flex flex-col gap-3">
-                  {doses.map((dose) => <li key={dose.slotId}><DoseCard dose={dose} summary={summaries.get(dose.medicineId)} /></li>)}
+                  {doses.map((dose) => <li key={dose.slotId}><DoseCard dose={dose} summary={summaries.get(dose.medicineId)} {...actions} /></li>)}
                 </ul>
               </section>
             );
           })}
         </section>
       ) : null}
-      <NearbyDoses doses={data.earlyDoses} title={DOSIS.jadwalDini} description={DOSIS.diniKeterangan} />
+      <NearbyDoses doses={data.earlyDoses} title={DOSIS.jadwalDini} description={DOSIS.diniKeterangan} {...actions} />
     </>
   );
 }

@@ -4,8 +4,9 @@ import { DASBOR, DOSIS, formatJam, formatKekuatan, labelKartuDosis, progresDosis
 import { Card, Chip, cx } from "@/shared/ui";
 import type { Dose, TodaysDoses } from "../schemas/todays-doses";
 import { DoseStatus } from "./dose-status";
+import { DoseActions, type DoseActionProps } from "./dose-actions";
 
-export function DoseCard({ dose, summary, showDate = false }: { dose: Dose; summary?: TodaysDoses["summary"]; showDate?: boolean }) {
+export function DoseCard({ dose, summary, showDate = false, ...actions }: DoseActionProps & { dose: Dose; summary?: TodaysDoses["summary"]; showDate?: boolean }) {
   const { medicine } = dose;
   return (
     <Card
@@ -33,6 +34,7 @@ export function DoseCard({ dose, summary, showDate = false }: { dose: Dose; summ
       {dose.status === "belum_tiba" ? <p className="text-body text-ink-secondary">{DOSIS.belumWaktunya}</p> : null}
       {dose.status === "terlewat" ? <p className="text-body text-ink-secondary">{DOSIS.terlewatKeterangan}</p> : null}
       {dose.status === "sudah" && dose.confirmation ? <p className="text-body text-ink-secondary"><time dateTime={dose.confirmation.confirmedAt}>{waktuPencatatanDosis(dose.confirmation.confirmedAt)}</time></p> : null}
+      <DoseActions dose={dose} {...actions} />
     </Card>
   );
 }
