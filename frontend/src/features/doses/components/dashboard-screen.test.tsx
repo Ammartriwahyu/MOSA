@@ -10,7 +10,7 @@ import type { TodaysDoses } from "../schemas/todays-doses";
 import { doseFixture, todaysDosesFixture } from "../testing/dosing-fixture";
 import { DashboardScreen } from "./dashboard-screen";
 
-vi.mock("../api/doses", () => ({ getTodaysDoses: vi.fn() }));
+vi.mock("../api/doses", () => ({ getTodaysDoses: vi.fn(), confirmBasicDose: vi.fn() }));
 const getDoses = vi.mocked(getTodaysDoses);
 const clients: QueryClient[] = [];
 function renderDashboard(data?: TodaysDoses) {
@@ -47,7 +47,7 @@ describe("dasbor", () => {
     expect(await screen.findByText("Sekarang waktunya minum Obat Uji.")).toBeInTheDocument();
     expect(screen.getByText("Obat Uji 5 mg · 1 tablet")).toBeInTheDocument();
     expect(screen.getByText("Sesudah makan")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Scan Obat" })).toHaveAttribute("href", "/scan");
+    expect(screen.getByRole("link", { name: "Scan Obat" })).toHaveAttribute("href", `/scan?dosis=${encodeURIComponent(doseFixture().slotId)}`);
     const progress = screen.getByRole("progressbar", { name: DASBOR.progresHariIni });
     expect(progress).toHaveAttribute("value", "3");
     expect(progress).toHaveAttribute("max", "7");
@@ -62,7 +62,7 @@ describe("dasbor", () => {
     expect(screen.getAllByText("Sekarang waktunya minum Obat Uji.")).toHaveLength(2);
     expect(screen.getByText("07.00")).toBeInTheDocument();
     expect(screen.getByText("08.00")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Scan Obat" })).toHaveAttribute("href", "/scan");
+    expect(screen.getByRole("button", { name: "Scan Obat" })).toBeInTheDocument();
   });
   test("slot lintas tengah malam tampil tanpa menambah hitungan hari ini", async () => {
     getDoses.mockResolvedValue(todaysDosesFixture({ doses: [], carryoverDoses: [doseFixture({ scheduledDate: "2026-11-10", slotId: "kemarin" })], earlyDoses: [doseFixture({ scheduledDate: "2026-11-12", slotId: "besok" })], summary: { confirmed: 0, total: 0 } }));
