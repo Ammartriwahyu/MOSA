@@ -73,6 +73,40 @@ export const KONFIRMASI_SIMPAN_OBAT =
 export const PERSETUJUAN_SCAN =
   "Foto obat akan dikirim ke layanan AI untuk dibaca. Foto tidak kami simpan. Hindari memotret bagian yang berisi nama atau data pribadi.";
 
+/** Capture P11: teks tambahan dari Figma/keadaan gagal, belum disetujui PM. */
+export const SCAN_CAPTURE = {
+  consentTitle: "Sebelum memotret obat", // DRAFT
+  agree: "Saya mengerti, lanjut", // DRAFT
+  goodPackage: "Foto bungkus, strip, atau plastik obat", // DRAFT
+  avoidLabel: "Jangan foto etiket yang berisi nama pasien", // DRAFT
+  deviceNote: "Persetujuan diminta pada setiap HP yang digunakan.", // DRAFT
+  savingConsent: "Menyimpan persetujuan…", // DRAFT
+  consentFailed: "Persetujuan belum dapat disimpan. Periksa koneksi, lalu coba lagi.", // DRAFT
+  loadFailed: "Persetujuan scan belum dapat diperiksa.", // DRAFT
+  checkingConsent: "Memeriksa persetujuan scan…", // DRAFT
+  backToSchedule: "Kembali ke Jadwal", // DRAFT
+  retry: "Coba lagi", // DRAFT
+  camera: "Ambil foto dengan kamera", // DRAFT
+  cameraHint: "Ketuk untuk memotret", // DRAFT
+  upload: "Unggah Foto", // DRAFT
+  retake: "Foto ulang", // DRAFT
+  another: "Pilih foto lain", // DRAFT
+  close: "Tutup scan dan kembali ke jadwal", // DRAFT
+  genericMode: "Scan kemasan obat", // DRAFT: mode ditentukan backend setelah membaca, bukan selalu lihat info
+  selectedMode: "Untuk jadwal yang Anda pilih", // DRAFT
+  instruction: "Pastikan nama dan kekuatan obat pada kemasan terlihat jelas.", // DRAFT
+  empty: "Foto kemasan akan tampil di sini.", // DRAFT
+  processing: "Menyiapkan foto…", // DRAFT
+  ready: "Foto siap diperiksa", // DRAFT
+  review: "Periksa nama dan kekuatan pada foto. Hindari bagian yang berisi data pribadi.", // DRAFT
+  preview: "Pratinjau foto kemasan pilihan Anda", // DRAFT
+  unsupported: "Pilih foto JPEG, PNG, atau WebP. Jika foto tidak bisa dibuka, ambil ulang dengan kamera.", // DRAFT
+  tooLarge: "Foto ini terlalu besar untuk diproses. Ambil ulang dengan resolusi lebih kecil.", // DRAFT
+  unreadable: "Foto belum bisa dibuka. Ambil ulang atau pilih foto lain.", // DRAFT
+  compressionFailed: "Foto belum berhasil disiapkan. Ambil ulang atau pilih foto lain.", // DRAFT
+  invalidTarget: "Jadwal pada tautan ini tidak valid. Kembali ke jadwal dan pilih dosis lagi.", // DRAFT
+} as const;
+
 const FRASA_WAKTU: Record<JadwalBerikutnya["tanggal"], Record<KelompokWaktu, string>> = {
   hari_ini: { pagi: "pagi ini", siang: "siang ini", malam: "malam ini" },
   besok: { pagi: "besok pagi", siang: "besok siang", malam: "besok malam" },
@@ -484,6 +518,11 @@ export function namaKelompokDosis(period: KelompokWaktu): string {
 
 export function tanggalDosis(date: string): string {
   return new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" }).format(new Date(`${date}T12:00:00+07:00`));
+}
+
+/** DRAFT: identitas jadwal pada capture, tanpa menghitung status/jendela dosis. */
+export function jadwalTargetScan(date: string, time: string): string {
+  return `${tanggalDosis(date)} · ${formatJam(time)} WIB`;
 }
 
 /** DRAFT: tanggal konfirmasi tetap jelas bila melintasi tengah malam. */

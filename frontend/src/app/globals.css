@@ -27,6 +27,9 @@
   /* Aksi utama: tombol kapsul gelap (Scan Obat, Foto Obat yang Benar, …) */
   --color-action: #121614;
   --color-on-action: #ffffff;
+  /* Kamera Figma MOSA DRAFT 07/13; teks putih dan bingkai success-border. */
+  --color-camera: #0b0f0d;
+  --color-camera-surface: #1c2420;
 
   /* Hijau brand */
   --color-brand: #2e7255; /* --mosa-brand */
