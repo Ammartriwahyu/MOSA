@@ -8,6 +8,8 @@ const BADGE_TONE = {
   pending: "border-pending-border bg-pending-soft text-warning",
   /** Sudah diminum (✓ / ✓✓). */
   success: "border-success-border bg-success-soft text-success",
+  /** Konfirmasi tanpa scan: sukses lebih pucat (docs/06). */
+  "success-subtle": "border-success-border bg-surface text-success",
   /** Terlewat / bahaya. */
   danger: "border-danger-border bg-danger-soft text-danger",
   neutral: "border-line bg-canvas text-ink-secondary",

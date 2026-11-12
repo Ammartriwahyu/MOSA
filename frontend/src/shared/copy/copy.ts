@@ -442,6 +442,38 @@ export const LABEL_STATUS = {
   terlewat: LABEL.terlewat,
 } as const;
 
+/** Kartu dosis Figma 05, A7, A8, B11. Teks baru menunggu tinjauan PM. */
+export const DOSIS = {
+  jadwalHariIni: "Jadwal hari ini", // DRAFT
+  belumJatuhTempo: "Belum · Waktunya minum", // DRAFT
+  belumWaktunya: "Belum waktunya", // DRAFT
+  terlewatKeterangan: "Dosis ini tidak dapat dikonfirmasi lagi.", // DRAFT
+  jadwalSebelumnya: "Jadwal dari hari sebelumnya", // DRAFT
+  jadwalDini: "Jadwal besok", // DRAFT
+  lintasTanggal: "Tetap tercatat pada tanggal jadwal asal.", // DRAFT
+  diniKeterangan: "Jadwal besok ditampilkan terpisah dari progres hari ini.", // DRAFT
+} as const;
+
+/** Nama kelompok dipilih dari period backend, tanpa menghitung ulang batas jam. */
+export function namaKelompokDosis(period: KelompokWaktu): string {
+  return NAMA_KELOMPOK[period];
+}
+
+export function tanggalDosis(date: string): string {
+  return new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" }).format(new Date(`${date}T12:00:00+07:00`));
+}
+
+/** DRAFT: tanggal konfirmasi tetap jelas bila melintasi tengah malam. */
+export function waktuPencatatanDosis(confirmedAt: string): string {
+  const date = new Intl.DateTimeFormat("id-ID", { timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric" }).format(new Date(confirmedAt));
+  return `Dicatat pada ${date} pukul ${waktuDasbor(confirmedAt)}.`;
+}
+
+/** DRAFT: nama aksesibel kartu membedakan obat/jam/tanggal pada slot bertumpuk. */
+export function labelKartuDosis(p: { nama: string; kekuatan: string; date: string; jam: string }): string {
+  return `${obat(p.nama, p.kekuatan)}, ${tanggalDosis(p.date)}, pukul ${formatJam(p.jam)} WIB`;
+}
+
 /** D-a Scan obat yang dosisnya sudah tercatat. */ // DRAFT
 export function dosisSudahTercatat(p: { nama: string; jam: string; jamBerikutnya: string | null }): string {
   const awal = `Dosis ${p.nama.trim()} pukul ${formatJam(p.jam)} sudah tercatat diminum.`; // DRAFT
