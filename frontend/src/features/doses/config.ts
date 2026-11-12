@@ -1,0 +1,1 @@
+export const DOSES_POLL_INTERVAL_MS = 20_000;
