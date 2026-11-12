@@ -14,3 +14,4 @@ export { IconButton, IconLink, type IconButtonProps } from "./icon-button";
 export { BottomNav } from "./bottom-nav";
 export { Notice } from "./notice";
 export { PageHeader, type PageHeaderProps } from "./page-header";
+export { Bacakan } from "./bacakan";

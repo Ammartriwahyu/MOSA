@@ -55,6 +55,16 @@ export const TOMBOL = {
   bacakan: "Bacakan",
 } as const;
 
+export const SUARA = {
+  stop: "Berhenti", // DRAFT
+  checking: "Memeriksa suara bahasa Indonesia…", // DRAFT
+  starting: "Menyiapkan suara…", // DRAFT
+  speaking: "Sedang membacakan teks.", // DRAFT
+  blocked: "Suara belum dapat diputar. Ketuk Bacakan untuk mencoba lagi. Teks tetap bisa dibaca di layar.", // DRAFT
+  failed: "Suara belum dapat diputar. Coba lagi atau baca teks di layar.", // DRAFT
+  readable: "Informasi tetap bisa dibaca", // DRAFT: Figma B8
+} as const;
+
 export const LABEL = {
   /** B2 */
   diisiApoteker: "Diisi apoteker",
