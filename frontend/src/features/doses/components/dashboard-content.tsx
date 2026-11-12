@@ -5,6 +5,7 @@ import { bannerJatuhTempo, DASBOR, formatJam, formatKekuatan, OBAT, progresDosis
 import { Banner, Button, Card } from "@/shared/ui";
 import type { TodaysDoses } from "../schemas/todays-doses";
 import { DashboardDay } from "./dashboard-day";
+import { DoseGroups } from "./dose-groups";
 
 function ScanButton() {
   return (
@@ -88,6 +89,7 @@ export function DashboardContent({ data }: { data: TodaysDoses }) {
           )}
           <DailyProgress summary={data.summary} />
           <Button asChild variant="secondary"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
+          <DoseGroups data={data} />
         </>
       )}
     </div>

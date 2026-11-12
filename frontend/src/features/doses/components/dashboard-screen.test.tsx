@@ -103,7 +103,7 @@ describe("dasbor", () => {
   test("refetch gagal menutup banner lama, cache baru mengganti progres tanpa skeleton", async () => {
     getDoses.mockImplementation(() => new Promise(() => {}));
     const { client } = renderDashboard(todaysDosesFixture());
-    expect(screen.getByText("Sudah 0 dari 1 dosis")).toBeInTheDocument();
+    expect(within(screen.getByRole("region", { name: DASBOR.progresHariIni })).getByText("Sudah 0 dari 1 dosis")).toBeInTheDocument();
     await act(async () => { client.setQueryData(dosesQueryKey, todaysDosesFixture({ summary: { confirmed: 1, total: 1 } })); });
     expect(await screen.findByText("Sudah 1 dari 1 dosis")).toBeInTheDocument();
     expect(screen.queryByText(DASBOR.memuat)).not.toBeInTheDocument();
