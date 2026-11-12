@@ -42,8 +42,8 @@ export function MedicineExplanation({ medicine }: { medicine: MedicineSnapshot }
   );
 }
 
-export function MedicineOriginalInfo({ medicine }: { medicine: MedicineSnapshot }) {
-  const rows = [
+function originalRows(medicine: MedicineSnapshot) {
+  return [
     { label: LABEL.kegunaanObat, value: medicine.purpose },
     { label: OBAT.aturanPakai, value: medicine.usageRule },
     { label: OBAT.jumlahPerMinum, value: medicine.doseAmount },
@@ -51,6 +51,25 @@ export function MedicineOriginalInfo({ medicine }: { medicine: MedicineSnapshot 
     { label: OBAT.larangan, value: medicine.warnings },
     ...(medicine.notes ? [{ label: OBAT.catatanPribadi, value: medicine.notes }] : []),
   ];
+}
+
+/** Urutan dan nilai yang sama dengan kartu di layar; AI yang belum diperiksa tidak dibacakan. */
+export function medicineInformationText(medicine: MedicineSnapshot, schedule: readonly string[] = []) {
+  const checked = medicine.explanationOrigin === "ai_dikonfirmasi" && medicine.explanation !== null;
+  return [
+    `${medicine.name} ${formatKekuatan(medicine.strength)}`,
+    medicine.labelSource === "apoteker" ? LABEL.diisiApoteker : LABEL.diisiKeluarga,
+    ...schedule,
+    OBAT.penjelasanSederhana,
+    ...(checked ? [medicine.explanation, OBAT.penjelasanDiperiksa] : [DRAFT.penjelasanBelumTersedia]),
+    OBAT.informasiAsli,
+    ...originalRows(medicine).flatMap(({ label, value }) => [label, value]),
+    OBAT.bukanSaranMedis,
+  ].join("\n");
+}
+
+export function MedicineOriginalInfo({ medicine }: { medicine: MedicineSnapshot }) {
+  const rows = originalRows(medicine);
   return (
     <Card className="p-5">
       <dl className="flex flex-col gap-3">
