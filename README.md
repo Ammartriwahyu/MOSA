@@ -68,6 +68,14 @@ Respons HTTP 200 membawa `outcome` dari delapan hasil, `serverTime`, dan data ob
 
 Tes alur HTTP (Auth/AI/penyimpanan in-memory, HMAC nyata): `pnpm --filter backend test tests/interface/scan.routes.test.ts tests/infrastructure/hmac-scan-tokens.test.ts`. Tes migrasi/RPC: `pnpm --filter backend test tests/db/dosing-sql.test.ts`. Ini belum membuktikan koneksi Supabase/Auth/Gemini produksi atau konkurensi beberapa koneksi PostgreSQL.
 
+### Mengambil foto scan
+
+`/scan` dan `/scan?dosis=<slotId>` menyediakan persetujuan serta pengambilan foto. HP baru meminta kalimat baku persetujuan scan meskipun akun pernah setuju; flag lokal tidak mengganti persetujuan akun. POST `{kind: 'scan'}` harus sukses sebelum `hasSeenScanConsent` disimpan. Jika localStorage diblokir, persetujuan berlaku selama layar ini terbuka dan diminta lagi pada kunjungan baru. Kegagalan simpan tidak membuka kamera/unggah; POST tidak diulang atau diantrekan saat offline.
+
+Kamera memakai input file `capture="environment"`; Unggah Foto memakai pemilih biasa. JPEG/PNG/WebP digambar ulang menjadi JPEG di browser, maksimum 1600 px pada sisi panjang dan 1.500.000 byte. Batas pemrosesan: file awal 20 MB, 48 juta piksel, waktu 15 detik; kualitas/dimensi diturunkan terbatas, foto kecil tidak diperbesar. HEIC/GIF/SVG ditolak dengan pilihan mengambil foto ulang. Foto/metadata nama berkas tidak masuk localStorage, query cache, log, atau backend pada tahap capture. Blob dan object URL dibuang saat mengganti foto, akun, target, atau meninggalkan layar.
+
+Tes terarah: `pnpm --filter frontend test src/features/scan src/features/auth/api/household-scan.test.ts src/features/auth/hooks/use-session-identity.test.tsx`. Pratinjau browser 360/390/430 px dan kompresi canvas asli diuji dengan pola sintetis, tanpa foto obat/pasien. Pola 191.057 byte menjadi JPEG 42.465 byte pada 1600×1000; ini bukan ukuran/akurasi foto nyata. Android Chrome/iOS Safari dan kamera perangkat nyata belum diuji. Pengiriman foto ke API, hasil dan konfirmasi scan menyusul pada row 37–39; capture belum menawarkan tombol pengiriman.
+
 ## Variabel lingkungan
 
 Salin contoh lalu isi nilainya. Berkas `.env*` selain `.env.example` tidak pernah masuk git.

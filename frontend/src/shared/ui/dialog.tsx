@@ -15,7 +15,7 @@ export type DialogProps = {
   description?: ReactNode;
   /** Lingkaran ikon di atas judul (mis. peringatan). */
   icon?: ReactNode;
-  iconTone?: "danger" | "brand" | "neutral";
+  iconTone?: "danger" | "brand" | "neutral" | "info";
   /** Isi tambahan di bawah deskripsi (ringkasan data, input). */
   children?: ReactNode;
   /** Tombol aksi, tersusun vertikal. Boleh kosong bila tombol ada di dalam `children` (formulir). */
@@ -31,12 +31,15 @@ export type DialogProps = {
   dismissOnOutsideClick?: boolean;
   /** Penulisan sedang berlangsung: jangan menutup sebelum hasil server diketahui. */
   closeDisabled?: boolean;
+  /** Ikon besar sudah memisahkan judul dari tombol tutup; consumer boleh membuka lebar judul. */
+  reserveCloseSpace?: boolean;
 };
 
 const ICON_TONE = {
   danger: "bg-danger-icon-soft text-danger",
   brand: "bg-brand-soft text-brand",
   neutral: "bg-canvas text-ink",
+  info: "bg-info-soft text-info",
 } as const;
 
 /**
@@ -56,6 +59,7 @@ export function Dialog({
   returnFocusRef,
   dismissOnOutsideClick = true,
   closeDisabled = false,
+  reserveCloseSpace = true,
 }: DialogProps) {
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -101,7 +105,7 @@ export function Dialog({
                 {icon}
               </span>
             ) : null}
-            <RadixDialog.Title className="max-w-full px-9 text-display break-words">{title}</RadixDialog.Title>
+            <RadixDialog.Title className={cx("max-w-full text-display break-words", reserveCloseSpace && "px-9")}>{title}</RadixDialog.Title>
             {description ? (
               <RadixDialog.Description className="max-w-full text-body [overflow-wrap:anywhere]">{description}</RadixDialog.Description>
             ) : null}

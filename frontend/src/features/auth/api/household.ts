@@ -24,3 +24,10 @@ export function recordDataConsent(): Promise<Household> {
     body: { kind: "data" },
   });
 }
+
+/** Consent scan: jangan menganggap respons null sebagai persetujuan tersimpan. */
+export function recordScanConsent(): Promise<Household> {
+  return api().json("/v1/household/consents", householdSchema.extend({ scanConsentAt: z.iso.datetime(), dataConsentAt: z.iso.datetime() }), {
+    method: "POST", body: { kind: "scan" },
+  });
+}
