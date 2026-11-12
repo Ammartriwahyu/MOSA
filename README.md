@@ -56,11 +56,17 @@ Tes SQL dosing memakai dev dependency `@electric-sql/pglite` agar migrasi, trigg
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
 
-Nama dan kekuatan memakai normalizer yang sama dengan penyimpanan obat. Kecocokan beberapa identitas obat ditolak untuk diperjelas, sedangkan beberapa jadwal terbuka pada satu obat dikembalikan sebagai pilihan pengguna. Alias Parasetamol/Paracetamol belum ditambahkan. Logika domain dan adaptor pembaca foto tersedia; endpoint scan dan penerbit token menyusul. Jalur konfirmasi `verified` tetap menolak token sampai perakitan HMAC selesai.
+Nama dan kekuatan memakai normalizer yang sama dengan penyimpanan obat. Kecocokan beberapa identitas obat ditolak untuk diperjelas, sedangkan beberapa jadwal terbuka pada satu obat dikembalikan sebagai pilihan pengguna. Alias Parasetamol/Paracetamol belum ditambahkan. Endpoint scan serta penerbit/verifier HMAC sudah dirakit; scan sendiri tidak mencatat dosis.
 
 Adaptor `GeminiPackageReader` menerima JPEG/PNG/WebP maksimal **1.500.000 byte** sebelum base64, memeriksa MIME dan signature, lalu mengirim byte melalui `inlineData` ([dokumentasi Google](https://aistudio.google.com/docs/image-understanding?generate-content=true)). Tidak memakai Files API, disk, storage, atau log gambar; tidak mengirim metadata akun/jadwal. Pemeriksaan signature bukan dekode penuh gambar. JSON rusak/tidak sesuai skema menjadi `{names: [], strength: null, legible: false}`; jaringan/timeout/kuota tetap galat. Batas waktu total 20 detik termasuk maksimal satu retry 429/503.
 
-Tes adaptor: `pnpm --filter backend test tests/infrastructure/gemini-package-reader.test.ts tests/infrastructure/gemini-json-generator.test.ts tests/unit/verification/package-image.test.ts`. Fixture berupa header biner dan respons sintetis di memori; belum ada uji akurasi/latensi foto nyata. Adaptor belum dirakit ke API; row 19 wajib memeriksa consent dan jatah harian melalui `AiUsageLimiter` sebelum AI dipanggil.
+Tes adaptor: `pnpm --filter backend test tests/infrastructure/gemini-package-reader.test.ts tests/infrastructure/gemini-json-generator.test.ts tests/unit/verification/package-image.test.ts`. Fixture berupa header biner dan respons sintetis di memori; belum ada uji akurasi/latensi foto nyata. API memeriksa persetujuan scan dan jatah harian per rumah tangga melalui `AiUsageLimiter` sebelum AI dipanggil.
+
+`POST /v1/scan` memerlukan Bearer token serta persetujuan data dan scan. Kirim `Content-Type: application/json` dengan `{image: {mimeType: 'image/jpeg'|'image/png'|'image/webp', data: '<base64 standar tanpa awalan data:>'}, slotId?: '<id slot mentah>'}`. JSON base64 dipilih agar ukuran teks dapat dibatasi sebelum decoding; stream dibatasi hingga panjang base64 maksimum + 4.096 byte overhead, termasuk saat `Content-Length` hilang/salah. Jangan memakai multipart atau menulis foto ke berkas sementara. `householdId` selalu dari sesi.
+
+Respons HTTP 200 membawa `outcome` dari delapan hasil, `serverTime`, dan data obat/`nextDose` sesuai hasil. Hanya `bisa_konfirmasi` memiliki `slots: [{slotId, medicineId, scheduledAt, scheduledDate, scheduledTime, scanToken, expiresAt}]`. Bentuk ini sama untuk satu atau beberapa slot; pengguna memilih tepat satu bila bertumpuk. POST `{mode: 'verified', scanToken}` ke `/v1/doses/{slotId}/confirm` setelah pengguna menyatakan sudah minum menghasilkan HTTP 201 dan `level: 'scan_terverifikasi'`. Token HMAC-SHA256 berlaku 5 menit, terikat pada rumah tangga/obat/slot serta fingerprint nama+kekuatan. Perubahan identitas atau jadwal sebelum simpan diperiksa ulang secara atomik; replay tidak menaikkan level konfirmasi lama.
+
+Tes alur HTTP (Auth/AI/penyimpanan in-memory, HMAC nyata): `pnpm --filter backend test tests/interface/scan.routes.test.ts tests/infrastructure/hmac-scan-tokens.test.ts`. Tes migrasi/RPC: `pnpm --filter backend test tests/db/dosing-sql.test.ts`. Ini belum membuktikan koneksi Supabase/Auth/Gemini produksi atau konkurensi beberapa koneksi PostgreSQL.
 
 ## Variabel lingkungan
 
@@ -79,7 +85,9 @@ Backend berjalan di `http://localhost:8787` dan frontend di `http://localhost:30
 
 Skema ada di `backend/supabase/migrations/` (SQL berurutan). RLS aktif di semua tabel tanpa kebijakan, dan hak `anon`/`authenticated` dicabut: hanya backend (secret key) yang bisa mengakses data. Tidak ada kolom foto.
 
-Sebelum memakai API dosis, terapkan juga `20261111180000_dose_confirmation_atomic.sql`. Migrasi ini menambahkan waktu aktif per jam dan RPC `confirm_dose` untuk memeriksa jadwal serta menyimpan konfirmasi dalam satu transaksi. Perubahan jam langsung berlaku saat disimpan; konfirmasi lama dipertahankan. Jalur `basic` tersedia; jalur `verified` menolak token dengan `SCAN_TOKEN_INVALID` sampai penerbit dan verifier HMAC scan dirakit pada P06.
+Sebelum memakai API dosis, terapkan juga `20261111180000_dose_confirmation_atomic.sql`. Migrasi ini menambahkan waktu aktif per jam dan RPC `confirm_dose` untuk memeriksa jadwal serta menyimpan konfirmasi dalam satu transaksi. Perubahan jam langsung berlaku saat disimpan; konfirmasi lama dipertahankan.
+
+Untuk konfirmasi scan, terapkan **`20261112040000_scan_confirmation_identity.sql`** setelah migrasi dosing, lalu isi **`SCAN_TOKEN_SECRET` minimal 32 karakter** di environment server. Rahasia acak 32 byte dengan encoding base64url disarankan; contoh perintah tersedia di `backend/.env.example`. RPC `confirm_scanned_dose` mengunci baris obat, memeriksa nama/kekuatan dari bukti scan, lalu menjalankan konfirmasi atomik yang sama. Hanya `service_role` boleh mengeksekusinya. Backend gagal startup bila rahasia tidak valid; tanpa migrasi RPC, konfirmasi verified gagal tertutup dengan galat database. Migrasi cloud dan alur dengan foto nyata belum dijalankan pada branch ini.
 
 Perintah Supabase CLI dijalankan dari folder `backend/` dengan `npx supabase@3.1.0 <perintah>`.
 
