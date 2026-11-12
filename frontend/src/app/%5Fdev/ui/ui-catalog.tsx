@@ -17,6 +17,7 @@ import {
 } from "@/shared/copy";
 import {
   Badge,
+  Bacakan,
   Banner,
   Button,
   Card,
@@ -53,6 +54,12 @@ export function UiCatalog() {
         <h1 className="text-page">Katalog UI (dev)</h1>
         <IconButton label="Pengaturan" icon={<Settings />} />
       </header>
+
+      <section aria-label="Suara (Web Speech API)" className="flex flex-col gap-3">
+        <h2 className="text-section">Suara (Web Speech API)</h2>
+        <p className="text-body">{NAMA_BELUM_TERLIHAT}</p>
+        <Bacakan text={NAMA_BELUM_TERLIHAT} contextKey="catalog-voice" />
+      </section>
 
       <Section title="Tombol">
         <Button icon={<Camera />}>{TOMBOL.scanObat}</Button>
