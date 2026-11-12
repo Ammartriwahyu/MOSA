@@ -8,6 +8,11 @@ export function useUpdateOutputMode() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: updateOutputMode,
-    onSuccess: (household) => queryClient.setQueryData(householdQueryKey, household),
+    retry: false,
+    networkMode: "always",
+    onSuccess: async (household) => {
+      await queryClient.cancelQueries({ queryKey: householdQueryKey });
+      queryClient.setQueryData(householdQueryKey, household);
+    },
   });
 }

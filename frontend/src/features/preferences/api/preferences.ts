@@ -13,7 +13,7 @@ const householdSchema = z.object({
 
 /** Menyimpan pilihan keluaran Teks/Suara di akun (MVP-06), berlaku di semua HP. */
 export function updateOutputMode(outputMode: OutputMode) {
-  return api().json("/v1/household/preferences", householdSchema, {
+  return api().json("/v1/household/preferences", householdSchema.refine((row) => row.outputMode === outputMode), {
     method: "PATCH",
     body: { outputMode },
   });
