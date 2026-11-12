@@ -2,7 +2,7 @@ import { Camera, Check, CheckCheck, ChevronRight, Clock, Info, Pill, Plus } from
 import Link from "next/link";
 import { ROUTES, scanForDose } from "@/shared/config";
 import { bannerJatuhTempo, DASBOR, formatJam, formatKekuatan, OBAT, progresDosis, TOMBOL, waktuJadwalDasbor } from "@/shared/copy";
-import { Banner, Button, Card } from "@/shared/ui";
+import { Bacakan, Banner, Button, Card } from "@/shared/ui";
 import type { Dose, TodaysDoses } from "../schemas/todays-doses";
 import { DashboardDay } from "./dashboard-day";
 import { DoseGroups } from "./dose-groups";
@@ -55,12 +55,20 @@ function EmptyDashboard() {
 }
 
 /** Status dan hitungan hanya dibaca dari backend; pemilihan di sini untuk presentasi banner. */
-export function DashboardContent({ data, onChooseScan, ...actions }: DoseActionProps & { data: TodaysDoses; onChooseScan?: (trigger: HTMLButtonElement) => void }) {
+export function DashboardContent({ data, onChooseScan, speechActive = true, ...actions }: DoseActionProps & { data: TodaysDoses; onChooseScan?: (trigger: HTMLButtonElement) => void; speechActive?: boolean }) {
   const empty = data.medicines.length === 0;
   const due = [...data.carryoverDoses, ...data.doses, ...data.earlyDoses].filter((dose) => dose.status === "jatuh_tempo");
-  const next = data.medicines.flatMap((row) => row.nextDose ? [row.nextDose] : []).sort((a, b) =>
+  const next = data.medicines.flatMap((row) => row.nextDose ? [{ ...row.nextDose, medicineId: row.medicineId }] : []).sort((a, b) =>
     (a.tanggal === "hari_ini" ? 0 : 1) - (b.tanggal === "hari_ini" ? 0 : 1) || a.jam.localeCompare(b.jam),
   )[0];
+  const bannerTitle = due.length === 1 ? bannerJatuhTempo(due[0].medicine.name) : DASBOR.beberapaDosis;
+  const reading = due.length ? [DASBOR.waktunyaMinum, bannerTitle, ...due.flatMap((dose) => [
+    ...(due.length > 1 ? [bannerJatuhTempo(dose.medicine.name)] : []),
+    `${dose.medicine.name} ${formatKekuatan(dose.medicine.strength)} · ${dose.medicine.doseAmount}`,
+    dose.medicine.usageRule,
+    `${DASBOR.jadwal} ${formatJam(dose.scheduledTime)} ${DASBOR.wib}${dose.scheduledDate !== data.date ? ` · ${dose.scheduledDate}` : ""}`,
+  ])] : [next ? DASBOR.jadwalBerikutnya : DASBOR.tidakAdaJadwalBerikutnya,
+    ...(next ? [waktuJadwalDasbor(next)] : []), ...(data.summary.total === 0 ? [DASBOR.tidakAdaSlotHariIni] : [])];
 
   return (
     <div className="flex min-w-0 flex-col gap-3 [overflow-wrap:anywhere]">
@@ -69,9 +77,9 @@ export function DashboardContent({ data, onChooseScan, ...actions }: DoseActionP
         <>
           {due.length > 0 ? (
             <Banner
-              title={due.length === 1 ? bannerJatuhTempo(due[0].medicine.name) : DASBOR.beberapaDosis}
+              title={bannerTitle}
               eyebrow={<><Clock aria-hidden="true" className="size-5 shrink-0" />{DASBOR.waktunyaMinum}</>}
-              actions={<ScanButton due={due} onChooseScan={onChooseScan} disabled={actions.actionsDisabled} />}
+              actions={<><ScanButton due={due} onChooseScan={onChooseScan} disabled={actions.actionsDisabled} /><Bacakan text={reading.join("\n")} active={speechActive} contextKey={due.map((dose) => dose.slotId).join("|")} /></>}
             >
               <ul className="flex flex-col gap-3">
                 {due.map((dose) => (
@@ -90,6 +98,7 @@ export function DashboardContent({ data, onChooseScan, ...actions }: DoseActionP
               {next ? <p className="text-body">{waktuJadwalDasbor(next)}</p> : null}
               {data.summary.total === 0 ? <p className="text-body">{DASBOR.tidakAdaSlotHariIni}</p> : null}
               <ScanButton />
+              <Bacakan text={reading.join("\n")} active={speechActive} contextKey={`${data.date}:${next?.medicineId}:${next?.tanggal}:${next?.jam}`} />
             </section>
           )}
           <DailyProgress summary={data.summary} />

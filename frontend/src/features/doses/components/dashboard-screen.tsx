@@ -49,7 +49,7 @@ export function DashboardScreen() {
         <><Spinner label={DASBOR.memuat} visibleLabel /><Skeleton className="h-12" /><Skeleton className="h-64 rounded-card" /><Skeleton className="h-36 rounded-card" /></>
       ) : confirmation.busy && confirmation.notice ? (
         <Spinner label={CATAT_DOSIS.memeriksa} visibleLabel />
-      ) : <DashboardContent data={doses.data} onConfirm={confirmation.open} actionsDisabled={confirmation.busy}
+      ) : <DashboardContent data={doses.data} onConfirm={confirmation.open} actionsDisabled={confirmation.busy} speechActive={!confirmation.selected && !picking && !confirmation.busy}
         onChooseScan={(trigger) => { pickerFocusRef.current = trigger; setPicking(true); void doses.refetch(); }} />}
       <DoseConfirmDialog confirmation={confirmation} />
       {picking ? <DosePickerDialog doses={healthy ? due : []} loading={doses.isFetching} failed={!healthy} onClose={closePicker} returnFocusRef={pickerFocusRef} /> : null}
