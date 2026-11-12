@@ -2,12 +2,13 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect, type ReactNode } from "react";
+import { Fragment, useEffect, type ReactNode } from "react";
 import { ROUTES } from "@/shared/config";
 import { AUTH } from "@/shared/copy";
 import { Button, ErrorState, Spinner } from "@/shared/ui";
 import { useHousehold } from "../hooks/use-household";
 import { useSessionStatus } from "../hooks/use-session-status";
+import { useSessionIdentity } from "../hooks/use-session-identity";
 
 function FullScreenSpinner() {
   return (
@@ -26,6 +27,7 @@ function FullScreenSpinner() {
  */
 export function AuthGuard({ children, requireConsent = true }: { children: ReactNode; requireConsent?: boolean }) {
   const status = useSessionStatus();
+  const userId = useSessionIdentity();
   const router = useRouter();
   const queryClient = useQueryClient();
   const household = useHousehold({ enabled: status === "signed-in" && requireConsent });
@@ -60,5 +62,6 @@ export function AuthGuard({ children, requireConsent = true }: { children: React
     }
     if (household.isPending || missingConsent) return <FullScreenSpinner />;
   }
-  return children;
+  // Pergantian akun melepas state halaman dan audio lama, meski status tetap signed-in.
+  return <Fragment key={userId}>{children}</Fragment>;
 }
