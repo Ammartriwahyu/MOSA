@@ -84,6 +84,14 @@ Audit salinan UI row43 memakai pencarian literal dan pemeriksaan JSX/atribut tek
 
 Verifikasi row43: `pnpm --filter backend test:e2e --reporter=dot` lulus 11 tes. `pnpm typecheck`, `pnpm lint`, dan `pnpm test` dari akar lulus seluruhnya (649 backend + 534 frontend). Pengaturan pekerja row42 tetap, tanpa retry, skip, perubahan timeout, atau dependensi baru.
 
+### Menilai kriteria penerimaan
+
+[Matriks AC-01–AC-26](docs/ac-traceability.md) memetakan setiap kriteria ke berkas tes, cakupan, status dan langkah pemeriksaan. Posisi row44: **20 Lulus (otomatis), 6 Belum lengkap, 0 Gagal**. AC-01/02/05/09/16/26 masih membutuhkan bukti sesi/dua HP, demo rilis, keterbacaan/audio perangkat, atau transisi verified 1/2→2/2 yang belum diperiksa eksplisit. Suite hijau tidak menutup kekurangan tersebut. Sepuluh AC tambahan tetap berstatus usulan pada sumber; hasil tes tidak berarti persetujuan PM.
+
+[Checklist perangkat](docs/manual-test-checklist.md) menyediakan hasil per M01–M15 untuk Android Chrome dan iPhone Safari, semuanya masih Belum. [Audit copy row44](docs/copy-audit.md) memeriksa 126 berkas produk (73 TSX), memisahkan enum/diagnostic internal dari kalimat tampilan, dan menyediakan perintah ulang. Tidak ada kalimat UI atau DRAFT baru pada perubahan dokumentasi ini.
+
+Verifikasi row44: `pnpm typecheck`, `pnpm lint`, dan `pnpm test` lulus (649 backend + 534 frontend); tes terarah copy 69 dan HTTP E2E 11 lulus. Seluruh 26 baris AC, 15 penanda manual dan 105 tautan lokal telah diperiksa. Perubahan row44 hanya dokumentasi.
+
 ### Memeriksa logika scan
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
