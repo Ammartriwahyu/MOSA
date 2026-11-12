@@ -46,9 +46,17 @@ Untuk satu paket: `pnpm --filter frontend <skrip>` atau `pnpm --filter backend <
 
 Setelah env dan migrasi database tersedia, jalankan `pnpm dev`, masuk, lalu buka `/`. Akun tanpa obat menampilkan Tambah Obat Pertama. Dengan data demo jatuh tempo (`pnpm --filter backend seed:demo-due`), banner dan progres memakai respons `GET /v1/doses/today`; tanggal/jam ditampilkan dalam WIB. Kegagalan mengambil jadwal menampilkan Coba lagi. Tes terarah: `pnpm --filter frontend test src/features/doses`.
 
-Dasbor mencakup banner, tombol Scan Obat, progres serta kartu Pagi/Siang/Malam. Kartu menampilkan status, label pengisi, progres per obat dan waktu pencatatan ✓/✓✓ dari backend. Slot hari sebelumnya dan jadwal besok yang sudah terbuka ditampilkan terpisah dengan tanggal asal. Konfirmasi tanpa scan, tautan scan untuk slot tertentu, serta polling dikerjakan pada branch P10 berikutnya; layar scan menyusul P11.
+Dasbor mencakup banner, tombol Scan Obat, progres serta kartu Pagi/Siang/Malam. Kartu menampilkan status, label pengisi, progres per obat dan waktu pencatatan ✓/✓✓ dari backend. Slot hari sebelumnya dan jadwal besok yang sudah terbuka ditampilkan terpisah dengan tanggal asal. Dosis jatuh tempo menawarkan scan untuk slot tersebut atau Sudah minum tanpa scan → dialog pemeriksaan → Sudah saya minum. Batal/Esc tidak mencatat. Banner dengan beberapa dosis meminta pilihan jadwal untuk scan. Layar scan menyusul P11.
+
+Jadwal diperbarui setiap 20 detik selama aplikasi aktif dan saat kembali fokus. Status serta hitungan tetap berasal dari server. POST konfirmasi tidak diulang otomatis atau diantrekan saat offline. Sesudah respons simpan terputus, Periksa jadwal memuat keadaan terbaru sebelum pengguna dapat mencoba lagi. Setelah simpan berhasil, banner lama disembunyikan sambil ringkasan dimuat ulang; bila pemuatan itu gagal, tanda terima tetap terlihat dan Coba lagi hanya mengulang GET.
 
 Tes SQL dosing memakai dev dependency `@electric-sql/pglite` agar migrasi, trigger jadwal, batas waktu dan RPC konfirmasi dijalankan pada mesin PostgreSQL lokal tanpa Docker. Jalankan terarah dengan `pnpm --filter backend test tests/db/dosing-sql.test.ts`. Tes ini tidak menggantikan verifikasi koneksi, Auth dan PostgREST pada Supabase sesungguhnya.
+
+### Memeriksa logika scan
+
+`pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
+
+Nama dan kekuatan memakai normalizer yang sama dengan penyimpanan obat. Kecocokan beberapa identitas obat ditolak untuk diperjelas, sedangkan beberapa jadwal terbuka pada satu obat dikembalikan sebagai pilihan pengguna. Alias Parasetamol/Paracetamol belum ditambahkan. Branch matcher hanya menambah logika domain; pembaca foto, endpoint scan dan penerbit token menyusul. Jalur konfirmasi `verified` tetap menolak token sampai perakitan HMAC selesai.
 
 ## Variabel lingkungan
 
