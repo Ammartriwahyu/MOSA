@@ -52,6 +52,12 @@ Jadwal diperbarui setiap 20 detik selama aplikasi aktif dan saat kembali fokus. 
 
 Tes SQL dosing memakai dev dependency `@electric-sql/pglite` agar migrasi, trigger jadwal, batas waktu dan RPC konfirmasi dijalankan pada mesin PostgreSQL lokal tanpa Docker. Jalankan terarah dengan `pnpm --filter backend test tests/db/dosing-sql.test.ts`. Tes ini tidak menggantikan verifikasi koneksi, Auth dan PostgREST pada Supabase sesungguhnya.
 
+### Memeriksa logika scan
+
+`pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
+
+Nama dan kekuatan memakai normalizer yang sama dengan penyimpanan obat. Kecocokan beberapa identitas obat ditolak untuk diperjelas, sedangkan beberapa jadwal terbuka pada satu obat dikembalikan sebagai pilihan pengguna. Alias Parasetamol/Paracetamol belum ditambahkan. Branch matcher hanya menambah logika domain; pembaca foto, endpoint scan dan penerbit token menyusul. Jalur konfirmasi `verified` tetap menolak token sampai perakitan HMAC selesai.
+
 ## Variabel lingkungan
 
 Salin contoh lalu isi nilainya. Berkas `.env*` selain `.env.example` tidak pernah masuk git.

@@ -152,6 +152,7 @@ Modul `ai` bukan bounded context. AI adalah detail infrastruktur di balik dua po
 - **Value object:** `MedicineName` (menyimpan nama asli dan bentuk normal), `Strength` (angka + satuan, kutip "5mg" = "5 mg"), `TimeOfDay` ("HH:mm"), `TimeGroup` (Pagi 04.00–10.59, Siang 11.00–17.59, Malam 18.00–03.59 **[ASUMSI]**).
 - **Invarian:** minimal satu jam minum, tanpa jam ganda, nama tidak kosong, kekuatan valid; penjelasan AI hanya boleh tersimpan bila `explanationOrigin = 'ai_dikonfirmasi'` (pengisi menekan "Ya, sudah benar").
 - **Domain service:** `MedicineNameNormalizer`: huruf kecil, buang tanda baca dan spasi ganda, buang kata bentuk garam dan sediaan (besilat/besylate, HCl, hidroklorida, natrium/sodium, tablet, kaplet, kapsul), samakan akhiran `-in` dan `-ine`.
+- **Kernel bersama:** `shared/domain/medicine-name-normalizer.ts` dan `shared/domain/strength.ts` dipakai oleh penyimpanan dan pencocokan scan. Jalur lama di domain medication mengekspor ulang fungsi yang sama. Parser hanya menerima satuan dalam daftar eksplisit; tidak melakukan konversi satuan atau menyimpulkan sinonim nama.
 - **Port milik application:** `MedicineRepository`, `PlainLanguageExplainer`, `Clock`.
 - **Use case:** `ExplainMedicineText` (draf penjelasan, tanpa menyimpan), `CreateMedicine`, `UpdateMedicine`, `DeleteMedicine`, `ListMedicines`, `GetMedicine`.
 
@@ -194,19 +195,22 @@ export function classifyDose(p: {
 
 ### 6.4 `verification`
 - **PackageReading** (value object dari adaptor AI): `names: string[]`, `strength: string | null`, `legible: boolean`.
-- **Domain service `MedicineMatcher`:** menormalkan semua nama terbaca lewat `MedicineNameNormalizer`, lalu membandingkan dengan obat terdaftar. Hasil:
+- **Domain service `matchPackage`:** fungsi murni di `modules/verification/domain`, menormalkan semua nama terbaca lalu membandingkan kekuatan dengan seluruh kandidat senama. Menerima snapshot `{medicineId, name, strength}` obat aktif yang sudah disaring menurut household oleh pemanggil. Hasil `Result<PackageMatch, DomainError>`:
   - `tidak_terbaca` (foto buram atau `legible=false`)
   - `kekuatan_tidak_terbaca` (nama cocok, kekuatan tidak jelas; minta foto ulang)
   - `tidak_terdaftar` (tidak ada nama yang cocok)
   - `kekuatan_beda` (nama cocok, kekuatan berbeda; peringatan)
   - `cocok(medicine)`
+- Dua identitas terdaftar yang sama-sama cocok tidak dipilih berdasarkan urutan database atau jadwal: `VALIDATION_FAILED`, `details: {field: 'medicineId', reason: 'ambiguous_match'}`. Ini kegagalan validasi, bukan hasil scan kesembilan; tidak ada token/konfirmasi. Nama tidak terdaftar tidak membawa tebakan AI ke respons.
+- **Domain service `decideOutcome`:** menerima hasil matcher dan `DoseContext` milik verification, tanpa impor domain dosing. Snapshot setiap slot membawa `{slotId, medicineId, scheduledAt, status, windowOpen}`; status dan jendela dihitung dosing dari satu waktu server. `nextDose` harus milik obat yang cocok. Fungsi mengembalikan `Result<VerificationOutcome, DomainError>` dengan delapan hasil di bawah; keterbacaan/nama/kekuatan selalu diperiksa sebelum konteks dosis.
+- Target `selected` mempertahankan slot eksplisit: tidak beralih ke slot lain bila slot itu sudah tercatat, belum tiba, terlewat, atau milik obat lain. Target yang tidak ditemukan menghasilkan `NOT_FOUND`. Mode `generic` mencari semua slot obat cocok yang jatuh tempo; bila kosong, mengenali konfirmasi obat itu hanya pada jendela yang masih terbuka. Konfirmasi jadwal lama tidak menghalangi dosis berikutnya. Beberapa slot terbuka dikembalikan dalam `slots` terurut, tanpa memilih salah satu (Q2); bila tidak ada yang jatuh tempo tetapi beberapa sudah tercatat, semua slot relevan dikembalikan. Semua slot obat lain yang jatuh tempo dibawa dalam `otherDueSlots` untuk `tunggu_dulu`.
 - **Use case `VerifyPackage`** (input: gambar, `slotId?` opsional): gambar → `PackageReader` → `MedicineMatcher` → `GetDoseContext` → `VerificationOutcome` berupa union terdiskriminasi. Perutean ganda (PRD 19 #10): bila `slotId` diberikan (dari kartu dosis atau banner, rute `/scan?dosis=...`) mode verifikasi memakai slot itu; bila tidak ada, kode mencari dosis yang sedang jatuh tempo untuk obat yang terbaca. Setiap hasil membawa data terstruktur (nama, kekuatan, jam, `nextDose`, penjelasan terverifikasi, label sumber), **bukan kalimat jadi**; frontend merakit kalimat baku dari `copy.ts`. Daftar hasil:
-  - `bisa_konfirmasi` (ada dosis jatuh tempo untuk obat itu; menyertakan `slotId` dan **scanToken**)
+  - `bisa_konfirmasi` (ada dosis jatuh tempo untuk obat itu; domain mengembalikan kandidat `slots`, lapisan aplikasi menerbitkan **scanToken** yang terikat pada slot; pengguna memilih bila lebih dari satu)
   - `dosis_sudah_tercatat`
-  - `belum_waktunya` / `waktunya_lain`
   - `tunggu_dulu` (ada obat lain jatuh tempo; daftar dipisah "dan")
   - `hanya_info` (obat terdaftar, bukan waktunya)
   - `tidak_terdaftar`, `tidak_terbaca`, `kekuatan_tidak_terbaca`, `kekuatan_beda`
+- `belum_waktunya`/`waktunya_lain` dalam rancangan lama dipetakan ke `hanya_info`/`tunggu_dulu`, sesuai delapan hasil docs/01 §5 dan instruksi P06. Domain tidak menerbitkan token, menyimpan konfirmasi, atau menyusun kalimat UI. Pembaca foto dan perakitan API/token dikerjakan terpisah pada row 18/19.
 - **scanToken:** token bertanda tangan HMAC berisi `{householdId, medicineId, slotId, exp}` dengan masa berlaku singkat (sekitar 5 menit). `ConfirmDose` dengan `mode: 'verified'` memeriksa token itu. Klien tidak bisa mengklaim ✓✓ tanpa hasil scan yang sah.
 - **Port:** `PackageReader`, `MedicineReader`, `DoseContextReader`, `ScanTokenSigner`.
 
