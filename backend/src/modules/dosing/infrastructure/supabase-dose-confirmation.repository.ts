@@ -9,7 +9,7 @@ import { createDoseSlot } from "../domain/dose-slot";
 import { DOSE_WINDOW } from "../domain/dose-window";
 import { databaseUnavailable, toConfirmation } from "./dosing-data";
 
-const responseSchema = z.object({ code: z.enum(["OK", "NOT_FOUND", "VALIDATION_FAILED", "DOSE_ALREADY_CONFIRMED", "DOSE_NOT_DUE", "DOSE_MISSED"]), confirmation: z.unknown().optional() });
+const responseSchema = z.object({ code: z.enum(["OK", "NOT_FOUND", "VALIDATION_FAILED", "DOSE_ALREADY_CONFIRMED", "DOSE_NOT_DUE", "DOSE_MISSED", "SCAN_TOKEN_INVALID"]), confirmation: z.unknown().optional() });
 
 export class SupabaseDoseConfirmationRepository implements DoseConfirmationRepository, ConfirmedDoseReader {
   constructor(private readonly client: AdminClient) {}
@@ -28,13 +28,18 @@ export class SupabaseDoseConfirmationRepository implements DoseConfirmationRepos
   }
 
   async confirm(input: Parameters<DoseConfirmationRepository["confirm"]>[0]): Promise<Result<DoseConfirmation, DomainError>> {
+    if (input.level === "scan_terverifikasi" && !input.scanMedicine) return err(domainError("SCAN_TOKEN_INVALID", "Bukti identitas kemasan tidak tersedia."));
     try {
-      const { data, error } = await this.client.rpc("confirm_dose", {
+      const args = {
         p_household_id: input.householdId, p_medicine_id: input.slot.medicineId,
         p_scheduled_date: input.slot.scheduledDate, p_scheduled_time: input.slot.scheduledTime,
         p_confirmed_at: new Date(input.confirmedAt).toISOString(), p_level: input.level,
         p_opens_before_minutes: DOSE_WINDOW.opensBeforeMinutes, p_closes_after_minutes: DOSE_WINDOW.closesAfterMinutes,
-      }).retry(false);
+      };
+      const request = input.level === "scan_terverifikasi" && input.scanMedicine
+        ? this.client.rpc("confirm_scanned_dose", { ...args, p_expected_name: input.scanMedicine.name, p_expected_strength: input.scanMedicine.strength })
+        : this.client.rpc("confirm_dose", args);
+      const { data, error } = await request.retry(false);
       const result = responseSchema.safeParse(data);
       if (error || !result.success) return err(databaseUnavailable());
       if (result.data.code !== "OK") return err(domainError(result.data.code, "Konfirmasi dosis ditolak."));

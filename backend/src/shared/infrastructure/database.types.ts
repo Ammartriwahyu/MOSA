@@ -135,6 +135,10 @@ isOneToOne: false
               Args: { p_household_id: string; p_medicine_id: string; p_scheduled_date: string; p_scheduled_time: string; p_confirmed_at: string; p_level: string; p_opens_before_minutes: number; p_closes_after_minutes: number };
               Returns: Json;
             };
+            confirm_scanned_dose: {
+              Args: { p_household_id: string; p_medicine_id: string; p_scheduled_date: string; p_scheduled_time: string; p_confirmed_at: string; p_level: string; p_opens_before_minutes: number; p_closes_after_minutes: number; p_expected_name: string; p_expected_strength: string };
+              Returns: Json;
+            };
             "consume_ai_usage":
 { Args: { "p_day": string,"p_household_id": string,"p_limit": number }; Returns: boolean
                            }

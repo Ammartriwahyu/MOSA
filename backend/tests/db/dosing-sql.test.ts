@@ -9,6 +9,7 @@ const MED = "33333333-3333-4333-8333-333333333333";
 const LEGACY = "44444444-4444-4444-8444-444444444444";
 let db: PGlite;
 let migration: string;
+let scanMigration: string;
 const insertMedicine = async (id: string) => db.query(`insert into public.medicines
   (id, household_id, name, name_normalized, strength, strength_normalized, purpose, dose_amount, usage_rule, intake_times, label_source, explanation_origin, created_at)
   values ($1, $2, 'Obat Uji', 'obatuji', '5 mg', '5mg', 'Kegunaan uji', '1 tablet', 'Sesudah makan', array['07:00','19:00'], 'keluarga', 'teks_pengisi', '2000-01-01T00:00:00Z')`, [id, HOUSE]);
@@ -23,24 +24,55 @@ async function confirm(options: { house?: string; med?: string; date?: string; t
   return row.result;
 }
 
+async function confirmScan(name: string | null = "Obat Uji", strength: string | null = "5 mg", house = HOUSE) {
+  const result = await db.query<{ result: { code: string; confirmation?: { level: string } } }>(
+    "select public.confirm_scanned_dose($1::uuid,$2::uuid,'2026-11-11'::date,'07:00'::time,'2026-11-11T00:30:00Z'::timestamptz,'scan_terverifikasi',30,120,$3::text,$4::text) as result",
+    [house, MED, name, strength],
+  );
+  const row = result.rows[0];
+  if (!row) throw new Error("Hasil SQL uji kosong.");
+  return row.result;
+}
+
 beforeAll(async () => {
   db = new PGlite();
   await db.exec("create schema auth; create table auth.users (id uuid primary key); create role anon; create role authenticated; create role service_role bypassrls; set timezone='UTC';");
   const dir = join(import.meta.dirname, "../../supabase/migrations");
   const files = readdirSync(dir).filter((file) => file.endsWith(".sql")).sort();
-  for (const file of files.filter((name) => !name.includes("dose_confirmation_atomic"))) await db.exec(readFileSync(join(dir, file), "utf8"));
+  const name = files.find((file) => file.includes("dose_confirmation_atomic"));
+  if (!name) throw new Error("Migrasi dosing tidak ada.");
+  for (const file of files.filter((file) => file < name)) await db.exec(readFileSync(join(dir, file), "utf8"));
   await db.query("insert into auth.users values ($1),($2)", [HOUSE, OTHER]);
   await db.query("insert into public.households (id,owner_user_id) values ($1,$1),($2,$2)", [HOUSE, OTHER]);
   await insertMedicine(LEGACY);
-  const name = files.find((file) => file.includes("dose_confirmation_atomic"));
-  if (!name) throw new Error("Migrasi dosing tidak ada.");
   migration = readFileSync(join(dir, name), "utf8");
   await db.exec(migration);
+  for (const file of files.filter((file) => file > name)) await db.exec(readFileSync(join(dir, file), "utf8"));
+  scanMigration = readFileSync(join(dir, "20261112040000_scan_confirmation_identity.sql"), "utf8");
 }, 30_000);
 beforeEach(async () => { await db.exec("delete from public.dose_confirmations"); await db.query("delete from public.medicines where id <> $1", [LEGACY]); await insertMedicine(MED); });
 afterAll(async () => { await db?.close(); });
 
 describe("migrasi/konfirmasi pada mesin PostgreSQL PGlite", () => {
+  test("RPC scan idempoten dan mencatat level scan hanya untuk identitas yang cocok", async () => {
+    await db.exec(scanMigration);
+    expect(await confirmScan()).toMatchObject({ code: "OK", confirmation: { level: "scan_terverifikasi" } });
+    expect((await confirmScan()).code).toBe("DOSE_ALREADY_CONFIRMED");
+  });
+  test.each([["Nama Berbeda", "5 mg"], ["Obat Uji", "10 mg"], [null, "5 mg"], ["Obat Uji", null]])("RPC scan menolak identitas %j/%j dan tidak INSERT", async (name, strength) => {
+    expect((await confirmScan(name, strength)).code).toBe("SCAN_TOKEN_INVALID");
+    const count = await db.query<{ count: number }>("select count(*)::integer as count from public.dose_confirmations");
+    expect(count.rows[0]?.count).toBe(0);
+  });
+  test("RPC scan memeriksa identitas terkini setelah UPDATE serta rumah tangga", async () => {
+    await db.query("update public.medicines set strength='10 mg' where id=$1", [MED]);
+    expect((await confirmScan()).code).toBe("SCAN_TOKEN_INVALID");
+    expect((await confirmScan("Obat Uji", "10 mg", OTHER)).code).toBe("NOT_FOUND");
+  });
+  test.each(["anon", "authenticated"])("%s tidak boleh mengeksekusi RPC scan", async (role) => {
+    await db.exec(`set role ${role}`);
+    try { await expect(confirmScan()).rejects.toMatchObject({ code: "42501" }); } finally { await db.exec("reset role"); }
+  });
   test("backfill jadwal lama, insert baru, dan migrasi berulang mempertahankan waktu aktif", async () => {
     const before = await db.query<{ intake_times_started_at: Record<string, string> }>("select intake_times_started_at from public.medicines where id=$1", [LEGACY]);
     expect(Date.parse(before.rows[0]?.intake_times_started_at["07:00"] ?? "")).toBe(Date.parse("2000-01-01T00:00:00Z"));

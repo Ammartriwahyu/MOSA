@@ -57,6 +57,24 @@ describe("adaptor dosing memakai Supabase SDK nyata dengan fetch uji", () => {
     if (!slot.ok) throw new Error("Slot uji tidak valid.");
     expect(await adapters().confirmations.confirm({ householdId: HOUSE, slot: slot.value, confirmedAt: atWib(DATE, "07:30"), level: "dasar" })).toMatchObject({ ok: false, error: { code } });
   });
+  test("verified memakai RPC atomik yang membawa identitas hasil verifier", async () => {
+    fetcher.mockResolvedValue(Response.json({ code: "OK", confirmation: { ...CONFIRMATION, level: "scan_terverifikasi" } }));
+    const slot = createDoseSlot({ medicineId: MED, scheduledDate: DATE, scheduledTime: "07:00" });
+    if (!slot.ok) throw new Error("Slot uji tidak valid.");
+    expect(await adapters().confirmations.confirm({ householdId: HOUSE, slot: slot.value, confirmedAt: atWib(DATE, "07:30"), level: "scan_terverifikasi", scanMedicine: { name: "Obat Uji", strength: "5 mg" } }))
+      .toMatchObject({ ok: true, value: { level: "scan_terverifikasi" } });
+    expect(requestUrl().pathname).toBe("/rest/v1/rpc/confirm_scanned_dose");
+    expect(JSON.parse(String(fetcher.mock.calls[0]?.[1]?.body))).toMatchObject({ p_expected_name: "Obat Uji", p_expected_strength: "5 mg", p_household_id: HOUSE });
+  });
+  test("verified tanpa identitas ditolak sebelum RPC; identitas berubah dari RPC menjadi SCAN_TOKEN_INVALID", async () => {
+    const slot = createDoseSlot({ medicineId: MED, scheduledDate: DATE, scheduledTime: "07:00" });
+    if (!slot.ok) throw new Error("Slot uji tidak valid.");
+    const input = { householdId: HOUSE, slot: slot.value, confirmedAt: atWib(DATE, "07:30"), level: "scan_terverifikasi" } as const;
+    expect(await adapters().confirmations.confirm(input)).toMatchObject({ ok: false, error: { code: "SCAN_TOKEN_INVALID" } });
+    expect(fetcher).not.toHaveBeenCalled();
+    fetcher.mockResolvedValue(Response.json({ code: "SCAN_TOKEN_INVALID" }));
+    expect(await adapters().confirmations.confirm({ ...input, scanMedicine: { name: "Obat Uji", strength: "5 mg" } })).toMatchObject({ ok: false, error: { code: "SCAN_TOKEN_INVALID" } });
+  });
   test("balasan OK tanpa data sah ditolak; galat jaringan tidak membocorkan teks server", async () => {
     fetcher.mockResolvedValue(Response.json({ code: "OK" }));
     const { confirmations, medicines } = adapters();

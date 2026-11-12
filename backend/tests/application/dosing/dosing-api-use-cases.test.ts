@@ -62,12 +62,14 @@ describe("ConfirmDose", () => {
     expect(await system.confirm.execute({ ...INPUT, mode: "verified" })).toMatchObject({ ok: false, error: { code: "SCAN_TOKEN_INVALID" } });
     expect(await system.confirm.execute({ ...INPUT, mode: "verified", scanToken: "invalid" })).toMatchObject({ ok: false, error: { code: "SCAN_TOKEN_INVALID" } });
     expect(system.confirmations.rows.size).toBe(0);
-    system.setToken(ok({ householdId: INPUT.householdId, medicineId: DOSE_MEDICINE.id, slotId: INPUT.slotId, expiresAt: system.clock.now() + 60_000 }));
+    system.setToken(ok({ householdId: INPUT.householdId, medicineId: DOSE_MEDICINE.id, slotId: INPUT.slotId, expiresAt: system.clock.now() + 60_000,
+      medicineIdentity: { name: DOSE_MEDICINE.name, strength: DOSE_MEDICINE.strength } }));
     expect(await system.confirm.execute({ ...INPUT, mode: "verified", scanToken: "uji-sah" })).toMatchObject({ ok: true, value: { confirmation: { level: "scan_terverifikasi" } } });
   });
   test.each(["householdId", "medicineId", "slotId", "expiresAt"] as const)("claims %s salah ditolak tanpa mencatat dosis", async (field) => {
     const system = dosingTestSystem();
-    const claims = { householdId: INPUT.householdId, medicineId: DOSE_MEDICINE.id, slotId: INPUT.slotId, expiresAt: system.clock.now() + 60_000 };
+    const claims = { householdId: INPUT.householdId, medicineId: DOSE_MEDICINE.id, slotId: INPUT.slotId, expiresAt: system.clock.now() + 60_000,
+      medicineIdentity: { name: DOSE_MEDICINE.name, strength: DOSE_MEDICINE.strength } };
     system.setToken(ok({ ...claims, ...(field === "expiresAt" ? { expiresAt: system.clock.now() } : { [field]: "lain" }) }));
     expect(await system.confirm.execute({ ...INPUT, mode: "verified", scanToken: "uji" })).toMatchObject({ ok: false, error: { code: "SCAN_TOKEN_INVALID" } });
     expect(system.confirmations.rows.size).toBe(0);
@@ -77,6 +79,12 @@ describe("ConfirmDose", () => {
     const unavailable = err(domainError("DATABASE_UNAVAILABLE", "Database tidak tersedia."));
     const repository: DoseConfirmationRepository = { list: system.confirmations.list.bind(system.confirmations), confirm: async () => unavailable };
     expect(await new ConfirmDose(system.reader, repository, system.tokens, system.clock).execute(INPUT)).toBe(unavailable);
+    expect(system.confirmations.rows.size).toBe(0);
+  });
+  test("claims tanpa identitas kemasan tidak bisa dipakai untuk verified", async () => {
+    const system = dosingTestSystem();
+    system.setToken(ok({ householdId: INPUT.householdId, medicineId: DOSE_MEDICINE.id, slotId: INPUT.slotId, expiresAt: system.clock.now() + 60_000 }));
+    expect(await system.confirm.execute({ ...INPUT, mode: "verified", scanToken: "uji" })).toMatchObject({ ok: false, error: { code: "SCAN_TOKEN_INVALID" } });
     expect(system.confirmations.rows.size).toBe(0);
   });
 });

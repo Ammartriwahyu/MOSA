@@ -28,6 +28,7 @@ export class ConfirmDose {
     if (!slots.value.some((candidate) => candidate.slotId === input.slotId)) return err(domainError("NOT_FOUND", "Slot dosis tidak ditemukan."));
 
     let expiresAt: number | null = null;
+    let scanMedicine: { readonly name: string; readonly strength: string } | undefined;
     if (input.mode === "verified") {
       if (!input.scanToken) return err(domainError("SCAN_TOKEN_INVALID", "Token scan tidak valid."));
       const token = await this.tokens.verify(input.scanToken);
@@ -37,12 +38,15 @@ export class ConfirmDose {
         return err(domainError("SCAN_TOKEN_INVALID", "Token scan tidak valid atau kedaluwarsa."));
       }
       expiresAt = token.value.expiresAt;
+      scanMedicine = token.value.medicineIdentity;
+      if (!scanMedicine) return err(domainError("SCAN_TOKEN_INVALID", "Bukti identitas kemasan tidak tersedia."));
     }
     const now = this.clock.now();
     if (expiresAt !== null && expiresAt <= now) return err(domainError("SCAN_TOKEN_INVALID", "Token scan kedaluwarsa."));
     const status = classifyDose({ scheduledAt: slot.value.scheduledAt, now, confirmed: false });
     if (status !== "jatuh_tempo") return err(domainError(status === "belum_tiba" ? "DOSE_NOT_DUE" : "DOSE_MISSED", "Dosis di luar jendela konfirmasi."));
-    const saved = await this.confirmations.confirm({ householdId: input.householdId, slot: slot.value, confirmedAt: now, level: input.mode === "verified" ? "scan_terverifikasi" : "dasar" });
+    const saved = await this.confirmations.confirm({ householdId: input.householdId, slot: slot.value, confirmedAt: now, level: input.mode === "verified" ? "scan_terverifikasi" : "dasar",
+      ...(scanMedicine ? { scanMedicine } : {}) });
     return saved.ok ? ok({ confirmation: saved.value, serverTime: now }) : saved;
   }
 }

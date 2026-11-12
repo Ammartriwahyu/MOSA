@@ -66,7 +66,7 @@ describe("HTTP dosis terlindungi sesi/persetujuan", () => {
     expect(responses.map((response) => response.status).sort()).toEqual([201, 409]);
     expect(system.confirmations.rows.size).toBe(1);
   });
-  test("jalur produksi verified menolak token sampai implementasi HMAC P06 terpasang", async () => {
+  test("verifier tanpa bukti scan tetap menolak token", async () => {
     const { app, system } = build(true, true);
     for (const body of [{ mode: "verified" }, { mode: "verified", scanToken: "fiktif" }]) {
       const response = await app.request(url(), options(body));
@@ -77,7 +77,8 @@ describe("HTTP dosis terlindungi sesi/persetujuan", () => {
   });
   test("verified dengan verifier uji yang sah menghasilkan level scan", async () => {
     const { app, system } = build();
-    system.setToken(ok({ householdId: "rumah-a", medicineId: DOSE_MEDICINE.id, slotId: slotId("07:00"), expiresAt: system.clock.now() + 60_000 }));
+    system.setToken(ok({ householdId: "rumah-a", medicineId: DOSE_MEDICINE.id, slotId: slotId("07:00"), expiresAt: system.clock.now() + 60_000,
+      medicineIdentity: { name: DOSE_MEDICINE.name, strength: DOSE_MEDICINE.strength } }));
     const response = await app.request(url(), options({ mode: "verified", scanToken: "token-uji-sah" }));
     expect(response.status).toBe(201);
     expect(await response.json()).toMatchObject({ confirmation: { level: "scan_terverifikasi" } });
