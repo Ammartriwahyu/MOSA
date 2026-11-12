@@ -52,6 +52,22 @@ Jadwal diperbarui setiap 20 detik selama aplikasi aktif dan saat kembali fokus. 
 
 Tes SQL dosing memakai dev dependency `@electric-sql/pglite` agar migrasi, trigger jadwal, batas waktu dan RPC konfirmasi dijalankan pada mesin PostgreSQL lokal tanpa Docker. Jalankan terarah dengan `pnpm --filter backend test tests/db/dosing-sql.test.ts`. Tes ini tidak menggantikan verifikasi koneksi, Auth dan PostgREST pada Supabase sesungguhnya.
 
+### Pengujian integrasi database
+
+`pnpm --filter backend test tests/db --reporter=dot` menjalankan migrasi asli secara berurutan pada PostgreSQL PGlite di memori. Setiap berkas tes memakai database terpisah; hanya `auth.users` dan role bawaan Supabase yang disiapkan oleh fixture. Tidak memerlukan Docker, kredensial, berkas `.env`, atau database produksi.
+
+| Berkas pada `backend/tests/db/` | Bukti otomatis |
+|---|---|
+| `data-constraints.test.ts` | Konfirmasi ganda ditolak constraint unik, replay basic/scan tidak menaikkan level, tanggal/jam/obat berbeda tetap terpisah, foreign key/CHECK, dan jatah AI per rumah tangga/hari |
+| `access-control.test.ts` | Seluruh enam tabel tercakup; anon/authenticated ditolak SELECT/INSERT/UPDATE/DELETE; RLS tetap melindungi setelah hak tabel dibuka hanya dalam transaksi uji; RPC khusus backend menolak klien; service_role berhasil dengan rumah tangga yang benar |
+| `account-deletion.test.ts` | Hapus pemilik Auth menghapus seluruh enam tabel, termasuk obat nonaktif; data keluarga lain sama persis; rollback mengembalikan data; hapus lunak mempertahankan riwayat |
+
+PGlite menjalankan satu koneksi. Permintaan Promise.all menguji antrean/replay dan constraint, **belum membuktikan race dua koneksi server PostgreSQL**. Penghapusan diuji mulai baris `auth.users`; layanan Auth sesungguhnya, pencabutan sesi, PostgREST/JWT, dan deployment Supabase masih perlu pemeriksaan layanan lokal/uji. Perlindungan akun demo tetap diuji pada use case dan rute HTTP, bukan dipindahkan ke database.
+
+`pnpm --filter backend db:check-rls` memeriksa layanan Supabase yang dikonfigurasi pengguna. Hasil `RLS OK` hanya diberikan bila semua permintaan dibalas HTTP 401/403 dengan kode PostgreSQL `42501`, sesuai [dokumentasi PostgREST](https://docs.postgrest.org/en/stable/references/errors.html). HTTP sukses, payload tidak valid, tabel hilang, kunci tidak sah, galat server/jaringan, dan body tidak dapat dibaca menghasilkan pemeriksaan belum terbukti dengan exit 1. Isi respons dan kunci tidak dicetak. Tes skrip tanpa layanan eksternal: `pnpm --filter backend test tests/infrastructure/rls-probe.test.ts tests/interface/rls-command.test.ts`; tes perintah memakai server HTTP lokal dan nilai konfigurasi fiktif.
+
+`pnpm test` tetap menjalankan paket backend/frontend bersamaan. [maxWorkers Vitest](https://main.vitest.dev/config/maxworkers) membatasi backend satu pekerja agar inisialisasi beberapa PostgreSQL WASM tidak berebut sumber daya dengan impor entri aplikasi; frontend memakai 25% kapasitas pekerja. Isolasi antarberkas tetap aktif, timeout tes tetap 5 detik, tanpa retry atau skip. Batas ini juga berlaku saat tes dijalankan per paket.
+
 ### Memeriksa logika scan
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
@@ -170,7 +186,7 @@ Satu pemutar aktif dibagi antar-komponen karena [cancel mengosongkan seluruh ant
 
 Tes hook/komponen memakai mesin suara tiruan, termasuk SSR, mulai/berhenti, suara terlambat, pergantian konteks/pemilik dan galat. Peramban lokal diuji 360/390/430 px: fallback D-d tampil, tombol 56 px, teks tetap terlihat, konsol bersih. Suara Indonesia lokal tidak tersedia pada peramban uji ini, sehingga audio nyata serta Android Chrome/iOS Safari belum diverifikasi. Demo katalog memakai Web Speech API asli, bukan hasil suara palsu.
 
-Verifikasi row 40: `pnpm typecheck` dan `pnpm lint` lulus. `pnpm test` paralel dua kali melewati timeout 5 detik pada tes entri backend yang sudah ada; tes entri terpisah lulus. Seluruh suite lulus saat paket dijalankan berurutan: `pnpm -r --workspace-concurrency=1 --if-present run test` (547 backend + 514 frontend). Timeout tidak diubah; kestabilan runner paralel perlu diperiksa pada P13.
+Catatan historis row 40: `pnpm typecheck` dan `pnpm lint` lulus; `pnpm test` paralel melewati timeout entri backend, sedangkan seluruh suite bergiliran lulus. P13 membatasi pekerja tes seperti dijelaskan pada bagian Pengujian integrasi database di atas, tanpa mengubah timeout.
 
 ## Deploy (Vercel)
 
