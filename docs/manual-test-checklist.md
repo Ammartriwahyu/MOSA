@@ -25,7 +25,7 @@ Jalankan M01–M10 pada masing-masing perangkat. Periksa pesan dan teks asli di 
 | M02 | Tambah obat, pilih nama atau ketik sendiri, isi seluruh kolom dan label sumber. Tekan Lanjut. Di pop-up tekan Perbaiki lagi, koreksi, lalu ulangi dan tekan Ya, sudah benar. | Data asli dan pratinjau AI dapat dibaca/digulir. Perbaiki lagi mempertahankan isian dan belum menyimpan. Obat baru muncul setelah Ya, sudah benar; label sumber sesuai pilihan. |
 | M03 | Buka dasbor sebelum dan selama jendela dosis; baca progres serta tanggal/jam. | Kelompok Pagi/Siang/Malam, status dan hitungan mengikuti server. Dosis tidak ditambahkan mundur sebelum waktu obat disimpan. Untuk skenario batas, gunakan waktu server uji terkendali; jam HP bukan penentu. |
 | M04 | Pada penggunaan scan pertama, tolak/tunda lalu setujui persetujuan scan. Pilih kamera atau unggah foto uji; ambil ulang sebelum mengirim. | Sebelum persetujuan tidak memproses foto. Foto yang dipilih dapat ditinjau/diganti; hanya foto yang disetujui dikirim. Persetujuan per HP dan akun tidak membocorkan foto antarakun. |
-| M05 | Scan obat yang sesuai jadwal. Saat pilihan tampilan muncul, simpan Teks/Suara. Periksa hasil, tekan Lanjut, lalu Nanti dulu. Scan lagi, periksa, lalu Sudah saya minum. | Nanti dulu tidak mencatat dan kembali ke jadwal. Sesudah konfirmasi berhasil tampil ✓✓ dan hitungan naik tepat satu. Tidak ada suara otomatis, termasuk saat mode Suara dipilih. |
+| M05 | Scan obat yang sesuai jadwal. Saat pilihan tampilan muncul, simpan Teks/Suara. Periksa hasil, tekan Lanjut, lalu Nanti dulu. Scan lagi, periksa, lalu Sudah saya minum. Ulangi dengan satu dosis obat yang sama sudah tercatat (1/2), kemudian scan dan konfirmasi slot keduanya. | Nanti dulu tidak mencatat dan kembali ke jadwal. Sesudah konfirmasi berhasil tampil ✓✓ dan hitungan naik tepat satu; pada pengulangan harus terbukti 1/2→2/2 melalui scan. Tidak ada suara otomatis, termasuk saat mode Suara dipilih. |
 | M06 | Pada dosis lain yang jatuh tempo, pilih Sudah minum tanpa scan. Coba Batal, kemudian ulangi dan konfirmasi. | Batal tidak mengubah hitungan. Konfirmasi berhasil tampil ✓; berbeda dari ✓✓. Ketukan ganda tidak mencatat dua kali. |
 | M07 | Scan kedua obat yang berjam sama, lalu coba dua jadwal obat yang bertumpuk. | Memindai satu obat hanya memengaruhi obat itu. Bila beberapa slot ditawarkan, tidak ada pilihan awal; pengguna memilih satu, tanggal/jam terlihat, dan slot lain tidak ikut tercatat. |
 | M08 | Uji foto buram/tanpa tulisan, obat belum terdaftar, kekuatan berbeda/tidak terbaca, obat di luar jendela, dan obat yang sudah tercatat. | Pesan sesuai hasil, tidak menebak, tidak memberi pilihan konfirmasi yang dilarang, dan hitungan tetap. Informasi obat hanya menampilkan AI yang sudah diperiksa atau informasi asli. |
@@ -41,6 +41,30 @@ Jalankan M01–M10 pada masing-masing perangkat. Periksa pesan dan teks asli di 
 | M13 | Putuskan koneksi sebelum membuka jadwal, sebelum konfirmasi, serta sesudah mengirim konfirmasi tetapi sebelum hasil diterima. Sambungkan kembali. | Galat dan pilihan pemulihan terbaca; tidak ada hitungan optimistis, POST otomatis ulang, atau antrean konfirmasi luring. Pada hasil yang belum pasti, periksa jadwal/scan ulang sesuai petunjuk sebelum mencoba kembali. Jangan menyimpulkan sukses dari indikator memuat. |
 | M14 | Aktifkan TalkBack/VoiceOver, perbesar teks/zoom, gunakan orientasi potret/lanskap dan navigasi keyboard bila tersedia. | Semua tindakan punya nama, fokus masuk/keluar dialog aman, status tidak hanya warna, teks/data asli tidak terpotong, dan tindakan penting dapat digulir/dijangkau. Ukuran isi minimum 18 px, tombol utama minimum 56 px dan target sentuh minimum 48 px. |
 | M15 | Masuk pada dua HP dengan akun yang sama. Ubah/konfirmasi pada HP wali, amati HP lansia. Keluar pada satu HP. | Jadwal mengikuti data server saat polling aktif (20 detik) atau kembali fokus. Keluar lokal tidak mengeluarkan HP lain. Pergantian akun menghilangkan foto/bacaan akun lama. |
+
+## Hasil aktual per skenario
+
+Rujukan dari [matriks AC](ac-traceability.md) menuju tabel ini. Langkah dan harapan M01–M15 ada di atas; tabel ini hanya untuk hasil aktual. Kedua perangkat masih **Belum**. Kolom bukti diisi penguji dengan perangkat/versi OS/browser, commit, waktu WIB, hasil dan temuan. Pada M15 catat kedua HP dan waktu pembaruan yang teramati.
+
+| ID | Android Chrome | iPhone Safari | Bukti / temuan aktual |
+|---|---|---|---|
+| <a id="m01"></a>M01 | Belum | Belum | Belum dicatat |
+| <a id="m02"></a>M02 | Belum | Belum | Belum dicatat |
+| <a id="m03"></a>M03 | Belum | Belum | Belum dicatat |
+| <a id="m04"></a>M04 | Belum | Belum | Belum dicatat |
+| <a id="m05"></a>M05 | Belum | Belum | Belum dicatat |
+| <a id="m06"></a>M06 | Belum | Belum | Belum dicatat |
+| <a id="m07"></a>M07 | Belum | Belum | Belum dicatat |
+| <a id="m08"></a>M08 | Belum | Belum | Belum dicatat |
+| <a id="m09"></a>M09 | Belum | Belum | Belum dicatat |
+| <a id="m10"></a>M10 | Belum | Belum | Belum dicatat |
+| <a id="m11"></a>M11 | Belum | Belum | Belum dicatat |
+| <a id="m12"></a>M12 | Belum | Belum | Belum dicatat |
+| <a id="m13"></a>M13 | Belum | Belum | Belum dicatat |
+| <a id="m14"></a>M14 | Belum | Belum | Belum dicatat |
+| <a id="m15"></a>M15 | Belum | Belum | Belum dicatat |
+
+Jangan mengisi Lulus dari tes otomatis. Untuk setiap kegagalan, catat langkah ulang dan hasil sesudah perbaikan. Hanya hasil pemeriksaan yang benar-benar dilakukan dapat menutup bagian M atau kekurangan bukti pada matriks AC.
 
 ## Uji asap AI nyata (opsional)
 
