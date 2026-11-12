@@ -7,7 +7,7 @@ import { LabelSourceChip } from "@/features/medicines";
 import { ROUTES } from "@/shared/config";
 import { OBAT, SCAN_CAPTURE, SCAN_CONFIRM, SCAN_OUTCOME, SCAN_REQUEST, formatKekuatan, jadwalTargetScan } from "@/shared/copy";
 import type { ScanSlot } from "../hooks/use-scan-confirmation";
-import { Button, Card, ChoiceCards, IconLink, Notice, cx } from "@/shared/ui";
+import { Bacakan, Button, Card, ChoiceCards, IconLink, Notice, cx } from "@/shared/ui";
 import { scanOutcomeMessages } from "../lib/scan-outcome-message";
 import type { ScanResponse } from "../schemas/scan-response";
 import { ScanMedicineInfo } from "./scan-medicine-info";
@@ -29,8 +29,9 @@ const TONE = {
 };
 
 /** Hasil scan dan pemilihan slot tidak mencatat minum. Lanjut membuka dialog terpisah. */
-export function ScanOutcomeView({ result, onAgain, onContinue, confirmationDisabled = false }: {
+export function ScanOutcomeView({ result, onAgain, onContinue, confirmationDisabled = false, speechActive = true, contextKey = "scan" }: {
   result: ScanResponse; onAgain: () => void; onContinue?: (slot: ScanSlot, button: HTMLButtonElement) => void; confirmationDisabled?: boolean;
+  speechActive?: boolean; contextKey?: string;
 }) {
   const [infoOpen, setInfoOpen] = useState(false);
   const [chosenSlot, setChosenSlot] = useState<string | null>(null);
@@ -40,13 +41,22 @@ export function ScanOutcomeView({ result, onAgain, onContinue, confirmationDisab
   const selected = result.outcome === "bisa_konfirmasi" && result.slots.length === 1 ? result.slots[0]!.slotId : chosenSlot;
   useEffect(() => { title.current?.focus(); }, [result, showingInfo]);
   const messages = scanOutcomeMessages(result, selected);
+  const reading = [outcomeTitle, ...messages,
+    ...(result.outcome === "tunggu_dulu" && result.nextDose ? [jadwalTargetScan(result.nextDose.scheduledDate, result.nextDose.scheduledTime)] : []),
+    ...(result.outcome === "kekuatan_beda" ? [SCAN_OUTCOME.photographed, formatKekuatan(result.readStrength), SCAN_OUTCOME.registered, ...result.medicines.map((medicine) => `${medicine.name} ${formatKekuatan(medicine.strength)}`)] : []),
+    ...(result.outcome === "bisa_konfirmasi" ? [SCAN_OUTCOME.matching, SCAN_OUTCOME.name, result.medicine.name, SCAN_OUTCOME.strength, formatKekuatan(result.medicine.strength),
+      ...result.slots.filter((slot) => slot.slotId === selected).flatMap((slot) => [SCAN_OUTCOME.schedule, jadwalTargetScan(slot.scheduledDate, slot.scheduledTime)]), SCAN_OUTCOME.noNewDose] : []),
+    ...(result.outcome === "dosis_sudah_tercatat" ? [SCAN_OUTCOME.noConfirmation, ...result.slots.map((slot) => jadwalTargetScan(slot.scheduledDate, slot.scheduledTime))] : []),
+    ...(result.outcome === "tunggu_dulu" ? [SCAN_OUTCOME.currentMedicines, ...result.otherDueSlots.flatMap((slot) => [`${slot.medicine.name} ${formatKekuatan(slot.medicine.strength)}`, jadwalTargetScan(slot.scheduledDate, slot.scheduledTime)])] : []),
+    ...(result.outcome === "tidak_terbaca" ? [SCAN_OUTCOME.goodPhoto, SCAN_OUTCOME.avoidLoosePills] : []),
+  ].join("\n");
   return <div className="flex min-w-0 flex-col gap-4 [overflow-wrap:anywhere]">
     <header className="flex items-center justify-between gap-3">
       <IconLink href={ROUTES.home} label={SCAN_CAPTURE.backToSchedule} icon={<ArrowLeft />} />
       <h1 ref={title} tabIndex={-1} className="min-w-0 flex-1 text-center text-section outline-none">{showingInfo ? SCAN_OUTCOME.infoTitle : SCAN_OUTCOME.title}</h1>
       <span aria-hidden="true" className="size-touch shrink-0" />
     </header>
-    {showingInfo && "medicine" in result ? <ScanMedicineInfo result={result} /> : <>
+    {showingInfo && "medicine" in result ? <ScanMedicineInfo result={result} speechActive={speechActive} contextKey={`${contextKey}:info:${result.medicine.id}`} /> : <>
       <div className="flex flex-col items-center gap-3 py-1 text-center">
         <span aria-hidden="true" className={cx("flex size-24 items-center justify-center rounded-pill border-2", TONE[tone])}><Icon className={result.outcome === "bisa_konfirmasi" ? "size-13" : "size-12"} /></span>
         <h2 className={cx(result.outcome === "bisa_konfirmasi" ? "text-hero" : "text-display", tone === "danger" ? "text-danger-strong" : tone === "success" ? "text-success" : "text-warning")}>{outcomeTitle}</h2>
@@ -79,6 +89,7 @@ export function ScanOutcomeView({ result, onAgain, onContinue, confirmationDisab
       {result.outcome === "tunggu_dulu" ? <Card className="p-5"><h3 className="text-body font-bold">{SCAN_OUTCOME.currentMedicines}</h3>
         {result.otherDueSlots.map((slot) => <div key={slot.slotId} className="text-body"><p className="font-bold">{slot.medicine.name} {formatKekuatan(slot.medicine.strength)}</p><p>{jadwalTargetScan(slot.scheduledDate, slot.scheduledTime)}</p></div>)}
       </Card> : null}
+      <Bacakan text={reading} active={speechActive} contextKey={`${contextKey}:${result.serverTime}:${selected ?? "unselected"}`} />
     </>}
     {result.outcome === "bisa_konfirmasi" ? <Notice tone="plain">{SCAN_OUTCOME.noNewDose}</Notice> : null}
     {result.outcome === "bisa_konfirmasi" && onContinue ? <Button size="lg" variant="brand" icon={<ArrowRight />} disabled={!selected || confirmationDisabled}

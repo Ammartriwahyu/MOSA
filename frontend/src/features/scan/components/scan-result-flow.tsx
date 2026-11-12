@@ -48,7 +48,7 @@ export function ScanResultFlow({ result, onAgain, outputMode, userId }: {
   const error = state.phase === "error" ? SCAN_CONFIRM[state.reason] : expired ? SCAN_CONFIRM.expired : null;
   const busy = state.phase === "pending";
   return <>
-    <ScanOutcomeView result={result} onAgain={again} onContinue={confirmation.open} confirmationDisabled={busy || expired || state.phase === "error"} />
+    <ScanOutcomeView result={result} onAgain={again} onContinue={confirmation.open} confirmationDisabled={busy || expired || state.phase === "error"} speechActive={!selected && !busy && !error} contextKey={userId} />
     {error && !selected ? <Notice tone="danger" role="alert">{error}</Notice> : null}
     {error && !selected ? <Button size="lg" onClick={again}>{SCAN_CONFIRM.rescan}</Button> : null}
     {selected && "medicine" in result ? <Dialog open title={KONFIRMASI_MINUM} icon={<Pill className="size-10" />} iconTone="brand" reserveCloseSpace={false}

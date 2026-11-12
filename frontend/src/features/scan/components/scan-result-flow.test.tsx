@@ -10,9 +10,10 @@ import { scanMedicineFixture, scanResponseFixture, scanSlotFixture } from "../te
 import { useScanConfirmation } from "../hooks/use-scan-confirmation";
 import { renderHook } from "@testing-library/react";
 import { ScanResultFlow } from "./scan-result-flow";
+import { installSpeechEngine } from "@/shared/testing/speech-engine";
 
 const { push, savePreference } = vi.hoisted(() => ({ push: vi.fn(), savePreference: vi.fn() }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ push }) }));
 vi.mock("@/features/doses", () => ({ confirmVerifiedDose: vi.fn(), getTodaysDoses: vi.fn(), dosesQueryKey: ["doses", "today"] }));
 vi.mock("@/features/preferences", () => ({ OutputPreferenceChoice: ({ onSaved }: { onSaved: () => void }) => <button onClick={async () => { await savePreference(); onSaved(); }}>{PREFERENSI.simpanLihatHasil}</button> }));
 const post = vi.mocked(confirmVerifiedDose); const get = vi.mocked(getTodaysDoses);
@@ -20,14 +21,20 @@ const receipt: DoseConfirmation = { status: "sudah", serverTime: "2026-11-12T00:
 function schedule(): Awaited<ReturnType<typeof getTodaysDoses>> { return { date: "2026-11-12", serverTime: receipt.serverTime, summary: { confirmed: 0, total: 1 }, medicines: [], carryoverDoses: [], earlyDoses: [], doses: [{ ...scanSlotFixture, medicine: scanMedicineFixture, status: "jatuh_tempo" as const, period: "pagi" as const, confirmation: null }] }; }
 const clients: QueryClient[] = [];
 function client() { const value = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } }); clients.push(value); return value; }
-function setup(outputMode: "teks" | null = "teks", result = scanResponseFixture()) {
+function setup(outputMode: "teks" | "suara" | null = "teks", result = scanResponseFixture()) {
   const cache = client(); const onAgain = vi.fn();
   const view = render(<QueryClientProvider client={cache}><ScanResultFlow result={result} userId="akun-a" outputMode={outputMode} onAgain={onAgain} /></QueryClientProvider>);
   return { ...view, cache, onAgain, user: userEvent.setup() };
 }
 async function open() { await userEvent.click(screen.getByRole("button", { name: SCAN_CONFIRM.continue })); await waitFor(() => expect(screen.getByRole("button", { name: TOMBOL.sudahSayaMinum })).toBeEnabled()); }
 beforeEach(() => { vi.clearAllMocks(); post.mockResolvedValue(receipt); get.mockResolvedValue(schedule()); savePreference.mockResolvedValue(undefined); });
-afterEach(() => { cleanup(); clients.splice(0).forEach((row) => row.clear()); vi.useRealTimers(); });
+afterEach(() => { cleanup(); clients.splice(0).forEach((row) => row.clear()); vi.useRealTimers(); vi.unstubAllGlobals(); });
+
+test.each(["teks", "suara"] as const)("mode %s tidak autoplay; dialog konfirmasi menghentikan bacaan tanpa POST", async (mode) => {
+  const engine = installSpeechEngine(); const { user } = setup(mode); expect(engine.speak).not.toHaveBeenCalled();
+  await user.click(screen.getByRole("button", { name: TOMBOL.bacakan })); expect(engine.speak).toHaveBeenCalledTimes(1);
+  const calls = engine.cancel.mock.calls.length; await open(); expect(engine.cancel.mock.calls.length).toBeGreaterThan(calls); expect(post).not.toHaveBeenCalled();
+});
 
 test("Lanjut membuka #5 tanpa POST; klik ganda hanya menyimpan slot/token yang dipilih satu kali", async () => {
   let finish!: (value: DoseConfirmation) => void; post.mockReturnValue(new Promise((resolve) => { finish = resolve; }));
