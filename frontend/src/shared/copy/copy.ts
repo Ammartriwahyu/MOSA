@@ -152,6 +152,18 @@ export const SCAN_OUTCOME = {
   avoidLoosePills: "Foto butir tablet atau kapsul saja", // DRAFT
 } as const;
 
+export const SCAN_CONFIRM = {
+  continue: "Lanjut: Catat Minum Obat", // DRAFT
+  saving: "Mencatat minum obat…", // DRAFT
+  hint: "Konfirmasi yang berhasil dicatat sebagai Sudah ✓✓ melalui scan. Nanti dulu tidak menyimpan konfirmasi; scan ulang saat siap.", // DRAFT
+  expired: "Hasil scan ini sudah tidak berlaku. Foto ulang kemasan untuk memeriksa jadwal terbaru.", // DRAFT
+  changed: "Jadwal atau data obat sudah berubah. Kembali ke jadwal untuk memeriksa dosis ini.", // DRAFT
+  uncertain: "Hasil pencatatan belum dapat dipastikan. Periksa jadwal sebelum mencoba lagi.", // DRAFT
+  already: "Dosis ini sudah tercatat. Periksa jadwal untuk melihat metode pencatatannya.", // DRAFT
+  saved: "Minum obat berhasil dicatat", // DRAFT
+  rescan: "Scan ulang", // DRAFT
+} as const;
+
 /** DRAFT: #6 membutuhkan jam. Bila server tidak punya nextDose, jangan menebak jamnya. */
 export function tungguDuluTanpaJadwal(p: { nama: string; kekuatan: string; jatuhTempo: ObatJatuhTempo[] }): string {
   return `Tunggu dulu. Ini ${obat(p.nama, p.kekuatan)}. Obat untuk sekarang adalah ${p.jatuhTempo.map((o) => obat(o.nama, o.kekuatan)).join(" dan ")}.`; // DRAFT
