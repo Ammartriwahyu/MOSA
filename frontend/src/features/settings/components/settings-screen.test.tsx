@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axe from "axe-core";
 import { beforeEach, describe, expect, test, vi } from "vitest";
@@ -12,6 +12,8 @@ const backend = vi.hoisted(() => ({
   patch: vi.fn(),
   del: vi.fn(),
   deleteError: null as Error | null,
+  deletePending: null as Promise<void> | null,
+  deleteSignal: null as AbortSignal | null,
 }));
 const auth = vi.hoisted(() => ({
   signIn: vi.fn(async () => ({ ok: true }) as { ok: true } | { ok: false; reason: string }),
@@ -35,8 +37,10 @@ vi.mock("@/shared/lib", async (importOriginal) => {
         backend.patch(path, options.body);
         return { ...backend.household, outputMode: options.body?.outputMode ?? null };
       },
-      noContent: async (path: string, options: { method?: string }) => {
+      noContent: async (path: string, options: { method?: string; signal?: AbortSignal }) => {
         backend.del(path, options.method);
+        backend.deleteSignal = options.signal ?? null;
+        await backend.deletePending;
         if (backend.deleteError) throw backend.deleteError;
       },
     }),
@@ -58,6 +62,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   backend.household = { dataConsentAt: "x", scanConsentAt: null, outputMode: "teks", isDemo: false };
   backend.deleteError = null;
+  backend.deletePending = null;
+  backend.deleteSignal = null;
   auth.signIn.mockResolvedValue({ ok: true });
 });
 
@@ -101,6 +107,31 @@ describe("SettingsScreen", () => {
 });
 
 describe("Hapus seluruh data & akun", () => {
+  test("layar dilepas ketika verifikasi tertunda: jangan meneruskan DELETE atau logout", async () => {
+    let finish!: (value: { ok: true }) => void;
+    auth.signIn.mockReturnValueOnce(new Promise((resolve) => { finish = resolve; }));
+    const view = renderScreen();
+    await userEvent.click(await screen.findByRole("button", { name: PENGATURAN.hapusAkun }));
+    await userEvent.type(screen.getByLabelText(PENGATURAN.labelKataSandiUlang), "sandi-fiktif");
+    await userEvent.click(screen.getByRole("button", { name: PENGATURAN.yaHapusSemua }));
+    expect(auth.signIn).toHaveBeenCalled(); view.unmount();
+    await act(async () => { finish({ ok: true }); });
+    expect(backend.del).not.toHaveBeenCalled(); expect(auth.signOut).not.toHaveBeenCalled();
+  });
+
+  test("DELETE akun lama selesai setelah layar dilepas: jangan keluarkan sesi akun baru", async () => {
+    let finish!: () => void;
+    backend.deletePending = new Promise((resolve) => { finish = resolve; });
+    const view = renderScreen();
+    await userEvent.click(await screen.findByRole("button", { name: PENGATURAN.hapusAkun }));
+    await userEvent.type(screen.getByLabelText(PENGATURAN.labelKataSandiUlang), "sandi-fiktif");
+    await userEvent.click(screen.getByRole("button", { name: PENGATURAN.yaHapusSemua }));
+    expect(backend.del).toHaveBeenCalled(); view.unmount();
+    expect(backend.deleteSignal?.aborted).toBe(true);
+    await act(async () => { finish(); });
+    expect(auth.signOut).not.toHaveBeenCalled();
+  });
+
   async function openDialog() {
     renderScreen();
     await userEvent.click(await screen.findByRole("button", { name: PENGATURAN.hapusAkun }));
