@@ -62,6 +62,7 @@ export function Dialog({
   reserveCloseSpace = true,
 }: DialogProps) {
   const contentRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
 
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
@@ -74,12 +75,16 @@ export function Dialog({
           {...(description ? {} : { "aria-describedby": undefined })}
           onOpenAutoFocus={(event) => {
             event.preventDefault();
+            // Consumer memakai tombol biasa, bukan Radix Trigger. Simpan fokus
+            // sebelum modal membukanya agar Escape/Batal tidak berakhir di body.
+            openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
             (initialFocusRef?.current ?? contentRef.current)?.focus();
           }}
           onCloseAutoFocus={(event) => {
-            if (returnFocusRef?.current) {
+            const target = returnFocusRef?.current ?? openerRef.current;
+            if (target?.isConnected) {
               event.preventDefault();
-              returnFocusRef.current.focus();
+              target.focus();
             }
           }}
           onPointerDownOutside={(event) => {

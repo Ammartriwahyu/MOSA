@@ -13,7 +13,7 @@ type FieldFrameProps = {
 };
 
 const CONTROL =
-  "h-action-lg w-full min-w-0 bg-transparent text-body text-ink outline-none placeholder:text-muted";
+  "min-h-action-lg w-full min-w-0 bg-transparent text-body text-ink placeholder:text-muted";
 
 function useFieldIds(hint?: string, error?: string) {
   const id = useId();

@@ -5,7 +5,8 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cx } from "./cx";
 
 // Figma MOSA DRAFT: tombol kapsul (pill). Tinggi 56 px (aksi utama) atau 60 px
-// (layar hasil/pengaturan); docs/06 minimum 56 px untuk tombol utama.
+// (layar hasil/pengaturan); tinggi minimum, bukan tinggi tetap, agar label
+// dapat membungkus ketika pengguna memperbesar teks (docs/06).
 const VARIANT = {
   /** Aksi utama: kapsul gelap (Scan Obat, Foto Obat yang Benar). */
   action: "bg-action text-on-action",
@@ -24,8 +25,8 @@ const VARIANT = {
 } as const;
 
 const SIZE = {
-  md: "h-action",
-  lg: "h-action-lg",
+  md: "min-h-action",
+  lg: "min-h-action-lg",
 } as const;
 
 export type ButtonVariant = keyof typeof VARIANT;
@@ -53,7 +54,7 @@ export function Button({
   ...props
 }: ButtonProps) {
   const classes = cx(
-    "inline-flex items-center justify-center gap-2.5 rounded-pill px-5 text-button",
+    "inline-flex min-w-0 items-center justify-center gap-2.5 rounded-pill px-5 py-3 text-center text-button [overflow-wrap:anywhere]",
     "transition-colors disabled:cursor-not-allowed disabled:border-transparent disabled:bg-secondary disabled:text-muted",
     VARIANT[variant],
     SIZE[size],

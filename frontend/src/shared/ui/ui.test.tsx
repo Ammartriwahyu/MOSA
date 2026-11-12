@@ -24,6 +24,14 @@ async function expectNoA11yViolations(root: Element = document.body) {
 }
 
 describe("Button", () => {
+  test.each(["md", "lg"] as const)("ukuran %s mempertahankan tinggi minimum dan dapat tumbuh mengikuti label", (size) => {
+    render(<Button size={size}>Hapus Seluruh Data & Akun</Button>);
+    const button = screen.getByRole("button");
+    expect(button).not.toHaveClass("h-action");
+    expect(button).not.toHaveClass("h-action-lg");
+    expect(button).toHaveClass(size === "md" ? "min-h-action" : "min-h-action-lg");
+  });
+
   test("bawaan type=button, label terlihat, ikon disembunyikan dari pembaca layar", () => {
     render(<Button icon={<Camera data-testid="ikon" />}>{TOMBOL.scanObat}</Button>);
     const button = screen.getByRole("button", { name: TOMBOL.scanObat });
@@ -126,6 +134,26 @@ describe("ChoiceCards", () => {
 });
 
 describe("Dialog", () => {
+  test("Tab terjebak di dialog dan Escape mengembalikan fokus ke pemicu tanpa Radix Trigger", async () => {
+    function Controlled() {
+      const [open, setOpen] = useState(false);
+      return <><Button onClick={() => setOpen(true)}>Buka pemeriksaan</Button>
+        <Dialog open={open} onOpenChange={setOpen} title="Pemeriksaan" actions={<Button onClick={() => setOpen(false)}>Batal</Button>} />
+      </>;
+    }
+    render(<Controlled />);
+    const user = userEvent.setup();
+    const trigger = screen.getByRole("button", { name: "Buka pemeriksaan" });
+    await user.tab(); expect(trigger).toHaveFocus(); await user.keyboard("{Enter}");
+    await waitFor(() => expect(screen.getByRole("dialog")).toHaveFocus());
+    await user.tab(); expect(screen.getByRole("button", { name: DRAFT.tutup })).toHaveFocus();
+    await user.tab(); expect(screen.getByRole("button", { name: "Batal" })).toHaveFocus();
+    await user.tab(); expect(screen.getByRole("button", { name: DRAFT.tutup })).toHaveFocus();
+    await user.tab({ shift: true }); expect(screen.getByRole("button", { name: "Batal" })).toHaveFocus();
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
   function Harness({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
     const [open, setOpen] = useState(true);
     return (

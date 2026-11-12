@@ -31,12 +31,12 @@ export function BottomNav() {
         href={item.href}
         aria-current={active ? "page" : undefined}
         className={cx(
-          "flex w-26 flex-col items-center gap-1 rounded-tile py-2 text-body",
+          "flex min-w-0 flex-col items-center justify-center gap-1 rounded-tile py-2 text-body @max-[16em]:flex-row @max-[16em]:gap-3",
           active ? "bg-brand-soft font-bold text-brand-ink" : "font-semibold text-muted",
         )}
       >
         <item.Icon aria-hidden="true" className="size-7" />
-        {item.label}
+        <span className="min-w-0 text-center [overflow-wrap:anywhere]">{item.label}</span>
       </Link>
     );
   };
@@ -44,22 +44,22 @@ export function BottomNav() {
   return (
     <nav
       aria-label={DRAFT.navigasiUtama}
-      className="fixed inset-x-0 bottom-0 z-30 border-t-2 border-line bg-surface"
+      className="@container fixed inset-x-0 bottom-0 z-30 border-t-2 border-line bg-surface"
     >
-      <div className="mx-auto flex max-w-app items-center justify-between px-4.5 pt-2.5 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+      <div className="mx-auto grid max-w-app grid-cols-3 items-center gap-2 px-4.5 pt-2.5 pb-[max(1.5rem,env(safe-area-inset-bottom))] @max-[16em]:grid-cols-1">
         {tab(items[0])}
         <Link
           href={ROUTES.scan}
           aria-current={scanActive ? "page" : undefined}
-          className="flex w-28 flex-col items-center gap-1 text-body font-bold text-ink"
+          className="flex min-w-0 flex-col items-center justify-center gap-1 text-body font-bold text-ink @max-[16em]:flex-row @max-[16em]:gap-3"
         >
           <span
             aria-hidden="true"
-            className="flex size-15 items-center justify-center rounded-pill bg-action text-on-action shadow-card"
+            className="flex size-action-lg shrink-0 items-center justify-center rounded-pill bg-action text-on-action shadow-card"
           >
             <Camera className="size-7" />
           </span>
-          {TOMBOL.scanObat}
+          <span className="min-w-0 text-center [overflow-wrap:anywhere]">{TOMBOL.scanObat}</span>
         </Link>
         {tab(items[1])}
       </div>
