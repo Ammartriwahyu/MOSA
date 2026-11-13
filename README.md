@@ -104,6 +104,14 @@ Proses hapus akun juga dibatalkan ketika layar dilepas agar kelanjutan lama tida
 
 Verifikasi row48: `pnpm typecheck`, `pnpm lint`, dan `pnpm test` lulus (671 backend + 559 frontend, termasuk 11 HTTP E2E). Matriks baru memeriksa semantik seluruh 12 halaman produk dalam shell yang sesuai, dengan data fiktif dan tanpa layanan eksternal.
 
+### Tinjauan arsitektur dan kinerja
+
+[Laporan P15](docs/review-report.md) menggabungkan temuan keamanan, aksesibilitas dan arsitektur. `pnpm lint` kini juga menjalankan 48 probe batas impor melalui `pnpm architecture:check`, termasuk larangan frontend/backend saling mengimpor langsung. Perakitan use case HTTP yang tidak dipakai dibersihkan.
+
+Pengukuran yang dapat diulang: `pnpm --filter backend bench:local` untuk API/entry lokal dengan SQL memori dan transport layanan tiruan; `pnpm --filter frontend build` lalu `pnpm --filter frontend bench:bundle` untuk aset HTML halaman utama pada server produksi localhost sementara. Laporan mencatat angka, metode dan batasnya. Perintah benchmark tidak dijalankan sebagai ambang kinerja CI dan tidak memuat kredensial/isi respons dalam hasilnya. Kriteria perangkat dan layanan nyata tetap terbuka.
+
+Verifikasi row49: build frontend, `pnpm typecheck`, `pnpm lint` (termasuk 48 probe), dan `pnpm test` lulus (677 backend + 559 frontend, termasuk 11 HTTP E2E). Laporan P15 tidak menutup enam AC yang masih membutuhkan bukti atau menggantikan pemeriksaan layanan/perangkat sebelum rilis.
+
 ### Memeriksa logika scan
 
 `pnpm --filter backend test tests/unit/verification tests/unit/shared/strength-safety.test.ts` memeriksa pencocokan nama/kekuatan dan delapan hasil scan dengan data fiktif, tanpa Gemini, database, atau foto. Tabel prioritas mencakup kekuatan beda meskipun dosis sudah tercatat, dua obat pada jam sama, target slot eksplisit, overlap, dan pergantian tanggal.
