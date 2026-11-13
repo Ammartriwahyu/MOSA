@@ -35,7 +35,7 @@ Catat hash baru beserta commit sumber. Arsip hanya mengambil berkas yang sudah d
 ## Pemulihan pada target demo yang disetujui
 
 1. Verifikasi checksum arsip, lalu ekstrak ke direktori terpisah untuk diperiksa. Gunakan repo pada commit sumber yang cocok; jangan menimpa proyek aktif tanpa meninjau perbedaannya.
-2. Pada proyek Supabase baru khusus demo, terapkan lima migrasi berurutan sesuai [panduan lokal](local-development.md#3-siapkan-database-dan-auth-sekali). Database yang sudah ada perlu pemeriksaan riwayat; jangan melakukan reset atau downgrade skema produksi.
+2. Arsip di atas merepresentasikan skema sebelum P14. Pada proyek Supabase baru dengan kode terkini, terapkan enam migrasi berurutan sesuai [panduan lokal](local-development.md#3-siapkan-database-dan-auth-sekali). Database yang sudah ada perlu pemeriksaan riwayat; jangan melakukan reset atau downgrade skema produksi.
 3. Operator mengisi konfigurasi perangkat sendiri. Pilih akun demo publik terlebih dahulu; jangan memakai akun pribadi. Periksa RLS, lalu jalankan `pnpm --filter backend seed:demo` pada target demo yang telah disetujui.
 4. Pastikan health 200, login demo dan penandanya, dua obat awal, persetujuan scan/pilihan keluaran serta hitungan awal yang sesuai jam server. Uji akun lain tetap utuh. Seed memulihkan sandi dan mereset data demo, bukan akun lain.
 5. Untuk latihan segera, jalankan `pnpm --filter backend seed:demo-due`; satu dosis Metformin dijadwalkan pada menit sekarang dalam WIB. Kembalikan dengan `seed:demo` setelah latihan. Hentikan pemakaian akun demo selama reset.

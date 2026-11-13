@@ -41,11 +41,11 @@ Isi melalui Project Settings → Environment Variables pada lingkungan yang tepa
 | Frontend | NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Publishable key, bukan secret key |
 | Frontend | NEXT_PUBLIC_DEMO_EMAIL, NEXT_PUBLIC_DEMO_PASSWORD | Opsional, kosong sampai demo publik disiapkan |
 
-NODE_ENV produksi disediakan platform; jangan salin development dari contoh lokal. PORT hanya untuk localhost. DEMO_EMAIL/PASSWORD backend dipakai skrip seed operator, bukan proses API cloud. Cron/VAPID tidak diperlukan karena P14 dilewati. Jangan memasukkan nilai kunci/sandi ke repo, log atau dokumen ini.
+NODE_ENV produksi disediakan platform; jangan salin development dari contoh lokal. PORT hanya untuk localhost. DEMO_EMAIL/PASSWORD backend dipakai skrip seed operator, bukan proses API cloud. Backend push bersifat opsional: PUSH_ENABLED=false secara bawaan; saat true isi CRON_SECRET, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY dan VAPID_SUBJECT hanya di backend sesuai [panduan push](web-push-backend.md). Jangan memasukkan nilai kunci/sandi ke repo, log atau dokumen ini.
 
 NEXT_PUBLIC_* diikat saat build; perubahan URL/key/demo membutuhkan build/deploy baru ([Next.js environment](https://nextjs.org/docs/app/guides/environment-variables)). Pisahkan layanan/kredensial Preview dan Production sesuai kebijakan tim.
 
-Terapkan lima migrasi dan siapkan seed pada target yang disetujui mengikuti [panduan lokal](local-development.md#3-siapkan-database-dan-auth-sekali). Periksa RLS/RPC, lalu `pnpm --filter backend db:check-rls` dari konfigurasi publik target. Seed memulihkan/menghapus data demo, jadi targetnya harus dipilih dahulu.
+Terapkan enam migrasi dan siapkan seed pada target yang disetujui mengikuti [panduan lokal](local-development.md#3-siapkan-database-dan-auth-sekali). Periksa RLS/RPC, lalu `pnpm --filter backend db:check-rls` dari konfigurasi publik target. Seed memulihkan/menghapus data demo, jadi targetnya harus dipilih dahulu.
 
 Site URL Supabase Auth menunjuk frontend resmi. Tambahkan URL kembali yang dipakai; produksi memakai URL spesifik, bukan wildcard semua domain ([Supabase redirect URLs](https://supabase.com/docs/guides/auth/redirect-urls)). Aplikasi memakai email/kata sandi; sesudah konfirmasi email pengguna masuk lagi secara manual.
 
@@ -75,6 +75,6 @@ Tabel adalah prosedur, **belum hasil lulus**. Catat hasil pada [checklist rilis]
 
 ## Cron dan keberlanjutan demo
 
-Tidak ada /v1/internal/reminders/run, manifest PWA atau API push pada MVP ini. Jangan menjadwalkan endpoint tersebut. GET /v1/health publik membaca database; [rencana pemantauan harian](release-checklist.md#pemantauan-harian-yang-belum-diaktifkan) menunggu target serta persetujuan operator. Health tidak menjamin paket gratis tidak dipause; periksa status/kuota layanan sebelum demo. Row50/51 tidak membuat jadwal cron atau mengubah project settings.
+Backend P14 kini menyediakan API langganan dan POST /v1/internal/reminders/run secara opsional. Frontend PWA/worker belum tersedia; jangan aktifkan job sebelum target, worker dan pengujian perangkat siap. [Semantik dan konfigurasi cron push](web-push-backend.md). GET /v1/health publik membaca database; [rencana pemantauan harian](release-checklist.md#pemantauan-harian-yang-belum-diaktifkan) menunggu target serta persetujuan operator. Health tidak menjamin paket gratis tidak dipause; periksa status/kuota layanan sebelum demo. Row50/51 tidak membuat jadwal cron atau mengubah project settings.
 
 Cadangan seed/migrasi dan prosedur pemulihan/rekaman tersedia di [runbook demo](demo-runbook.md). Perintah tag freeze hanya dijalankan setelah [gerbang rilis](release-checklist.md#gerbang-sebelum-tag-freeze) terpenuhi. Rekaman, pemulihan pada layanan dan smoke aktual belum dikerjakan; enam AC yang belum lengkap tetap terbuka.

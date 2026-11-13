@@ -43,17 +43,18 @@ Isi sendiri pada perangkat. Contoh yang baru disalin masih kosong dan belum dapa
 | NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Publishable key, bukan secret key |
 | NEXT_PUBLIC_DEMO_EMAIL, NEXT_PUBLIC_DEMO_PASSWORD | Sama dengan akun demo tim; kosongkan sampai akun tersedia |
 
-NEXT_PUBLIC_* dikirim ke browser. Kunci Supabase secret, Gemini dan HMAC tidak ditempatkan di frontend. Cron/VAPID tidak diperlukan karena P14 tidak dibangun.
+NEXT_PUBLIC_* dikirim ke browser. Kunci Supabase secret, Gemini dan HMAC tidak ditempatkan di frontend. Backend push opsional: biarkan PUSH_ENABLED=false untuk MVP; CRON_SECRET/VAPID baru wajib saat true. [Konfigurasi dan API push](web-push-backend.md).
 
 ## 3. Siapkan database dan Auth sekali
 
-Pada proyek Supabase baru khusus data fiktif, buka SQL Editor dan jalankan seluruh lima berkas di [folder migrasi](../backend/supabase/migrations) berurutan:
+Pada proyek Supabase baru khusus data fiktif, buka SQL Editor dan jalankan seluruh enam berkas di [folder migrasi](../backend/supabase/migrations) berurutan:
 
 1. 20261110120000_initial_schema.sql
 2. 20261110130000_add_medicine_purpose.sql
 3. 20261111120000_consume_ai_usage.sql
 4. 20261111180000_dose_confirmation_atomic.sql
 5. 20261112040000_scan_confirmation_identity.sql
+6. 20261113120000_push_reminder_claims.sql
 
 SQL aplikasi menjadi sumber skema; jangan membuat tabel tiruan atau membuka RLS untuk klien publik. Pada proyek yang sudah bermigrasi, periksa riwayat agar tidak diterapkan dua kali. Migrasi cloud mengubah target dan dilakukan operator pada proyek yang disetujui. [Workflow migrasi Supabase](https://supabase.com/docs/guides/local-development/database-migrations) menjelaskan CLI dengan migration history otomatis.
 

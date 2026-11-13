@@ -8,7 +8,7 @@ Pendamping minum obat untuk lansia dan keluarga: jadwal harian, instruksi yang d
 
 Fitur MVP telah diimplementasikan dan diuji otomatis. Verifikasi P15: **677 tes backend + 559 frontend**, 48 pemeriksaan batas impor dan build frontend lulus. [Matriks AC](docs/ac-traceability.md): **20 Lulus otomatis, 6 Belum lengkap, 0 Gagal**. Pemeriksaan perangkat/layanan nyata dan kesiapan rilis masih terbuka; [laporan P15](docs/review-report.md) menjelaskan buktinya.
 
-Notifikasi Web Push, PWA, pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah. [Hasil klon bersih](docs/clean-clone-test.md) membedakan pemeriksaan kode/startup dari demo layanan nyata.
+Backend Web Push tersedia sebagai fitur opsional; [API dan batas pengiriman](docs/web-push-backend.md) sudah disiapkan. PWA, worker/izin/langganan frontend, pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah. [Hasil klon bersih](docs/clean-clone-test.md) membedakan pemeriksaan kode/startup dari demo layanan nyata.
 
 ## Menjalankan di localhost
 
@@ -24,7 +24,7 @@ if (!(Test-Path -LiteralPath backend/.env)) { Copy-Item -LiteralPath backend/.en
 if (!(Test-Path -LiteralPath frontend/.env.local)) { Copy-Item -LiteralPath frontend/.env.example -Destination frontend/.env.local }
 ```
 
-Pilih branch/commit rilis yang sudah ditinjau. **Isi nilai kosong sebelum menyalakan aplikasi**, terapkan seluruh lima migrasi, lalu periksa RLS. [Panduan lokal](docs/local-development.md) menyediakan tabel environment, urutan migrasi, opsi Docker dan bantuan galat. Contoh konfigurasi saja belum cukup untuk menjalankan Auth/database/AI.
+Pilih branch/commit rilis yang sudah ditinjau. **Isi nilai kosong sebelum menyalakan aplikasi**, terapkan seluruh enam migrasi, lalu periksa RLS. [Panduan lokal](docs/local-development.md) menyediakan tabel environment, urutan migrasi, opsi Docker dan bantuan galat. Contoh konfigurasi saja belum cukup untuk menjalankan Auth/database/AI.
 
 Setelah persiapan tersebut selesai, setiap kali ingin membuka demo:
 
