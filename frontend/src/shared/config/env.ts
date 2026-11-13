@@ -37,17 +37,3 @@ export function readPublicEnv(source: Record<string, string | undefined> = RAW):
     supabasePublishableKey: parsed.data.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   };
 }
-
-export type DemoCredentials = { email: string; password: string };
-
-/**
- * Kredensial Akun Demo Juri untuk tombol Quick Login (PRD §9.1). Sengaja publik:
- * akun demo memang dibagikan ke juri (README) dan dilindungi dari penghapusan di
- * backend. Bukan rahasia; jangan pakai pola ini untuk kunci lain.
- * null bila tidak diisi → tombol demo tidak ditampilkan.
- */
-export function readDemoCredentials(): DemoCredentials | null {
-  const email = process.env.NEXT_PUBLIC_DEMO_EMAIL;
-  const password = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
-  return email && password ? { email, password } : null;
-}

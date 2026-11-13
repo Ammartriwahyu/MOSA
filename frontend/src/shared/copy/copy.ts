@@ -432,10 +432,7 @@ export const AUTH = {
   setujuLanjutkan: "Setuju dan lanjutkan", // DRAFT
   keluar: "Keluar dari Akun", // DRAFT
   /** Quick Login Demo Juri (Figma 02 · 135:2825). */
-  masukDemo: "Masuk dengan Akun Demo Juri", // DRAFT
-  atau: "atau", // DRAFT
   /** Penanda akun demo di aplikasi (P08 tugas 2; tidak ada di Figma). */
-  modeDemo: "Akun Demo Juri: data contoh, tidak bisa dihapus.", // DRAFT
   // Galat formulir dan masuk
   galatNama: "Isi nama pasien.", // DRAFT
   galatEmail: "Isi email yang benar, misalnya nama@email.com.", // DRAFT
