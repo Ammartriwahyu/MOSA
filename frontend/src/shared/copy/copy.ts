@@ -402,7 +402,6 @@ export const PENGATURAN = {
 
 /** Layar masuk, daftar, onboarding, persetujuan (Figma MOSA DRAFT 01–03). Semua DRAFT. */
 export const AUTH = {
-  tagline: "MOSA · Pendamping Minum Obat", // DRAFT
   onboardingJudul: "Minum obat tepat waktu", // DRAFT
   onboardingIsi: "Bantu lansia dan keluarga mengikuti instruksi obat dari apoteker.", // DRAFT
   mulaiSekarang: "Mulai Sekarang", // DRAFT

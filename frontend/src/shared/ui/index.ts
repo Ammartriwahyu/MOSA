@@ -11,6 +11,8 @@ export { Dialog, type DialogProps } from "./dialog";
 export { EmptyState, ErrorState, Skeleton, Spinner } from "./feedback";
 export { SelectField, TextField, type SelectFieldProps, type TextFieldProps } from "./field";
 export { IconButton, IconLink, type IconButtonProps } from "./icon-button";
+export { Logo, type LogoProps, type LogoVariant } from "./logo";
+export { OPENING_SPLASH_SCRIPT, OpeningSplash } from "./opening-splash";
 export { BottomNav } from "./bottom-nav";
 export { Notice } from "./notice";
 export { PageHeader, type PageHeaderProps } from "./page-header";

@@ -141,6 +141,22 @@
   --container-app: 430px;
 }
 
+/* Animasi pembuka (P17): tersembunyi kecuali skrip awal memasang data-pembuka.
+   Cadangan: tetap hilang sendiri setelah 2,4 dtk bila JavaScript gagal berjalan. */
+.pembuka {
+  display: none;
+}
+html[data-pembuka] .pembuka {
+  display: flex;
+  animation: pembuka-cadangan 0.2s ease-out 2.4s forwards;
+}
+@keyframes pembuka-cadangan {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @layer components {
   .dose-progress {
     appearance: none;

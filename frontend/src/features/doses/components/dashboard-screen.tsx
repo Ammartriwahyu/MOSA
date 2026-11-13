@@ -4,7 +4,7 @@ import { Settings } from "lucide-react";
 import { useRef, useState, type RefObject } from "react";
 import { ROUTES } from "@/shared/config";
 import { AUTH, CATAT_DOSIS, catatanDosisBerhasil, DASBOR, DRAFT, NAMA_APLIKASI } from "@/shared/copy";
-import { Button, ErrorState, IconLink, Notice, Skeleton, Spinner } from "@/shared/ui";
+import { Button, ErrorState, IconLink, Logo, Notice, Skeleton, Spinner } from "@/shared/ui";
 import { useTodaysDoses } from "../hooks/use-todays-doses";
 import { DashboardContent } from "./dashboard-content";
 import { allDoses, useDoseConfirmation } from "../hooks/use-dose-confirmation";
@@ -14,9 +14,13 @@ import { DosePickerDialog } from "./dose-picker-dialog";
 export function DashboardHeader({ focusRef }: { focusRef?: RefObject<HTMLHeadingElement | null> } = {}) {
   return (
     <header className="flex items-center justify-between gap-3">
-      <div className="min-w-0">
-        <h1 ref={focusRef} tabIndex={-1} className="text-page break-words text-brand">{NAMA_APLIKASI}</h1>
-        <p className="text-body font-semibold">{DASBOR.sapaan}</p>
+      <div className="flex min-w-0 items-center gap-3">
+        {/* Dekoratif: nama aplikasi sudah tertulis di judul di sebelahnya. */}
+        <Logo variant="aplikasi" height={48} alt="" className="shrink-0" />
+        <div className="min-w-0">
+          <h1 ref={focusRef} tabIndex={-1} className="text-page break-words text-brand">{NAMA_APLIKASI}</h1>
+          <p className="text-body font-semibold">{DASBOR.sapaan}</p>
+        </div>
       </div>
       <IconLink href={ROUTES.settings} label={DRAFT.pengaturan} icon={<Settings />} />
     </header>
