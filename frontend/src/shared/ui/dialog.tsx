@@ -91,9 +91,10 @@ export function Dialog({
             if (!dismissOnOutsideClick || closeDisabled) event.preventDefault();
           }}
           onEscapeKeyDown={(event) => { if (closeDisabled) event.preventDefault(); }}
-          className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] w-full max-w-app flex-col gap-3 overflow-y-auto rounded-t-sheet bg-surface px-6 pt-3.5 pb-6 outline-none"
+          // Mobile: lembar bawah. ≥ 768 px: modal di tengah layar (P17).
+          className="fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] w-full max-w-app flex-col gap-3 overflow-y-auto rounded-t-sheet bg-surface px-6 pt-3.5 pb-6 outline-none md:inset-auto md:top-1/2 md:left-1/2 md:max-h-[88dvh] md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-card md:px-8 md:pt-8 md:pb-8 md:shadow-card"
         >
-          <div aria-hidden="true" className="mx-auto h-1.5 w-12 rounded-pill bg-field-border" />
+          <div aria-hidden="true" className="mx-auto h-1.5 w-12 rounded-pill bg-field-border md:hidden" />
           <RadixDialog.Close
             disabled={closeDisabled}
             aria-label={DRAFT.tutup}
