@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "bench:bundle": "node scripts/measure-home-bundle.mjs",
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint",
