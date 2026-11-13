@@ -81,6 +81,20 @@ function prohibitions(text: string): string[][] {
   });
 }
 
+/**
+ * Kata yang boleh ditambahkan AI ke kalimat larangan tanpa mengubah artinya
+ * ("Hindari jus jeruk bali" → "Jangan minum jus jeruk bali"). Daftar sengaja
+ * sempit: kata yang melunakkan atau membatasi ("kecuali", "sedikit", "banyak")
+ * tidak ada di sini sehingga larangan yang berubah arti tetap ditolak.
+ */
+const WARNING_FILLER_WORDS = new Set(["minum", "obat", "ini", "itu", "anda", "juga", "ya"]);
+
+/** Larangan keluaran memuat semua kata larangan asli, dan tambahannya hanya kata pengisi. */
+function sameTopics(original: string[], warning: string[]): boolean {
+  return original.every((word) => warning.includes(word))
+    && warning.every((word) => original.includes(word) || WARNING_FILLER_WORDS.has(word));
+}
+
 function numbersIn(text: string): Set<string> {
   // "07.00" menjadi "7" dan "0": jam yang ditulis ulang "7" tetap cocok.
   return new Set([...text.matchAll(/\d+/g)].map((m) => String(Number(m[0]))));
@@ -108,7 +122,6 @@ export function isFaithfulExplanation(source: string, explanation: string): bool
   const sourceQuantities = quantities(from);
   for (const quantity of quantities(out)) if (!sourceQuantities.has(quantity)) return false;
   const originals = prohibitions(from); const warnings = prohibitions(out);
-  const sameTopics = (a: string[], b: string[]) => a.every((word) => b.includes(word)) && b.every((word) => a.includes(word));
   if (originals.some((original) => !warnings.some((warning) => sameTopics(original, warning)))
     || warnings.some((warning) => !originals.some((original) => sameTopics(original, warning)))) return false;
 
