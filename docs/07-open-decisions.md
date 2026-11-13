@@ -10,7 +10,7 @@ Kit ini memilih nilai bawaan agar pekerjaan tidak berhenti. Setiap nilai bawaan 
 | D4 | Kolom *kegunaan* dikirim ke AI? | Tidak | Dokumen final vs PRD §9.2 langkah 4 | Ubah `AI_INPUT_FIELDS` |
 | D5 | Kalimat DRAFT di `docs/02` | Dipakai sementara | USULAN | Ganti di `copy.ts` |
 | D6 | Tombol batal konfirmasi tanpa scan | `Batal` (sesuai PRD §19 #12) | PRD vs analisis (usul `Nanti dulu` agar seragam) | Ganti satu string |
-| D7 | Nama aplikasi di UI | `TepatMinum` (sub-label MOSA) | PRD §19 #5 | Ganti satu konstanta |
+| D7 | Nama aplikasi di UI | `MOSA` (diputuskan tim 14 Nov 2026; sebelumnya TepatMinum) | PRD §19 #5 | Satu konstanta `NAMA_APLIKASI` |
 | D8 | Model Gemini dan batas harian per rumah tangga | Dari `GEMINI_MODEL`; batas harian dari hasil uji kuota | PRD §19.1 #2 (nama model di PRD perlu dicek ulang di halaman deprecations resmi) | Env var |
 | D9 | Label sumber bila dokter yang mengisi | Dua opsi saja; "Diisi apoteker" mewakili apoteker/dokter | PRD §19 #7 | Menambah opsi ke enum + CHECK constraint |
 | D10 | Batas Pagi/Siang/Malam | 04.00–10.59 / 11.00–17.59 / 18.00–03.59 | USULAN | Konstanta |

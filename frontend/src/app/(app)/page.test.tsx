@@ -8,6 +8,6 @@ vi.mock("@/features/doses/api/doses", () => ({ getTodaysDoses: () => new Promise
 test("halaman awal menampilkan nama aplikasi", () => {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   render(<QueryClientProvider client={client}><Home /></QueryClientProvider>);
-  expect(screen.getByRole("heading", { level: 1, name: "TepatMinum" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { level: 1, name: "MOSA" })).toBeInTheDocument();
   client.clear();
 });

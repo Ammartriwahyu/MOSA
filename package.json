@@ -2,7 +2,7 @@
   "name": "tepatminum",
   "version": "0.1.0",
   "private": true,
-  "description": "TepatMinum / MOSA: pendamping minum obat lansia dan keluarga (LOGICODIX 2026)",
+  "description": "MOSA: pendamping minum obat lansia dan keluarga (LOGICODIX 2026)",
   "packageManager": "pnpm@12.16.1",
   "engines": {
     "node": "24.x"

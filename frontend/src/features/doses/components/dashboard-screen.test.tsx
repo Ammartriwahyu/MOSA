@@ -26,7 +26,7 @@ describe("dasbor", () => {
     getDoses.mockImplementation(() => new Promise(() => {}));
     renderDashboard();
     expect(screen.getByText(DASBOR.memuat)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1, name: "TepatMinum" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "MOSA" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Pengaturan" })).toHaveAttribute("href", "/settings");
     expect(screen.queryByText(DASBOR.kosongJudul)).not.toBeInTheDocument();
   });
