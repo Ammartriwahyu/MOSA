@@ -8,7 +8,7 @@ Pendamping minum obat untuk lansia dan keluarga: jadwal harian, instruksi yang d
 
 Fitur MVP telah diimplementasikan dan diuji otomatis. Verifikasi P15: **677 tes backend + 559 frontend**, 48 pemeriksaan batas impor dan build frontend lulus. [Matriks AC](docs/ac-traceability.md): **20 Lulus otomatis, 6 Belum lengkap, 0 Gagal**. Pemeriksaan perangkat/layanan nyata dan kesiapan rilis masih terbuka; [laporan P15](docs/review-report.md) menjelaskan buktinya.
 
-Backend Web Push tersedia sebagai fitur opsional; [API dan batas pengiriman](docs/web-push-backend.md) sudah disiapkan. PWA, worker/izin/langganan frontend, pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah. [Hasil klon bersih](docs/clean-clone-test.md) membedakan pemeriksaan kode/startup dari demo layanan nyata.
+Backend Web Push tersedia sebagai fitur opsional; [API dan batas pengiriman](docs/web-push-backend.md) sudah disiapkan. PWA dan [pengaturan push](docs/pwa-push.md) tersedia; aktivasi membutuhkan konfigurasi pasangan backend/frontend dan pengujian perangkat. Pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah. [Hasil klon bersih](docs/clean-clone-test.md) membedakan pemeriksaan kode/startup dari demo layanan nyata.
 
 ## Menjalankan di localhost
 

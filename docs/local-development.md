@@ -42,6 +42,7 @@ Isi sendiri pada perangkat. Contoh yang baru disalin masih kosong dan belum dapa
 | NEXT_PUBLIC_SUPABASE_URL | Proyek Supabase yang sama dengan backend |
 | NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Publishable key, bukan secret key |
 | NEXT_PUBLIC_DEMO_EMAIL, NEXT_PUBLIC_DEMO_PASSWORD | Sama dengan akun demo tim; kosongkan sampai akun tersedia |
+| NEXT_PUBLIC_VAPID_PUBLIC_KEY | Opsional: public key pasangan backend push; kosong berarti pengingat belum tersedia |
 
 NEXT_PUBLIC_* dikirim ke browser. Kunci Supabase secret, Gemini dan HMAC tidak ditempatkan di frontend. Backend push opsional: biarkan PUSH_ENABLED=false untuk MVP; CRON_SECRET/VAPID baru wajib saat true. [Konfigurasi dan API push](web-push-backend.md).
 

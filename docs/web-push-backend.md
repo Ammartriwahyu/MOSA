@@ -1,6 +1,6 @@
 # Backend Web Push · P14
 
-13 November 2026: PM meminta Web Push/PWA sehingga P14 dibuka kembali. Branch backend menyediakan API dan pengiriman; manifest, service worker, izin dan UI langganan dikerjakan pada branch frontend berikutnya. Belum ada pengiriman ke perangkat, migrasi layanan, deploy atau cron yang diaktifkan.
+13 November 2026: PM meminta Web Push/PWA sehingga P14 dibuka kembali. Branch backend menyediakan API dan pengiriman; manifest, service worker, izin dan UI langganan telah ditambahkan pada [branch frontend P14](pwa-push.md). Belum ada pengiriman ke perangkat, migrasi layanan, deploy atau cron yang diaktifkan.
 
 ## Konfigurasi opsional
 
@@ -11,7 +11,7 @@ Sebelum aktivasi pada target yang disetujui:
 1. Terapkan keenam migrasi berurutan, termasuk 20261113120000_push_reminder_claims.sql. Tabel push/dispatch sudah ada pada skema awal; migrasi baru menambah RPC khusus server tanpa membuka RLS.
 2. Buat pasangan kunci lokal dengan `pnpm --filter backend push:keys`. Skrip menulis backend/.env.push-keys secara eksklusif dan tidak mencetak private key; berkas di-ignore dan tidak ditimpa bila sudah ada. Pindahkan nilai melalui pengelola rahasia operator, bukan log/chat/git.
 3. Isi VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT (mailto kontak tim atau HTTPS) dan CRON_SECRET acak minimal 32 karakter hanya di backend. Aktifkan PUSH_ENABLED=true setelah semua nilai siap. Konfigurasi tidak valid gagal cepat hanya menyebut nama variabel.
-4. Pada frontend berikutnya, hanya public key VAPID yang boleh menjadi NEXT_PUBLIC_VAPID_PUBLIC_KEY. Private key dan CRON_SECRET tetap di server. Frontend/worker belum tersedia pada branch backend ini.
+4. Pada frontend, hanya public key VAPID yang boleh menjadi NEXT_PUBLIC_VAPID_PUBLIC_KEY. Private key dan CRON_SECRET tetap di server. Frontend/worker tersedia pada row46; lihat panduan PWA untuk aktivasi dan batas buktinya.
 
 Pustaka [web-push](https://github.com/web-push-libs/web-push) 4.0.0 dipakai untuk enkripsi Web Push dan VAPID, dengan @types/web-push 3.6.4. API named exports diperiksa pada versi terpasang; tes memakai generateRequestDetails asli untuk membuktikan enkripsi aes128gcm/header VAPID tanpa menghubungi jaringan.
 
@@ -37,7 +37,7 @@ Rute cron dipasang khusus untuk POST/path persis sebelum middleware sesi. Rute i
 - Klaim dibuat **sebelum** request ke provider. Ini at-most-once untuk percobaan kirim: timeout, kegagalan atau crash sesudah klaim dapat kehilangan pengingat, bukan diulang dengan hasil jaringan yang tidak diketahui. sent_at pada tabel lama menandai waktu klaim; bukan bukti notifikasi tampil atau dosis diminum. Tidak ada janji exactly-once delivery.
 - Request memakai TTL=0 agar layanan tidak mengantre pesan untuk perangkat offline; socket timeout 5 detik, tanpa retry otomatis. Dukungan TTL/timeout berasal dari [opsi web-push](https://github.com/web-push-libs/web-push#sendnotificationpushsubscription-payload-options). Pengiriman tetap best-effort dan tidak menggantikan dashboard.
 - HTTP 404/410 menghapus langganan milik household tersebut. Kegagalan perangkat lain dihitung tanpa menggagalkan kiriman berikutnya; galat DB awal menghasilkan 503.
-- Payload terenkripsi hanya `{type:"dose_due",slotId}`. Worker berikutnya harus merakit teks netral dari copy.ts dan membuka `/scan?dosis=<slotId>`; tanpa nama/kekuatan/instruksi pada notifikasi. Klik selalu mengecek status server lagi. Push tidak pernah mengonfirmasi minum atau mengubah hitungan.
+- Payload terenkripsi hanya `{type:"dose_due",slotId}`. Worker frontend merakit teks netral dari copy.ts dan membuka `/scan?dosis=<slotId>`; tanpa nama/kekuatan/instruksi pada notifikasi. Klik selalu mengecek status server lagi. Push tidak pernah mengonfirmasi minum atau mengubah hitungan.
 
 ## Cron yang harus disiapkan operator kelak
 
@@ -51,4 +51,4 @@ Verifikasi branch backend: typecheck kedua paket lulus (6,20 dtk), lint termasuk
 
 Tes mencakup validasi endpoint/keys, household sesi/consent, cron salah/benar tanpa sesi, konfigurasi nonaktif, enkripsi/VAPID asli tanpa jaringan, pemisahan perangkat/slot, kegagalan/expired, status dosis batas/lintas hari/Q5 dan RPC migrasi pada SQL memori. Tes klaim bersamaan memakai satu koneksi PGlite yang menserialisasi query; belum membuktikan balapan dua koneksi Supabase nyata. Unique constraint dan ON CONFLICT tetap pagar produksi.
 
-Belum membuktikan delivery provider, penerimaan/klik worker, Android/iOS, pemulihan seed pada schema baru, atau konfigurasi cloud. Lihat [checklist manual](manual-test-checklist.md) dan [panduan deploy](deploy.md) sebelum aktivasi. Tidak ada teks UI/DRAFT baru pada backend; teks izin/notifikasi milik branch frontend berikutnya.
+Belum membuktikan delivery provider, penerimaan/klik worker, Android/iOS, pemulihan seed pada schema baru, atau konfigurasi cloud. Lihat [checklist manual](manual-test-checklist.md) dan [panduan deploy](deploy.md) sebelum aktivasi. Tidak ada teks UI/DRAFT baru pada backend; 21 teks DRAFT izin/notifikasi ditambahkan pada branch frontend row46.
