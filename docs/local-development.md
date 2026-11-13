@@ -41,7 +41,6 @@ Isi sendiri pada perangkat. Contoh yang baru disalin masih kosong dan belum dapa
 | NEXT_PUBLIC_API_URL | http://localhost:8787 |
 | NEXT_PUBLIC_SUPABASE_URL | Proyek Supabase yang sama dengan backend |
 | NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Publishable key, bukan secret key |
-| NEXT_PUBLIC_DEMO_EMAIL, NEXT_PUBLIC_DEMO_PASSWORD | Sama dengan akun demo tim; kosongkan sampai akun tersedia |
 | NEXT_PUBLIC_VAPID_PUBLIC_KEY | Opsional: public key pasangan backend push; kosong berarti pengingat belum tersedia |
 
 NEXT_PUBLIC_* dikirim ke browser. Kunci Supabase secret, Gemini dan HMAC tidak ditempatkan di frontend. Backend push opsional: biarkan PUSH_ENABLED=false untuk MVP; CRON_SECRET/VAPID baru wajib saat true. [Konfigurasi dan API push](web-push-backend.md).
@@ -95,7 +94,7 @@ Pertahankan terminal terbuka; hentikan dengan Ctrl+C. Kompilasi pertama membutuh
 
 ## 5. Menyiapkan Akun Demo Juri
 
-**Kredensial publik belum ditetapkan** (keputusan PM 13 November 2026). Pilih email/sandi khusus demo, isi empat variabel DEMO/NEXT_PUBLIC_DEMO di atas, lalu jalankan:
+Kredensial akun demo tercantum di [README](../README.md#akun-demo-juri). Isi DEMO_EMAIL/DEMO_PASSWORD di backend/.env dengan nilai yang sama, lalu jalankan:
 
 ```powershell
 pnpm --filter backend seed:demo
@@ -103,7 +102,7 @@ pnpm --filter backend seed:demo
 
 Seed membuat/memulihkan akun ber-ID tetap dengan email terkonfirmasi, persetujuan data dan is_demo. Data fiktif awal: Amlodipin 5 mg (07.00/19.00, apoteker) dan Metformin 500 mg (12.00/18.00, keluarga). Seed mengembalikan sandi, menghapus obat tambahan/catatan demo, serta mengosongkan persetujuan scan dan pilihan keluaran. Jalankan sebelum sesi demo ketika akun sedang tidak dipakai; akun lain tidak direset.
 
-Setelah seed berhasil, mulai ulang frontend bila nilai publik berubah, buka `/login`, lalu **Masuk dengan Akun Demo Juri**. Tombol hanya tampil jika kedua nilai publik terisi. Akun demo dilindungi dari penghapusan, tetapi datanya dapat diubah pemakai sehingga bukan tempat data pribadi. Publikasikan kredensial setelah tim menetapkan dan memverifikasi akun.
+Setelah seed berhasil, buka `/login`, ketik email dan kata sandi demo, lalu tekan **Masuk** (tidak ada tombol masuk demo sejak 14 November 2026; juri masuk seperti pengguna biasa). Akun demo dilindungi dari penghapusan, tetapi datanya dapat diubah pemakai sehingga bukan tempat data pribadi.
 
 Untuk latihan dosis jatuh tempo sekarang:
 

@@ -39,7 +39,6 @@ Isi melalui Project Settings → Environment Variables pada lingkungan yang tepa
 | Frontend | NEXT_PUBLIC_API_URL | URL backend tanpa path /v1; aplikasi menambahkan path API |
 | Frontend | NEXT_PUBLIC_SUPABASE_URL | Proyek yang sama dengan backend |
 | Frontend | NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Publishable key, bukan secret key |
-| Frontend | NEXT_PUBLIC_DEMO_EMAIL, NEXT_PUBLIC_DEMO_PASSWORD | Opsional, kosong sampai demo publik disiapkan |
 
 NODE_ENV produksi disediakan platform; jangan salin development dari contoh lokal. PORT hanya untuk localhost. DEMO_EMAIL/PASSWORD backend dipakai skrip seed operator, bukan proses API cloud. Backend push bersifat opsional: PUSH_ENABLED=false secara bawaan; saat true isi CRON_SECRET, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY dan VAPID_SUBJECT hanya di backend sesuai [panduan push](web-push-backend.md). Jangan memasukkan nilai kunci/sandi ke repo, log atau dokumen ini.
 

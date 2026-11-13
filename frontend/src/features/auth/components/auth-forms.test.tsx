@@ -78,37 +78,28 @@ describe("LoginScreen", () => {
   });
 });
 
-describe("Quick Login Demo Juri", () => {
+describe("Akun demo juri lewat formulir biasa", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
-  test("tanpa kredensial demo di env, tombol demo tidak tampil", () => {
-    vi.stubEnv("NEXT_PUBLIC_DEMO_EMAIL", "");
-    vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "");
-    renderWithClient(<LoginScreen />);
-    expect(screen.queryByRole("button", { name: AUTH.masukDemo })).not.toBeInTheDocument();
-  });
-
-  test("dengan kredensial demo, satu ketukan masuk ke akun demo lalu ke jadwal", async () => {
+  test("tidak ada tombol masuk demo, meski env demo lama masih terisi", () => {
     // Nilai fiktif untuk uji.
     vi.stubEnv("NEXT_PUBLIC_DEMO_EMAIL", "demo-juri@contoh.test");
     vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "sandi-demo-uji");
-    service.signIn.mockResolvedValue({ ok: true });
     renderWithClient(<LoginScreen />);
-    await userEvent.click(screen.getByRole("button", { name: AUTH.masukDemo }));
-    expect(service.signIn).toHaveBeenCalledWith("demo-juri@contoh.test", "sandi-demo-uji");
-    expect(router.replace).toHaveBeenCalledWith("/");
+    expect(screen.queryByRole("button", { name: /demo/i })).not.toBeInTheDocument();
+    expect(screen.getAllByRole("button").map((b) => b.textContent)).toEqual([AUTH.masuk]);
   });
 
-  test("demo gagal masuk (mis. seed belum dijalankan) → pesan, tetap di halaman", async () => {
-    vi.stubEnv("NEXT_PUBLIC_DEMO_EMAIL", "demo-juri@contoh.test");
-    vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "sandi-demo-uji");
-    service.signIn.mockResolvedValue({ ok: false, reason: "invalid_credentials" });
+  test("email dan kata sandi demo dari README diketik manual → masuk ke jadwal", async () => {
+    service.signIn.mockResolvedValue({ ok: true });
     renderWithClient(<LoginScreen />);
-    await userEvent.click(screen.getByRole("button", { name: AUTH.masukDemo }));
-    expect(await screen.findByRole("alert")).toHaveTextContent(AUTH.galatMasuk);
-    expect(router.replace).not.toHaveBeenCalled();
+    await userEvent.type(screen.getByLabelText(AUTH.labelEmail), "demo-juri@contoh.test");
+    await userEvent.type(screen.getByLabelText(AUTH.labelKataSandi), "sandi-demo-uji");
+    await userEvent.click(screen.getByRole("button", { name: AUTH.masuk }));
+    expect(service.signIn).toHaveBeenCalledWith("demo-juri@contoh.test", "sandi-demo-uji");
+    expect(router.replace).toHaveBeenCalledWith("/");
   });
 });
 
