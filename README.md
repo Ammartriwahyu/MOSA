@@ -40,7 +40,13 @@ Instalasi dependency, penyediaan layanan dan kompilasi pertama memiliki waktu te
 
 ## Akun Demo Juri
 
-Email dan kata sandi publik belum dipilih (keputusan PM, 13 November 2026). Tim menyiapkan akun khusus data fiktif dengan mengisi DEMO_EMAIL/DEMO_PASSWORD di backend/.env dan nilai yang sama pada NEXT_PUBLIC_DEMO_EMAIL/NEXT_PUBLIC_DEMO_PASSWORD di frontend/.env.local. Keduanya sengaja publik hanya setelah akun disetujui untuk juri.
+Juri masuk seperti pengguna biasa: buka `/login`, ketik email dan kata sandi berikut, lalu tekan **Masuk**. Akun ini hanya berisi data fiktif dan dilindungi dari penghapusan.
+
+| Email | Kata sandi |
+|---|---|
+| `demo@mosa.com` | `mosakeren` |
+
+Akun dibuat oleh tim dari DEMO_EMAIL/DEMO_PASSWORD di backend/.env (nilai di atas harus sama dengan isi berkas itu).
 
 Sesudah database/environment tersedia:
 
@@ -48,7 +54,7 @@ Sesudah database/environment tersedia:
 pnpm --filter backend seed:demo
 ```
 
-Data awal: Amlodipin 5 mg (07.00/19.00, apoteker) dan Metformin 500 mg (12.00/18.00, keluarga). Buka `/login` → **Masuk dengan Akun Demo Juri**. Tombol hanya tampil jika kedua nilai publik demo terisi. Akun diberi penanda demo dan dilindungi dari penghapusan.
+Data awal: Amlodipin 5 mg (07.00/19.00, apoteker) dan Metformin 500 mg (12.00/18.00, keluarga). Seed juga mengembalikan kata sandi akun demo, sehingga sesi yang sedang terbuka perlu masuk ulang. Akun ditandai sebagai akun demo di database (tanpa penanda di layar) dan dilindungi dari penghapusan.
 
 Untuk latihan dosis jatuh tempo sekarang:
 
