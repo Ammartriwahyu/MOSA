@@ -14,6 +14,7 @@ export { IconButton, IconLink, type IconButtonProps } from "./icon-button";
 export { Logo, type LogoProps, type LogoVariant } from "./logo";
 export { OPENING_SPLASH_SCRIPT, OpeningSplash } from "./opening-splash";
 export { BottomNav } from "./bottom-nav";
+export { SideNav } from "./side-nav";
 export { Notice } from "./notice";
 export { PageHeader, type PageHeaderProps } from "./page-header";
 export { Bacakan } from "./bacakan";

@@ -358,6 +358,8 @@ export const DRAFT = {
   navObat: "Obat", // DRAFT
   /** Label aksesibel wilayah navigasi bawah. */ // DRAFT
   navigasiUtama: "Navigasi utama", // DRAFT
+  /** Label aksesibel navigasi samping desktop; nama beda dari navigasi bawah (hanya satu tampil). */ // DRAFT
+  navigasiSamping: "Menu aplikasi", // DRAFT
   /** Label aksesibel tombol ikon di header (Figma: panah kiri, roda gigi). */ // DRAFT
   kembali: "Kembali", // DRAFT
   pengaturan: "Pengaturan", // DRAFT
