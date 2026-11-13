@@ -77,7 +77,10 @@ describe("dasbor", () => {
     renderDashboard();
     expect(await screen.findByText("besok pagi pukul 07.00 WIB.")).toBeInTheDocument();
     expect(screen.queryByText(/Sekarang waktunya/)).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: OBAT.tambahObat })).toHaveAttribute("href", "/medicines/new");
+    // Dua tautan di DOM: header desktop (lg) dan konten mobile; CSS menampilkan satu saja.
+    const addLinks = screen.getAllByRole("link", { name: OBAT.tambahObat });
+    expect(addLinks).toHaveLength(2);
+    for (const link of addLinks) expect(link).toHaveAttribute("href", "/medicines/new");
   });
   test("obat aktif tanpa slot hari ini tidak dianggap akun kosong; nilai nol bukan semua sudah diminum", async () => {
     getDoses.mockResolvedValue(todaysDosesFixture({ doses: [], summary: { confirmed: 0, total: 0 } }));

@@ -101,9 +101,18 @@ export function DashboardContent({ data, onChooseScan, speechActive = true, ...a
               <Bacakan text={reading.join("\n")} active={speechActive} contextKey={`${data.date}:${next?.medicineId}:${next?.tanggal}:${next?.jam}`} />
             </section>
           )}
-          <DailyProgress summary={data.summary} />
-          <Button asChild variant="secondary"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
-          <DoseGroups data={data} {...actions} />
+          {/* ≥ 1024 px: dua kolom (Figma 184:326): dosis hari ini di kiri, progres di kanan.
+              Kolom kanan tanpa elemen yang bisa difokus, jadi urutan Tab tetap mengikuti dosis. */}
+          <div className="flex min-w-0 flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-6">
+            <div className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-8 lg:col-start-2 lg:row-start-1">
+              <DailyProgress summary={data.summary} />
+              {/* Desktop: tombol ini ada di header. */}
+              <Button asChild variant="secondary" className="lg:hidden"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
+            </div>
+            <div className="flex min-w-0 flex-col gap-3 lg:col-start-1 lg:row-start-1">
+              <DoseGroups data={data} {...actions} />
+            </div>
+          </div>
         </>
       )}
     </div>
