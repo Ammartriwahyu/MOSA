@@ -20,6 +20,7 @@ const featureBoundaries = {
     ],
   },
   rules: {
+    "no-restricted-imports": ["error", { patterns: [{ group: ["**/backend/**"], message: "Frontend tidak boleh mengimpor backend; gunakan API." }] }],
     "boundaries/dependencies": [
       2,
       {
