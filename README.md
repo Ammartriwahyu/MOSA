@@ -94,7 +94,7 @@ Jalankan tes frontend tanpa lint/build/dev lain bersamaan. CI menjalankan instal
 
 ## Deploy dan bukti
 
-[Panduan deploy](docs/deploy.md) menjelaskan dua proyek Vercel, environment, CORS, Auth dan prosedur verifikasi. Row50 hanya menulis petunjuk; deployment, konfigurasi cloud, smoke test, cadangan demo dan tag freeze aktual berada pada tahap rilis berikutnya. URL produksi belum diverifikasi pada pekerjaan ini.
+[Panduan deploy](docs/deploy.md) menjelaskan dua proyek Vercel, environment, CORS, Auth dan prosedur verifikasi. Persiapan rilis lokal mencakup pin Node 24.x, [cadangan seed dan runbook demo](docs/demo-runbook.md) serta [checklist dan gerbang freeze](docs/release-checklist.md). Deployment, konfigurasi cloud, smoke layanan/perangkat, rekaman dan tag freeze belum dijalankan. URL produksi belum diverifikasi pada pekerjaan ini.
 
 - [Panduan lokal](docs/local-development.md) dan [hasil klon bersih](docs/clean-clone-test.md).
 - [Keamanan/privasi/AI](docs/security-privacy-audit.md), [aksesibilitas](docs/a11y-audit.md), [laporan P15](docs/review-report.md).

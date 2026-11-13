@@ -1,6 +1,6 @@
 # Panduan deploy dua proyek Vercel
 
-Status row50, 13 November 2026: petunjuk tertulis; belum menjalankan deploy, migrasi cloud, perubahan environment atau smoke test produksi. URL produksi belum diverifikasi pada pekerjaan ini. Tindakan rilis aktual berada pada row51 dengan persetujuan target/lingkungan terlebih dahulu.
+Status 13 November 2026: row51 dibatasi PM ke persiapan rilis lokal. Belum menjalankan deploy, migrasi cloud, perubahan environment, cron atau smoke test produksi. URL produksi belum diverifikasi pada pekerjaan ini. [Checklist rilis](release-checklist.md) mencatat hasil lokal dan gerbang layanan/freeze; target/lingkungan perlu ditetapkan sebelum tindakan layanan.
 
 ## Target dan versi
 
@@ -13,7 +13,7 @@ Gunakan commit yang ditinjau dan lulus CI dari [repo proyek](https://github.com/
 
 Pada kedua proyek pilih Node **24.x**, sesuai CI. Pertahankan **Include files outside the root directory in the Build Step** agar lockfile/workspace akar terbaca ([Vercel root directory](https://vercel.com/docs/builds/configure-a-build)).
 
-**Sebelum deploy pada row51:** pin `engines.node` ke `24.x` pada manifest akar, frontend dan backend. Saat row50 ditulis, akar masih `>=20.9.0` dan dua paket belum mem-pin Node. Rentang luas dapat memilih mayor lebih baru meskipun dashboard memilih 24.x; [engines dapat mengalahkan dashboard](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions). Perubahan manifest ini belum diterapkan pada row50.
+**Manifest akar, frontend dan backend sudah mem-pin `engines.node` ke `24.x` pada row51.** Cocokkan dengan dashboard serta log build. Rentang luas dapat memilih mayor lebih baru meskipun dashboard memilih 24.x; [engines dapat mengalahkan dashboard](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions). Konfigurasi cloud belum diubah.
 
 Tambahkan `ENABLE_EXPERIMENTAL_COREPACK=1` pada kedua proyek. Package manager adalah **pnpm@12.16.1** dari manifest akar. Install Command eksplisit dari masing-masing Root Directory:
 
@@ -59,7 +59,7 @@ Site URL Supabase Auth menunjuk frontend resmi. Tambahkan URL kembali yang dipak
 
 Preview dengan autentikasi Vercel dapat menghalangi API lintas proyek. Akses dan perlindungan deployment perlu disesuaikan oleh operator pada target yang disetujui; jangan membagikan bypass token melalui frontend.
 
-## Smoke test yang dicatat pada row51
+## Smoke test ketika target tersedia
 
 | Langkah | Hasil yang perlu dibuktikan |
 |---|---|
@@ -71,10 +71,10 @@ Preview dengan autentikasi Vercel dapat menghalangi API lintas proyek. Akses dan
 | Hapus akun uji | Hanya akun disposable yang disetujui; pengguna Auth/enam tabel terhapus, akun lain utuh; demo ditolak |
 | Perangkat/layanan | Kamera, suara lokal, sesi dua HP dan Supabase/Gemini nyata |
 
-Tabel adalah prosedur, **belum hasil lulus**. Batas bukti: [P15](review-report.md), [matriks AC](ac-traceability.md).
+Tabel adalah prosedur, **belum hasil lulus**. Catat hasil pada [checklist rilis](release-checklist.md); batas bukti: [P15](review-report.md), [matriks AC](ac-traceability.md).
 
 ## Cron dan keberlanjutan demo
 
-Tidak ada /v1/internal/reminders/run, manifest PWA atau API push pada MVP ini. Jangan menjadwalkan endpoint tersebut. GET /v1/health publik membaca database; pemantauan harian dapat direncanakan operator pada row51. Health tidak menjamin paket gratis tidak dipause; periksa status/kuota layanan sebelum demo. Row50 tidak membuat jadwal cron atau mengubah project settings.
+Tidak ada /v1/internal/reminders/run, manifest PWA atau API push pada MVP ini. Jangan menjadwalkan endpoint tersebut. GET /v1/health publik membaca database; [rencana pemantauan harian](release-checklist.md#pemantauan-harian-yang-belum-diaktifkan) menunggu target serta persetujuan operator. Health tidak menjamin paket gratis tidak dipause; periksa status/kuota layanan sebelum demo. Row50/51 tidak membuat jadwal cron atau mengubah project settings.
 
-Tag freeze, cadangan/rekaman demo, rollback dan hasil smoke aktual menyusul row51. Enam AC yang belum lengkap tetap terbuka.
+Cadangan seed/migrasi dan prosedur pemulihan/rekaman tersedia di [runbook demo](demo-runbook.md). Perintah tag freeze hanya dijalankan setelah [gerbang rilis](release-checklist.md#gerbang-sebelum-tag-freeze) terpenuhi. Rekaman, pemulihan pada layanan dan smoke aktual belum dikerjakan; enam AC yang belum lengkap tetap terbuka.
