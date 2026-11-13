@@ -1,4 +1,4 @@
-# Menyiapkan dan menjalankan TepatMinum
+# Menyiapkan dan menjalankan MOSA
 
 Perintah dari akar repo, memakai PowerShell. Node 24 dan pnpm 12.16.1 mengikuti lingkungan yang diuji serta CI. Berkas konfigurasi aktual tidak masuk git.
 

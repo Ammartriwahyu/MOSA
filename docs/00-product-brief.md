@@ -5,7 +5,7 @@ Sumber: `PRD_MOSA_LOGICODIX_2026.pdf` v2.0 (bagian dirujuk dengan "PRD §"). Bil
 ## Satu kalimat
 Aplikasi web yang membantu lansia minum obat yang benar, di waktu yang benar, berdasarkan instruksi asli dari apoteker atau dokter, dengan scan kemasan obat sebagai verifikasi sebelum diminum.
 
-- Nama: **TepatMinum / MOSA** (Medication Organizer, Scanner & Assistant). Nama final masih TBD (PRD §2, §19 #5); pakai `TepatMinum` di UI sementara.
+- Nama: **MOSA** (Medication Organizer, Scanner & Assistant), diputuskan tim 14 Nov 2026 (D7; PRD §2, §19 #5 menyebut TepatMinum sebagai nama sementara); pakai `MOSA` di UI.
 - Konteks: LOGICODIX 2026, kategori Web, subtema Inclusive Health & Well-being.
 - Tenggat: MVP **Kamis 12 Nov 2026 siang**; code freeze **Sabtu 14 Nov 2026 23.59 WIB**.
 - Harus bisa jalan di `localhost` saat Grand Final dengan persiapan 1 menit (NFR-07).

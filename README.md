@@ -1,4 +1,4 @@
-# TepatMinum (MOSA)
+# MOSA
 
 Pendamping minum obat untuk lansia dan keluarga: jadwal harian, instruksi yang diperiksa manusia, serta scan kemasan sebelum konfirmasi minum. LOGICODIX 2026 · Web · Inclusive Health & Well-being.
 
