@@ -6,11 +6,11 @@
     "node": "24.x"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "node scripts/generate-service-worker.mjs && next dev",
+    "build": "node scripts/generate-service-worker.mjs && next build",
     "bench:bundle": "node scripts/measure-home-bundle.mjs",
     "start": "next start",
-    "typecheck": "next typegen && tsc --noEmit",
+    "typecheck": "node scripts/generate-service-worker.mjs --check && next typegen && tsc --noEmit",
     "lint": "eslint",
     "test": "vitest run"
   },
