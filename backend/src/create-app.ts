@@ -7,6 +7,7 @@ import { householdRoutes } from "./modules/household/interface/household.routes"
 import { resolveHousehold } from "./modules/household/interface/resolve-household.middleware";
 import { medicationRoutes } from "./modules/medication/interface/medication.routes";
 import { scanRoutes } from "./modules/verification/interface/scan.routes";
+import { notificationRoutes, reminderCronRoutes } from "./modules/notification/interface/notification.routes";
 import { authenticate } from "./shared/interface/authenticate.middleware";
 import { createErrorHandler, handleNotFound } from "./shared/interface/error-handler";
 import { healthRoutes } from "./shared/interface/health.routes";
@@ -39,6 +40,8 @@ export function createApp(container: Container): Hono {
     }),
   );
   // Urutan wajib: token → rumah tangga → persetujuan. Rute publik dilewati di tiap middleware.
+  // Hanya POST internal ini memakai rahasia cron; bukan pengecualian prefix /internal/*.
+  app.route("/v1", reminderCronRoutes(container.notification, container.cronSecret));
   app.use("/v1/*", authenticate(container.tokenVerifier));
   app.use("/v1/*", resolveHousehold(container.ensureHousehold));
   app.use("/v1/*", requireDataConsent());
@@ -48,6 +51,7 @@ export function createApp(container: Container): Hono {
   app.route("/v1", medicationRoutes(container.medication));
   app.route("/v1", dosingRoutes(container.dosing));
   app.route("/v1", scanRoutes(container.scan));
+  app.route("/v1", notificationRoutes(container.notification));
 
   app.notFound(handleNotFound);
   app.onError(createErrorHandler(container.logger));

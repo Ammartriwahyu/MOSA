@@ -17,6 +17,7 @@ export const DOMAIN_ERROR_CODES = [
   // Tambahan di luar tabel docs/03 §9: layanan pendukung tidak terjangkau.
   "DATABASE_UNAVAILABLE",
   "AUTH_UNAVAILABLE",
+  "PUSH_UNAVAILABLE",
 ] as const;
 
 export type DomainErrorCode = (typeof DOMAIN_ERROR_CODES)[number];

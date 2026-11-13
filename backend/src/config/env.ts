@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Hanya variabel yang sudah dipakai kode; rahasia cron menunggu fitur cron.
+// Push diaktifkan eksplisit agar konfigurasi lama MVP tetap dapat digunakan.
 const DEV_FRONTEND_ORIGIN = "http://localhost:3000";
 
 const envSchema = z.object({
@@ -16,6 +16,20 @@ const envSchema = z.object({
   // Jatah panggilan AI per rumah tangga per hari WIB (D8). 20 = USULAN sampai uji kuota.
   AI_DAILY_LIMIT: z.coerce.number().int().min(1).max(1_000).default(20),
   SCAN_TOKEN_SECRET: z.string().min(32),
+  PUSH_ENABLED: z.enum(["true", "false"]).default("false").transform((value) => value === "true"),
+  CRON_SECRET: z.string().optional(),
+  VAPID_PUBLIC_KEY: z.string().optional(),
+  VAPID_PRIVATE_KEY: z.string().optional(),
+  VAPID_SUBJECT: z.string().optional(),
+}).superRefine((env, context) => {
+  if (!env.PUSH_ENABLED) return;
+  const fields: [string, boolean][] = [
+    ["CRON_SECRET", (env.CRON_SECRET?.trim().length ?? 0) >= 32],
+    ["VAPID_PUBLIC_KEY", /^B[A-P][A-Za-z0-9_-]{85}$/.test(env.VAPID_PUBLIC_KEY ?? "")],
+    ["VAPID_PRIVATE_KEY", /^[A-Za-z0-9_-]{43}$/.test(env.VAPID_PRIVATE_KEY ?? "")],
+    ["VAPID_SUBJECT", /^(mailto:[^\s@]+@[^\s@]+|https:\/\/[^\s]+)$/.test(env.VAPID_SUBJECT ?? "")],
+  ];
+  for (const [field, valid] of fields) if (!valid) context.addIssue({ code: "custom", path: [field], message: "required" });
 });
 
 export type Env = z.infer<typeof envSchema>;
