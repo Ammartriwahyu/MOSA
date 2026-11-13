@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { useEffect, type ReactNode } from "react";
 import { householdQueryKey, signOut, useSessionIdentity } from "@/features/auth";
+import { PwaLifecycle } from "@/features/reminders";
 import { isApiError } from "@/shared/lib";
 
 /** Galat 4xx (validasi, izin, dosis sudah tercatat) tidak akan berubah bila diulang. */
@@ -69,5 +70,5 @@ export function Providers({ children }: { children: ReactNode }) {
   useEffect(() => () => { client.clear(); }, [client]);
   // Observer dan mutasi lama tetap mengacu klien lama, sehingga respons yang
   // terlambat tidak dapat memasukkan data ke cache atau mengeluarkan akun baru.
-  return <QueryClientProvider key={generation} client={client}>{children}</QueryClientProvider>;
+  return <QueryClientProvider key={generation} client={client}><PwaLifecycle />{children}</QueryClientProvider>;
 }

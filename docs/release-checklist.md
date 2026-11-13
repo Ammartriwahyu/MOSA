@@ -64,7 +64,7 @@ Setelah backend publik yang benar mendapat health 200 dan operator menyetujui, r
 | Syarat uji | Eksekusi manual dari layanan pemantauan mendapat 200/status ok, bukan redirect/protection page |
 | Bukti | Operator mencatat job ID, target, zona/jadwal, waktu dan hasil; tanpa API key |
 
-[Dokumentasi cron-job.org](https://docs.cron-job.org/rest-api.html) menjelaskan metode HTTP dan jadwal dengan zona waktu. Endpoint health tidak menjamin layanan gratis tidak dipause; periksa status dan kuota sebelum demo. Backend P14 menyediakan endpoint cron push opsional; job per menit tetap menunggu frontend/worker dan pengujian perangkat. CRON_SECRET/VAPID hanya wajib jika PUSH_ENABLED=true; lihat [panduan push](web-push-backend.md).
+[Dokumentasi cron-job.org](https://docs.cron-job.org/rest-api.html) menjelaskan metode HTTP dan jadwal dengan zona waktu. Endpoint health tidak menjamin layanan gratis tidak dipause; periksa status dan kuota sebelum demo. Backend P14 menyediakan endpoint cron push opsional; frontend/worker kini tersedia, tetapi job per menit tetap menunggu target dan pengujian perangkat. CRON_SECRET/VAPID hanya wajib jika PUSH_ENABLED=true; lihat [panduan push](web-push-backend.md).
 
 ## Jika kandidat rilis bermasalah
 

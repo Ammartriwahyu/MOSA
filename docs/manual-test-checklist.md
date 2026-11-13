@@ -66,6 +66,17 @@ Rujukan dari [matriks AC](ac-traceability.md) menuju tabel ini. Langkah dan hara
 
 Jangan mengisi Lulus dari tes otomatis. Untuk setiap kegagalan, catat langkah ulang dan hasil sesudah perbaikan. Hanya hasil pemeriksaan yang benar-benar dilakukan dapat menutup bagian M atau kekurangan bukti pada matriks AC.
 
+## P14 · PWA dan Web Push (M16–M19)
+
+Tambahan atas permintaan PM 13 November. Kedua platform masih **Belum**. Prosedur lengkap ada di [PWA/push](pwa-push.md); pemasangan, izin dan pengiriman provider harus diperiksa pada perangkat nyata.
+
+| ID | Langkah dan harapan | Android Chrome | iPhone Safari/Home Screen |
+|---|---|---|---|
+| M16 | Pasang/buka aplikasi; tidak ada prompt notifikasi otomatis; iOS mendapat petunjuk Home Screen | Belum | Belum |
+| M17 | Tolak/izinkan lewat klik, simpan langganan, ulangi cron; satu notifikasi netral per slot/perangkat | Belum | Belum |
+| M18 | Klik notifikasi membuka scan target; dosis berubah/sudah/terlewat tidak pernah dicatat otomatis | Belum | Belum |
+| M19 | Matikan/logout/ganti akun/tab, izin OS dicabut, jaringan/penyimpanan gagal; akun lama tidak diadopsi | Belum | Belum |
+
 ## Uji asap AI nyata (opsional)
 
 Tes otomatis tidak memakai Gemini. Setelah environment server uji tersedia, `pnpm --filter backend ai:try-explainer` menjalankan skrip uji asap yang sudah ada dengan teks fiktif; langkah ini memakai jaringan dan jatah AI. Catat model, durasi, keberhasilan pagar keluaran dan pesan gagal. Jangan menempelkan kunci atau isi `.env` dalam hasil. Pembacaan kemasan nyata tetap memerlukan pengujian manual M04/M08 dengan kemasan uji; keberhasilan stub bukan bukti akurasi AI.

@@ -10,6 +10,8 @@ import { Providers } from "./providers";
 export const metadata: Metadata = {
   title: NAMA_APLIKASI,
   description: DRAFT.deskripsiAplikasi,
+  appleWebApp: { capable: true, statusBarStyle: "default", title: NAMA_APLIKASI },
+  icons: { apple: "/icons/apple-touch-icon.png" },
 };
 
 // Tanpa maximumScale/userScalable: pengguna lansia harus tetap bisa memperbesar layar.

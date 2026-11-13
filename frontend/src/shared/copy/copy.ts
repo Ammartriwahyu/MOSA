@@ -5,6 +5,30 @@
 // Backend mengirim data terstruktur; kalimat dirakit di sini. Teks yang dibacakan = teks yang tampil.
 
 // ─── Format ───────────────────────────────────────────────────────────────
+/** P14: teks izin, pemasangan dan notifikasi netral. */
+export const PUSH = {
+  heading: "Pengingat di HP ini", // DRAFT
+  explanation: "Izinkan notifikasi agar HP ini dapat menerima pengingat. Pengingat bisa terlambat atau tidak muncul. Tetap periksa jadwal di aplikasi.", // DRAFT
+  enable: "Aktifkan pengingat", // DRAFT
+  disable: "Matikan pengingat", // DRAFT
+  enabled: "Pengingat aktif di HP ini.", // DRAFT
+  disabled: "Pengingat tidak aktif di HP ini.", // DRAFT
+  preparing: "Menyiapkan pengingat…", // DRAFT
+  busy: "Menyimpan pilihan pengingat…", // DRAFT
+  denied: "Izin notifikasi ditolak. Jika ingin mengaktifkannya, ubah izin situs ini melalui pengaturan browser atau HP, lalu coba lagi.", // DRAFT
+  unsupported: "Browser ini belum mendukung pengingat. Anda tetap dapat melihat jadwal di aplikasi.", // DRAFT
+  unavailable: "Pengingat belum tersedia. Anda tetap dapat melihat jadwal di aplikasi.", // DRAFT
+  failed: "Pilihan pengingat belum tersimpan. Periksa koneksi, lalu coba lagi.", // DRAFT
+  cancelled: "Pilihan pengingat berubah. Periksa kembali pengaturan di HP ini.", // DRAFT
+  retry: "Periksa lagi", // DRAFT
+  installHeading: "Pasang di layar utama", // DRAFT
+  install: "Pasang aplikasi", // DRAFT
+  installed: "Aplikasi sudah dibuka dari layar utama.", // DRAFT
+  installHint: "Gunakan pilihan Pasang aplikasi atau Tambahkan ke layar utama pada menu browser. Aplikasi tetap memerlukan internet.", // DRAFT
+  iosHint: "Di iPhone atau iPad, buka aplikasi ini di Safari, pilih Bagikan, lalu Tambahkan ke Layar Utama. Buka dari layar utama untuk mengaktifkan pengingat.", // DRAFT
+  notificationTitle: "Pengingat TepatMinum", // DRAFT
+  notificationBody: "Buka aplikasi untuk memeriksa jadwal Anda.", // DRAFT
+} as const;
 
 /** Jam ditulis dengan titik: "07:00" → "07.00" (docs/02 aturan implementasi). */
 export function formatJam(jam: string): string {

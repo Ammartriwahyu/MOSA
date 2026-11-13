@@ -50,3 +50,32 @@ Tandai di kode dengan komentar `// DRAFT: belum disetujui tim` dan kumpulkan di 
 
 ## Penyusunan kalimat "jadwal berikutnya" (kalimat #3)
 Backend mengirim `nextDose = { tanggal: 'hari_ini' | 'besok', kelompok: 'pagi' | 'siang' | 'malam', jam: 'HH:mm' }` atau `null`. Frontend merakit: `Obat ini perlu diminum lagi [kelompok] [ini/besok] pukul [jam].` dengan pemetaan: hari_ini + malam → `malam ini`; hari_ini + pagi → `pagi ini`; besok + pagi → `besok pagi`; dan seterusnya. Bila `nextDose = null`: `Tidak ada jadwal minum berikutnya untuk obat ini.` (DRAFT). Uji semua kombinasi.
+
+
+## P14 · Pengingat dan PWA (DRAFT, 13 November 2026)
+
+Teks baru untuk izin sukarela di HP ini, pemasangan, status/galat dan notifikasi layar kunci. Belum mendapat persetujuan PM untuk redaksi; semua berasal dari PUSH di copy.ts. Notifikasi tidak berisi nama, kekuatan atau instruksi obat.
+
+| Kunci PUSH | Teks DRAFT |
+|---|---|
+| heading | Pengingat di HP ini |
+| explanation | Izinkan notifikasi agar HP ini dapat menerima pengingat. Pengingat bisa terlambat atau tidak muncul. Tetap periksa jadwal di aplikasi. |
+| enable | Aktifkan pengingat |
+| disable | Matikan pengingat |
+| enabled | Pengingat aktif di HP ini. |
+| disabled | Pengingat tidak aktif di HP ini. |
+| preparing | Menyiapkan pengingat… |
+| busy | Menyimpan pilihan pengingat… |
+| denied | Izin notifikasi ditolak. Jika ingin mengaktifkannya, ubah izin situs ini melalui pengaturan browser atau HP, lalu coba lagi. |
+| unsupported | Browser ini belum mendukung pengingat. Anda tetap dapat melihat jadwal di aplikasi. |
+| unavailable | Pengingat belum tersedia. Anda tetap dapat melihat jadwal di aplikasi. |
+| failed | Pilihan pengingat belum tersimpan. Periksa koneksi, lalu coba lagi. |
+| cancelled | Pilihan pengingat berubah. Periksa kembali pengaturan di HP ini. |
+| retry | Periksa lagi |
+| installHeading | Pasang di layar utama |
+| install | Pasang aplikasi |
+| installed | Aplikasi sudah dibuka dari layar utama. |
+| installHint | Gunakan pilihan Pasang aplikasi atau Tambahkan ke layar utama pada menu browser. Aplikasi tetap memerlukan internet. |
+| iosHint | Di iPhone atau iPad, buka aplikasi ini di Safari, pilih Bagikan, lalu Tambahkan ke Layar Utama. Buka dari layar utama untuk mengaktifkan pengingat. |
+| notificationTitle | Pengingat TepatMinum |
+| notificationBody | Buka aplikasi untuk memeriksa jadwal Anda. |
