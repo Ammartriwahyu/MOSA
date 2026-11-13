@@ -4,6 +4,7 @@ import { Check, LogOut, Trash2, Type, Volume2 } from "lucide-react";
 import { useState } from "react";
 import { signOut, useAccount, useHousehold } from "@/features/auth";
 import { useUpdateOutputMode, type OutputMode } from "@/features/preferences";
+import { PushSettings } from "@/features/reminders";
 import { ROUTES } from "@/shared/config";
 import { AUTH, PENGATURAN, PREFERENSI } from "@/shared/copy";
 import { Button, Card, ChoiceCards, ErrorState, Notice, PageHeader, Spinner } from "@/shared/ui";
@@ -34,6 +35,7 @@ export function SettingsScreen() {
   const updateOutput = useUpdateOutputMode();
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
+  const [leaving, setLeaving] = useState(false);
 
   if (household.isPending) return <Spinner visibleLabel />;
   if (household.isError) {
@@ -76,6 +78,7 @@ export function SettingsScreen() {
         </Notice>
       ) : null}
 
+      <PushSettings />
       <h2 className="pt-1 text-card-title">{PENGATURAN.akunBersama}</h2>
       <Card>
         <dl className="flex flex-col gap-3">
@@ -109,7 +112,9 @@ export function SettingsScreen() {
       >
         {PENGATURAN.hapusAkun}
       </Button>
-      <Button variant="outline" size="lg" icon={<LogOut />} onClick={() => void signOut()}>
+      <Button variant="outline" size="lg" icon={<LogOut />} disabled={leaving} aria-busy={leaving} onClick={() => {
+        setLeaving(true); void signOut().finally(() => setLeaving(false));
+      }}>
         {AUTH.keluar}
       </Button>
 

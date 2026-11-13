@@ -1,5 +1,6 @@
 import { isAuthApiError, isAuthRetryableFetchError } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "@/shared/lib";
+import { detachPush } from "@/features/reminders";
 
 // Pembungkus Supabase Auth: komponen tidak memegang token atau galat Supabase
 // mentah; sesi tetap dikelola Supabase (P08 batasan).
@@ -71,6 +72,7 @@ export async function signUp(input: {
  * (PRD §8), jadi keluar di satu HP tidak boleh mengeluarkan HP lain.
  */
 export async function signOut(scope: "global" | "local" = "local"): Promise<void> {
+  await detachPush().catch(() => undefined);
   try {
     await getSupabaseBrowserClient().auth.signOut({ scope });
   } catch {
