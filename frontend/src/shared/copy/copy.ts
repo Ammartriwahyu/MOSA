@@ -26,7 +26,7 @@ export const PUSH = {
   installed: "Aplikasi sudah dibuka dari layar utama.", // DRAFT
   installHint: "Gunakan pilihan Pasang aplikasi atau Tambahkan ke layar utama pada menu browser. Aplikasi tetap memerlukan internet.", // DRAFT
   iosHint: "Di iPhone atau iPad, buka aplikasi ini di Safari, pilih Bagikan, lalu Tambahkan ke Layar Utama. Buka dari layar utama untuk mengaktifkan pengingat.", // DRAFT
-  notificationTitle: "Pengingat TepatMinum", // DRAFT
+  notificationTitle: "Pengingat MOSA", // DRAFT
   notificationBody: "Buka aplikasi untuk memeriksa jadwal Anda.", // DRAFT
 } as const;
 
@@ -277,9 +277,8 @@ export function bannerJatuhTempo(nama: string): string {
 export const KALIMAT_PITCHING =
   "Untuk prototipe lomba, kami memakai layanan AI tier gratis dengan data uji tanpa identitas pengguna: foto tidak disimpan dan pengguna diberi tahu sebelum memakai fitur scan. Pada versi produksi, kami beralih ke layanan AI berbayar yang tidak memakai data pengguna untuk melatih model, dengan biaya yang ditutup melalui partnership dan iklan.";
 
-/** Nama aplikasi di UI (keputusan D7). */
-export const NAMA_APLIKASI = "TepatMinum";
-export const SUB_LABEL_APLIKASI = "MOSA";
+/** Nama aplikasi di UI (keputusan D7, diperbarui 14 Nov 2026: MOSA). */
+export const NAMA_APLIKASI = "MOSA";
 
 /** Dasbor Figma 04/05. Teks baru menunggu tinjauan PM. */
 export const DASBOR = {

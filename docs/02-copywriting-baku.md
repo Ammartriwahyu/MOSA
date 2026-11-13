@@ -77,5 +77,5 @@ Teks baru untuk izin sukarela di HP ini, pemasangan, status/galat dan notifikasi
 | installed | Aplikasi sudah dibuka dari layar utama. |
 | installHint | Gunakan pilihan Pasang aplikasi atau Tambahkan ke layar utama pada menu browser. Aplikasi tetap memerlukan internet. |
 | iosHint | Di iPhone atau iPad, buka aplikasi ini di Safari, pilih Bagikan, lalu Tambahkan ke Layar Utama. Buka dari layar utama untuk mengaktifkan pengingat. |
-| notificationTitle | Pengingat TepatMinum |
+| notificationTitle | Pengingat MOSA |
 | notificationBody | Buka aplikasi untuk memeriksa jadwal Anda. |

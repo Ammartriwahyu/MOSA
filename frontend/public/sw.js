@@ -1,6 +1,6 @@
 /* Generated public/sw.js uses shared/copy/copy.ts. No fetch interception or data cache. */
 (() => {
-  const COPY = {"title":"Pengingat TepatMinum","body":"Buka aplikasi untuk memeriksa jadwal Anda."};
+  const COPY = {"title":"Pengingat MOSA","body":"Buka aplikasi untuk memeriksa jadwal Anda."};
   const CONTROL_CACHE = "mosa-push-control-v1";
   const CONTROL_PATH = "/__mosa_push_enabled";
   self.addEventListener("install", () => { self.skipWaiting(); });
