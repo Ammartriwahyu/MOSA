@@ -5,7 +5,7 @@
   "description": "TepatMinum / MOSA: pendamping minum obat lansia dan keluarga (LOGICODIX 2026)",
   "packageManager": "pnpm@12.16.1",
   "engines": {
-    "node": ">=20.9.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "pnpm -r --parallel --if-present run dev",
