@@ -30,6 +30,12 @@ import { GeminiPackageReader } from "./modules/verification/infrastructure/gemin
 import { HmacScanTokens, CurrentMedicineScanTokenVerifier } from "./modules/verification/infrastructure/hmac-scan-tokens";
 import { DosingScanContextReader, HouseholdScanConsentReader } from "./modules/verification/infrastructure/scan-context-adapters";
 import type { ScanUseCases } from "./modules/verification/interface/scan.routes";
+import { SubscribePush, UnsubscribePush } from "./modules/notification/application/subscription.use-cases";
+import { SendDueReminders } from "./modules/notification/application/send-due-reminders.use-case";
+import { DosingDueDoseReader } from "./modules/notification/infrastructure/dosing-due-dose-reader";
+import { SupabasePushSubscriptions, SupabaseReminderDispatches } from "./modules/notification/infrastructure/supabase-push-repositories";
+import { WebPushSender } from "./modules/notification/infrastructure/web-push-sender";
+import type { NotificationUseCases } from "./modules/notification/interface/notification.routes";
 import type { AccessTokenVerifier } from "./shared/application/access-token-verifier";
 import { CheckHealth } from "./shared/application/check-health.use-case";
 import type { Logger } from "./shared/application/logger";
@@ -53,6 +59,8 @@ export type Container = {
   medication: MedicationUseCases;
   dosing: DosingUseCases;
   scan: ScanUseCases;
+  notification?: NotificationUseCases;
+  cronSecret?: string;
 };
 
 export function buildContainer(env: Env): Container {
@@ -69,9 +77,26 @@ export function buildContainer(env: Env): Container {
   const aiUsage = new SupabaseAiUsageLimiter(supabase, systemClock, env.AI_DAILY_LIMIT);
   const explainer = new RateLimitedExplainer(new GeminiPlainLanguageExplainer(gemini), aiUsage);
   const scanTokens = new HmacScanTokens(env.SCAN_TOKEN_SECRET, systemClock);
+  let notification: NotificationUseCases | undefined;
+  if (env.PUSH_ENABLED) {
+    // loadEnv mewajibkan empat nilai ini ketika push aktif.
+    if (!env.CRON_SECRET || !env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY || !env.VAPID_SUBJECT) {
+      throw new Error("Konfigurasi push belum lengkap.");
+    }
+    const subscriptions = new SupabasePushSubscriptions(supabase);
+    notification = {
+      subscribePush: new SubscribePush(subscriptions), unsubscribePush: new UnsubscribePush(subscriptions),
+      sendDueReminders: new SendDueReminders(subscriptions,
+        new DosingDueDoseReader(new ListTodaysDoses(dosingMedicines, confirmations, systemClock), new GetHousehold(households)),
+        new SupabaseReminderDispatches(supabase), new WebPushSender({ subject: env.VAPID_SUBJECT,
+          publicKey: env.VAPID_PUBLIC_KEY, privateKey: env.VAPID_PRIVATE_KEY })),
+    };
+  }
 
   return {
     frontendOrigin: env.FRONTEND_ORIGIN,
+    notification,
+    cronSecret: env.PUSH_ENABLED ? env.CRON_SECRET : undefined,
     logger: createJsonLogger(),
     checkHealth: new CheckHealth(new SupabaseDatabasePing(supabase)),
     tokenVerifier: new SupabaseAccessTokenVerifier(supabase),

@@ -113,6 +113,7 @@ describe("pemetaan galat domain ke HTTP (docs/03 §9)", () => {
     AI_UNAVAILABLE: 503,
     DATABASE_UNAVAILABLE: 503,
     AUTH_UNAVAILABLE: 503,
+    PUSH_UNAVAILABLE: 503,
   };
 
   test.each(DOMAIN_ERROR_CODES)("%s → status sesuai tabel dan format seragam", async (code) => {

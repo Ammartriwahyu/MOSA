@@ -35,6 +35,7 @@ export const DOMAIN_ERROR_STATUS: Record<DomainErrorCode, ContentfulStatusCode> 
   AI_UNAVAILABLE: 503,
   DATABASE_UNAVAILABLE: 503,
   AUTH_UNAVAILABLE: 503,
+  PUSH_UNAVAILABLE: 503,
 };
 
 /** Respons untuk Result gagal dari use case. Rute memanggil ini, bukan menyusun galat sendiri. */

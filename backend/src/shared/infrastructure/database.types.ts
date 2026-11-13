@@ -131,6 +131,14 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
+            register_push_subscription: {
+              Args: { p_household_id: string; p_endpoint: string; p_p256dh: string; p_auth: string };
+              Returns: boolean;
+            };
+            claim_push_reminder: {
+              Args: { p_household_id: string; p_subscription_id: string; p_medicine_id: string; p_scheduled_date: string; p_scheduled_time: string };
+              Returns: boolean;
+            };
             confirm_dose: {
               Args: { p_household_id: string; p_medicine_id: string; p_scheduled_date: string; p_scheduled_time: string; p_confirmed_at: string; p_level: string; p_opens_before_minutes: number; p_closes_after_minutes: number };
               Returns: Json;

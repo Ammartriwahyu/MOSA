@@ -11,6 +11,16 @@ const SUPABASE = {
 };
 
 describe("loadEnv", () => {
+  test("push opsional; konfigurasi lengkap diwajibkan hanya saat aktif", () => {
+    expect(loadEnv(SUPABASE).PUSH_ENABLED).toBe(false);
+    const run = () => loadEnv({ ...SUPABASE, PUSH_ENABLED: "true" });
+    expect(run).toThrow("CRON_SECRET, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT");
+    const enabled = { ...SUPABASE, PUSH_ENABLED: "true", CRON_SECRET: "c".repeat(32),
+      VAPID_PUBLIC_KEY: `BA${"A".repeat(85)}`, VAPID_PRIVATE_KEY: "A".repeat(43), VAPID_SUBJECT: "mailto:demo@example.test" };
+    expect(loadEnv(enabled).PUSH_ENABLED).toBe(true);
+    expect(() => loadEnv({ ...enabled, CRON_SECRET: "secret-short" })).toThrow("Environment tidak valid: CRON_SECRET");
+    expect(() => loadEnv({ ...enabled, VAPID_SUBJECT: "http://localhost" })).toThrow("VAPID_SUBJECT");
+  });
   test("memakai origin frontend lokal dan port bawaan saat pengembangan", () => {
     const env = loadEnv(SUPABASE);
     expect(env.FRONTEND_ORIGIN).toBe("http://localhost:3000");

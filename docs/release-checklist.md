@@ -27,7 +27,7 @@ Pemeriksaan tipe, lint dan suite penuh dijalankan berurutan satu kali pada Node 
 | Pemilik/team dan proyek Vercel frontend/backend | Belum ditetapkan |
 | URL pasangan frontend/backend dan Preview/Production | Belum ditetapkan |
 | Commit kandidat yang sudah dipush dan CI-nya hijau | Diisi setelah commit/push pengguna; jangan menganggap HEAD sebelum commit sebagai kandidat akhir |
-| Proyek Supabase, lima migrasi/RPC/RLS dan konfigurasi Auth | Belum diverifikasi pada tahap rilis ini |
+| Proyek Supabase, enam migrasi/RPC/RLS dan konfigurasi Auth | Belum diverifikasi pada tahap rilis ini |
 | Pemilik kunci/model Gemini dan kuota | Belum diverifikasi pada tahap rilis ini |
 | Akun Demo Juri yang boleh dipublikasikan | Belum ditetapkan; [cara menyiapkan](local-development.md#5-menyiapkan-akun-demo-juri) |
 | Operator, perangkat, akun disposable dan waktu uji | Belum ditetapkan |
@@ -64,7 +64,7 @@ Setelah backend publik yang benar mendapat health 200 dan operator menyetujui, r
 | Syarat uji | Eksekusi manual dari layanan pemantauan mendapat 200/status ok, bukan redirect/protection page |
 | Bukti | Operator mencatat job ID, target, zona/jadwal, waktu dan hasil; tanpa API key |
 
-[Dokumentasi cron-job.org](https://docs.cron-job.org/rest-api.html) menjelaskan metode HTTP dan jadwal dengan zona waktu. Endpoint health tidak menjamin layanan gratis tidak dipause; periksa status dan kuota sebelum demo. Jangan menjadwalkan /v1/internal/reminders/run: P14 tidak dibangun dan endpoint itu tidak ada. Tidak ada CRON_SECRET/VAPID yang perlu diisi.
+[Dokumentasi cron-job.org](https://docs.cron-job.org/rest-api.html) menjelaskan metode HTTP dan jadwal dengan zona waktu. Endpoint health tidak menjamin layanan gratis tidak dipause; periksa status dan kuota sebelum demo. Backend P14 menyediakan endpoint cron push opsional; job per menit tetap menunggu frontend/worker dan pengujian perangkat. CRON_SECRET/VAPID hanya wajib jika PUSH_ENABLED=true; lihat [panduan push](web-push-backend.md).
 
 ## Jika kandidat rilis bermasalah
 
