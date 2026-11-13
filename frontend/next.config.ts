@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async headers() {
+    return [{ source: "/sw.js", headers: [
+      { key: "Cache-Control", value: "no-store, max-age=0" },
+      { key: "Service-Worker-Allowed", value: "/" },
+    ] }];
+  },
   // cacheComponents dan partialPrefetching (bawaan create-next-app) dimatikan:
   // sesi Supabase hanya ada di browser, jadi halaman terlindungi tidak bisa
   // dirender lengkap di server. Validasi "instant navigation" gagal dan halaman
