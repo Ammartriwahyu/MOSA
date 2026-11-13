@@ -133,6 +133,7 @@ export default defineConfig([
       "boundaries/files": [{ pattern: "src/*.ts", category: "entry" }],
     },
     rules: {
+      "no-restricted-imports": ["error", { patterns: [{ group: ["**/frontend/**"], message: "Backend tidak boleh mengimpor frontend." }] }],
       "boundaries/dependencies": [
         2,
         { default: "allow", checkAllOrigins: true, policies: layerPolicies },

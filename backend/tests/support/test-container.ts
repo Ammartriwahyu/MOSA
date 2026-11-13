@@ -1,6 +1,5 @@
 import type { Container } from "../../src/composition-root";
 import { ConfirmDose } from "../../src/modules/dosing/application/confirm-dose.use-case";
-import { GetNextDose } from "../../src/modules/dosing/application/get-next-dose.use-case";
 import { ListTodaysDoses } from "../../src/modules/dosing/application/list-todays-doses.use-case";
 import { GetScanContext } from "../../src/modules/dosing/application/get-scan-context.use-case";
 import { VerifyPackage } from "../../src/modules/verification/application/verify-package.use-case";
@@ -99,7 +98,6 @@ export function testContainer(
     checkHealth: new CheckHealth(options.database ?? healthyDb),
     tokenVerifier: fakeTokenVerifier(options.tokens ?? {}),
     ensureHousehold: new EnsureHousehold(households),
-    getNextDose: new GetNextDose(dosingMedicines, confirmations, clock),
     scan: { verifyPackage: new VerifyPackage(new HouseholdScanConsentReader(new GetHousehold(households)),
       options.aiUsage ?? { consume: async () => ok(undefined) },
       options.packageReader ?? { read: async () => err(domainError("AI_UNAVAILABLE", "Pembaca uji belum dipasang.")) },
