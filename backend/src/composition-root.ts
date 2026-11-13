@@ -1,6 +1,5 @@
 import type { Env } from "./config/env";
 import { ConfirmDose } from "./modules/dosing/application/confirm-dose.use-case";
-import { GetNextDose } from "./modules/dosing/application/get-next-dose.use-case";
 import { ListTodaysDoses } from "./modules/dosing/application/list-todays-doses.use-case";
 import { GetScanContext } from "./modules/dosing/application/get-scan-context.use-case";
 import { SupabaseDoseConfirmationRepository } from "./modules/dosing/infrastructure/supabase-dose-confirmation.repository";
@@ -53,7 +52,6 @@ export type Container = {
   household: HouseholdUseCases;
   medication: MedicationUseCases;
   dosing: DosingUseCases;
-  getNextDose: GetNextDose;
   scan: ScanUseCases;
 };
 
@@ -78,7 +76,6 @@ export function buildContainer(env: Env): Container {
     checkHealth: new CheckHealth(new SupabaseDatabasePing(supabase)),
     tokenVerifier: new SupabaseAccessTokenVerifier(supabase),
     ensureHousehold: new EnsureHousehold(households),
-    getNextDose: new GetNextDose(dosingMedicines, confirmations, systemClock),
     scan: { verifyPackage: new VerifyPackage(new HouseholdScanConsentReader(new GetHousehold(households)), aiUsage,
       new GeminiPackageReader(gemini), new DosingScanContextReader(new GetScanContext(dosingMedicines, confirmations)), scanTokens, systemClock) },
     dosing: {
