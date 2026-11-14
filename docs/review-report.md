@@ -93,3 +93,26 @@ Tes terarah cleanup/E2E/statistik: **24 lulus**, dan enam tes statistik diulang 
 | Tahap berikutnya | P14 notifikasi/PWA/push tetap dilewati sesuai gerbang MVP stabil yang belum terbukti. P16 row50–51 melanjutkan README/deploy, klon bersih, smoke test dan persiapan rilis sesuai urutan. |
 
 Tidak ada temuan kode tinggi terkonfirmasi yang sengaja ditunda. Kekurangan bukti di tabel tetap terbuka; hasil unit/fixture/build lokal tidak menggantikannya.
+
+## P17 · Audit akhir desktop dan merek (14 November 2026)
+
+Cakupan: branch row 52–56 (rebrand MOSA, logo, Motion, kerangka desktop, layar desktop). Browser pratinjau Chromium, backend lokal + Supabase target tim, akun demo fiktif.
+
+| Pemeriksaan | Hasil |
+|---|---|
+| axe-core (WCAG 2.0/2.1/2.2 A–AA + best-practice, termasuk kontras) di /, /medicines, /medicines/[id], /medicines/new, /settings, /scan (dialog persetujuan terbuka), lebar 375 dan 1440 | 0 pelanggaran |
+| Target interaktif terlihat < 48 px (semua lebar di atas) | 0 |
+| Geser horizontal di 375 / 640 (setara zoom halaman 200% pada 1280) / 768 / 1024 / 1440 | 0 setelah perbaikan |
+| Zoom teks 200% (font akar 32 px) pada 1280 | **Diperbaiki**: dasbor meluap karena kolom kanan `20rem`. Tata letak dua kolom kini memakai container query berbasis rem (`@2xl`/`@3xl` pada `<main>`), kembali satu kolom saat teks diperbesar |
+| Keyboard desktop | Urutan Tab: menu samping → Tambah Obat → Scan Obat → aksi kartu; fokus garis 2,4 px terlihat. **Ditambah** tautan "Langsung ke isi halaman" (WCAG 2.4.1) pada kerangka yang memiliki menu samping |
+| prefers-reduced-motion | Diperiksa di kode: `MotionConfig reducedMotion="user"`, aturan CSS global memangkas animasi/transisi, pembuka memakai fade 200 ms. Emulasi media query tidak tersedia di alat uji; perlu cek manual (Windows: Settings → Accessibility → Visual effects → Animation effects: Off) |
+
+Bundel halaman utama (`pnpm --filter frontend bench:bundle`, Next 16.4.6, gzip per berkas):
+
+| Build | JS awal (gzip) | CSS (gzip) |
+|---|---:|---:|
+| Sebelum P17 (`f5b1ea4`, env publik fiktif) | 295.953 B | 6.970 B |
+| P17 sebelum optimasi | 348.756 B (+52,8 KB) | 7.988 B |
+| P17 akhir: `m` dari `motion/react-m` + `experimental.optimizePackageImports` | 318.780 B (+22,8 KB, +7,7%) | 8.020 B |
+
+Penyebab kenaikan awal: barrel `motion/react` (`export *` dari framer-motion) membawa seluruh mesin animasi ke muat awal. Setelah perbaikan, mesin animasi (≈18,8 KB gzip) hanya dimuat lambat lewat `LazyMotion`. Sisa kenaikan: komponen `m`, `MotionConfig`/`LazyMotion`, pembuka, logo (`next/image`), menu samping dan kerangka desktop. LCP lapangan tidak diukur (tanpa perangkat/jaringan target); muat pertama tidak dianimasikan dan logo di atas lipatan memakai `priority`.
