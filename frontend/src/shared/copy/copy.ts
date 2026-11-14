@@ -360,6 +360,8 @@ export const DRAFT = {
   navigasiUtama: "Navigasi utama", // DRAFT
   /** Label aksesibel navigasi samping desktop; nama beda dari navigasi bawah (hanya satu tampil). */ // DRAFT
   navigasiSamping: "Menu aplikasi", // DRAFT
+  /** Tautan lewati menu untuk pengguna keyboard (WCAG 2.4.1). */ // DRAFT
+  lewatiKeIsi: "Langsung ke isi halaman", // DRAFT
   /** Label aksesibel tombol ikon di header (Figma: panah kiri, roda gigi). */ // DRAFT
   kembali: "Kembali", // DRAFT
   pengaturan: "Pengaturan", // DRAFT
