@@ -22,10 +22,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-/** Kerangka halaman tanpa navigasi (masuk, daftar, onboarding). */
+/**
+ * Kerangka halaman tanpa navigasi (masuk, daftar, onboarding, persetujuan).
+ * ≥ 768 px: satu kartu di tengah (Figma Desktop 02/03), lebar nyaman untuk formulir.
+ */
 export function PlainShell({ children }: { children: ReactNode }) {
   return (
-    <main className="mx-auto flex min-h-dvh w-full min-w-0 max-w-app flex-col gap-4 px-gutter pt-6 pb-10 [overflow-wrap:anywhere]">
+    <main className="mx-auto flex min-h-dvh w-full min-w-0 max-w-app flex-col gap-4 px-gutter pt-6 pb-10 [overflow-wrap:anywhere] md:my-12 md:min-h-0 md:max-w-xl md:rounded-card md:bg-surface md:px-10 md:py-10 md:shadow-card">
       {children}
     </main>
   );
