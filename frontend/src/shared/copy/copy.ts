@@ -330,6 +330,12 @@ export const DRAFT = {
   // DRAFT: pratinjau kamera langsung di halaman scan
   kameraMenyala: "Menyalakan kamera…",
   kameraDitolak: "Izin kamera belum diberikan. Izinkan kamera di pengaturan browser, atau unggah foto.",
+
+  // DRAFT: hari minum per obat (revisi pengguna 14 Nov)
+  hariMinum: "Hari minum",
+  setiapHari: "Setiap hari",
+  hariMinumPetunjuk: "Matikan Setiap hari untuk memilih hari tertentu.",
+  galatHariMinimal: "Pilih minimal satu hari.",
 } as const;
 
 export const PREFERENSI = {
@@ -417,6 +423,15 @@ export function kelompokWaktu(jam: string): KelompokWaktu {
   if (menit >= 4 * 60 && menit < 11 * 60) return "pagi";
   if (menit >= 11 * 60 && menit < 18 * 60) return "siang";
   return "malam";
+}
+
+// DRAFT: nama hari ISO (1 = Senin … 7 = Minggu), sama dengan backend.
+export const NAMA_HARI = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"] as const;
+export const SEMUA_HARI = [1, 2, 3, 4, 5, 6, 7] as const;
+
+export function formatHariMinum(hari: readonly number[]): string {
+  if (SEMUA_HARI.every((h) => hari.includes(h))) return DRAFT.setiapHari;
+  return [...hari].sort((a, b) => a - b).map((h) => NAMA_HARI[h - 1] ?? "").filter(Boolean).join(", ");
 }
 
 export function formatJamMinum(jam: readonly string[]): string {

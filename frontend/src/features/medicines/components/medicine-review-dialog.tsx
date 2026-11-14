@@ -2,7 +2,7 @@
 
 import { Check, Pencil, Sparkles } from "lucide-react";
 import type { RefObject } from "react";
-import { AI_GAGAL, DRAFT, FORM_OBAT, KONFIRMASI_SIMPAN_OBAT, LABEL, OBAT, SIMPAN_OBAT, TOMBOL, formatJamMinum, formatKekuatan } from "@/shared/copy";
+import { AI_GAGAL, DRAFT, FORM_OBAT, KONFIRMASI_SIMPAN_OBAT, LABEL, OBAT, SIMPAN_OBAT, TOMBOL, formatHariMinum, formatJamMinum, formatKekuatan } from "@/shared/copy";
 import { Bacakan, Button, Dialog, Notice, Spinner } from "@/shared/ui";
 import type { ReviewedExplanation } from "../api/medicines";
 import type { MedicineFormOutput } from "../schemas/medicine-form";
@@ -23,6 +23,7 @@ export function MedicineReviewDialog({ review, saving, error, onConfirm, onEdit,
     { label: FORM_OBAT.namaObat, value: `${input.name} ${formatKekuatan(input.strength)}` },
     { label: OBAT.jumlahPerMinum, value: input.doseAmount },
     { label: OBAT.jamMinum, value: formatJamMinum(input.intakeTimes) },
+    { label: DRAFT.hariMinum, value: formatHariMinum(input.intakeDays) },
     { label: OBAT.aturanPakai, value: input.usageRule },
     { label: LABEL.kegunaanObat, value: input.purpose },
     { label: OBAT.larangan, value: input.warnings },

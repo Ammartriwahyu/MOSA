@@ -24,7 +24,7 @@ vi.mock("@/shared/lib", async (importOriginal) => ({
 
 const INPUT = {
   labelSource: "keluarga" as const, name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji",
-  doseAmount: "1 tablet", usageRule: "Sesudah makan", intakeTimes: ["19:00"],
+  doseAmount: "1 tablet", usageRule: "Sesudah makan", intakeTimes: ["19:00"], intakeDays: [1, 2, 3, 4, 5, 6, 7],
   warnings: DRAFT.tidakAdaLarangan, notes: "Kotak biru",
 };
 const EXPLANATION = "Gunakan sesudah makan. Tidak ada larangan khusus. Kotak biru.";

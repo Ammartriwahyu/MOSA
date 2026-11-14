@@ -15,6 +15,7 @@ export function medicineToFormValues(medicine: Medicine): MedicineFormValues {
     doseAmount: medicine.doseAmount,
     usageRule: medicine.usageRule,
     times,
+    days: [...medicine.intakeDays],
     noWarnings: medicine.warnings === DRAFT.tidakAdaLarangan,
     warnings: medicine.warnings,
     notes: medicine.notes ?? "",

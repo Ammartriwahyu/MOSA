@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { SEMUA_HARI } from "@/shared/copy";
 import { api } from "@/shared/lib";
 import type { MedicineFormOutput } from "../schemas/medicine-form";
 
@@ -13,6 +14,8 @@ export const medicineSchema = z.object({
   notes: z.string().nullable(),
 
   intakeTimes: z.array(z.string()),
+  // Backend lama tanpa kolom ini = setiap hari.
+  intakeDays: z.array(z.number().int().min(1).max(7)).default([...SEMUA_HARI]),
   labelSource: z.enum(["apoteker", "keluarga"]),
 
   explanation: z.string().nullable(),

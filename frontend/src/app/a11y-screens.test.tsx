@@ -14,7 +14,7 @@ import { AppShell, PlainShell } from "@/shared/ui";
 vi.mock("next/navigation", () => ({ useRouter: () => ({ replace: vi.fn(), push: vi.fn() }), usePathname: () => "/", useSearchParams: () => new URLSearchParams() }));
 vi.mock("@/features/auth", async (original) => ({ ...await original<typeof import("@/features/auth")>(), useSessionIdentity: () => "akun-fiktif" }));
 const medicine = { id: "obat-uji", name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan fiktif", doseAmount: "1 tablet", usageRule: "Sesudah makan", warnings: "Jangan diminum bersama susu", notes: null,
-  intakeTimes: ["07:00"], labelSource: "keluarga", explanationOrigin: "teks_pengisi", explanation: null, createdAt: "2026-11-11T00:00:00Z" };
+  intakeTimes: ["07:00"], intakeDays: [1, 2, 3, 4, 5, 6, 7], labelSource: "keluarga", explanationOrigin: "teks_pengisi", explanation: null, createdAt: "2026-11-11T00:00:00Z" };
 let client: QueryClient;
 afterEach(() => { cleanup(); client.clear(); });
 

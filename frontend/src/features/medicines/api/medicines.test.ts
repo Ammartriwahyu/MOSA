@@ -32,7 +32,7 @@ test("hapus lunak mengirim DELETE dan menerima 204 tanpa mencoba membaca JSON", 
 test("PATCH mengganti isian penuh, tanpa menambahkan householdId dari klien", async () => {
   const input = {
     name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji", doseAmount: "1 tablet",
-    usageRule: "Sesudah makan", warnings: "Tidak ada larangan khusus", notes: null, intakeTimes: ["07:00"],
+    usageRule: "Sesudah makan", warnings: "Tidak ada larangan khusus", notes: null, intakeTimes: ["07:00"], intakeDays: [1, 2, 3, 4, 5, 6, 7],
     labelSource: "keluarga" as const, explanation: null, explanationOrigin: "teks_pengisi" as const,
   };
   backend.fetch.mockResolvedValue(Response.json({ ...input, id: "uji", createdAt: "2026-11-11T00:00:00Z" }));

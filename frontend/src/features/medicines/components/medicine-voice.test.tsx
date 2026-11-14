@@ -11,7 +11,7 @@ import { MedicineReviewDialog, type MedicineReview } from "./medicine-review-dia
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/medicines/uji", useRouter: () => ({ replace: vi.fn() }) }));
 vi.mock("../hooks/use-medicines", () => ({ useMedicine: vi.fn(), useDeactivateMedicine: () => ({ isPending: false, mutateAsync: vi.fn() }) }));
-const medicine: Medicine = { id: "uji", name: "Obat Fiktif", strength: "5 mg", purpose: "Kegunaan uji", doseAmount: "1 tablet", usageRule: "Sesudah makan", warnings: "Peringatan uji", notes: "Catatan uji", intakeTimes: ["07:00"], labelSource: "keluarga", explanationOrigin: "ai_dikonfirmasi", explanation: "Penjelasan yang diperiksa.\nBaris kedua tetap sama.", createdAt: "2026-11-11T00:00:00Z" };
+const medicine: Medicine = { id: "uji", name: "Obat Fiktif", strength: "5 mg", purpose: "Kegunaan uji", doseAmount: "1 tablet", usageRule: "Sesudah makan", warnings: "Peringatan uji", notes: "Catatan uji", intakeTimes: ["07:00"], intakeDays: [1, 2, 3, 4, 5, 6, 7], labelSource: "keluarga", explanationOrigin: "ai_dikonfirmasi", explanation: "Penjelasan yang diperiksa.\nBaris kedua tetap sama.", createdAt: "2026-11-11T00:00:00Z" };
 const review: MedicineReview = { input: { ...medicine }, reviewed: { explanation: "Penjelasan yang diperiksa.\nBaris kedua tetap sama.", explanationOrigin: "ai_dikonfirmasi" } };
 let engine: TestSpeechEngine;
 beforeEach(() => { engine = installSpeechEngine(); vi.mocked(useMedicine).mockReturnValue({ isPending: false, isError: false, data: medicine } as ReturnType<typeof useMedicine>); });

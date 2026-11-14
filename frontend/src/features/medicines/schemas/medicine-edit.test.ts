@@ -5,7 +5,7 @@ import { medicineToFormValues } from "./medicine-edit";
 
 const MEDICINE: Medicine = {
   id: "uji", name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji", doseAmount: "1 tablet",
-  usageRule: "Sesudah makan", warnings: "Peringatan uji", notes: "Kotak biru", intakeTimes: ["06:30", "18:30"],
+  usageRule: "Sesudah makan", warnings: "Peringatan uji", notes: "Kotak biru", intakeTimes: ["06:30", "18:30"], intakeDays: [1, 2, 3, 4, 5, 6, 7],
   labelSource: "apoteker", explanation: "Penjelasan lama", explanationOrigin: "ai_dikonfirmasi", createdAt: "2026-11-11T00:00:00Z",
 };
 

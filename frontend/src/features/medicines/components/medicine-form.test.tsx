@@ -64,6 +64,7 @@ describe("MedicineForm", () => {
       usageRule: "Bersama makan",
       doseAmount: "1 tablet",
       intakeTimes: ["12:00", "18:00"],
+      intakeDays: [1, 2, 3, 4, 5, 6, 7],
       warnings: DRAFT.tidakAdaLarangan,
       notes: null,
     });

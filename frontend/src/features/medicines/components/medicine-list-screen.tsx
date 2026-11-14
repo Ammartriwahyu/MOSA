@@ -3,7 +3,7 @@
 import { Check, ChevronRight, Pill, Plus } from "lucide-react";
 import Link from "next/link";
 import { medicineDetail, ROUTES } from "@/shared/config";
-import { AUTH, DRAFT, formatJamMinum, formatKekuatan, jumlahObatTerdaftar, OBAT, SIMPAN_OBAT, UBAH_OBAT } from "@/shared/copy";
+import { AUTH, DRAFT, formatHariMinum, formatJamMinum, formatKekuatan, jumlahObatTerdaftar, OBAT, SIMPAN_OBAT, UBAH_OBAT } from "@/shared/copy";
 import { StaggerItem, StaggerList } from "@/shared/motion";
 import { Badge, Button, EmptyState, ErrorState, Notice, PageHeader, Skeleton, Spinner, cx } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
@@ -36,7 +36,7 @@ function MedicineItem({ medicine, saved }: { medicine: Medicine; saved: boolean 
             {medicine.name} {formatKekuatan(medicine.strength)}
           </span>
           <span className="text-body text-ink-secondary">
-            {medicine.doseAmount} · {formatJamMinum(medicine.intakeTimes)}
+            {medicine.doseAmount} · {formatJamMinum(medicine.intakeTimes)} · {formatHariMinum(medicine.intakeDays)}
           </span>
           <LabelSourceChip source={medicine.labelSource} />
           {saved ? <Badge tone="success" icon={<Check />}>{SIMPAN_OBAT.baru}</Badge> : null}

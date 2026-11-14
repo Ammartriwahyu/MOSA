@@ -19,7 +19,7 @@ const AMLODIPIN: Medicine = {
   usageRule: "Sesudah makan",
   warnings: "Jangan dihentikan mendadak",
   notes: "Simpan di kotak biru",
-  intakeTimes: ["07:00", "19:00"],
+  intakeTimes: ["07:00", "19:00"], intakeDays: [1, 2, 3, 4, 5, 6, 7],
   labelSource: "apoteker",
   explanation: "Minum obat ini sesudah makan.",
   explanationOrigin: "ai_dikonfirmasi",
@@ -103,7 +103,7 @@ describe("MedicineListScreen", () => {
 
     const link = await screen.findByRole("link", { name: /Amlodipin 5 mg/ });
     expect(link).toHaveAttribute("href", `/medicines/${AMLODIPIN.id}`);
-    expect(within(link).getByText("1 tablet · Pagi 07.00 · Malam 19.00")).toBeInTheDocument();
+    expect(within(link).getByText("1 tablet · Pagi 07.00 · Malam 19.00 · Setiap hari")).toBeInTheDocument();
     expect(within(link).getByText(LABEL.diisiApoteker)).toBeInTheDocument();
     expect(screen.getByText(LABEL.diisiKeluarga)).toBeInTheDocument();
     expect(screen.getByText("2 obat terdaftar")).toBeInTheDocument();
