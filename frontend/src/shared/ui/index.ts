@@ -1,5 +1,6 @@
 // Komponen dasar (Figma MOSA DRAFT, docs/06). Teks selalu dari shared/copy lewat props.
 export { AppShell, PlainShell } from "./app-shell";
+export { FlowShell } from "./flow-shell";
 export { Badge, Chip, type BadgeTone } from "./badge";
 export { Banner, type BannerProps } from "./banner";
 export { Button, type ButtonProps, type ButtonVariant } from "./button";
@@ -11,7 +12,10 @@ export { Dialog, type DialogProps } from "./dialog";
 export { EmptyState, ErrorState, Skeleton, Spinner } from "./feedback";
 export { SelectField, TextField, type SelectFieldProps, type TextFieldProps } from "./field";
 export { IconButton, IconLink, type IconButtonProps } from "./icon-button";
+export { Logo, type LogoProps, type LogoVariant } from "./logo";
+export { OPENING_SPLASH_SCRIPT, OpeningSplash } from "./opening-splash";
 export { BottomNav } from "./bottom-nav";
+export { SideNav } from "./side-nav";
 export { Notice } from "./notice";
 export { PageHeader, type PageHeaderProps } from "./page-header";
 export { Bacakan } from "./bacakan";

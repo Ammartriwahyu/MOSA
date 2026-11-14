@@ -75,6 +75,10 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
 
       <LabelSourceField value={values.labelSource} onChange={(v) => set("labelSource", v)} error={errors.labelSource} />
 
+      {/* Dua kolom bila area konten ≥ 42rem (Figma Desktop 17 · 184:1663); satu kolom saat
+          teks diperbesar. Urutan DOM = urutan baca: data obat lalu jadwal, larangan, catatan. */}
+      <div className="flex flex-col gap-4 @2xl:grid @2xl:grid-cols-2 @2xl:items-start @2xl:gap-x-8">
+      <div className="flex min-w-0 flex-col gap-4">
       <h2 className="text-card-title">{FORM_OBAT.dataObat}</h2>
       <TextField
         label={FORM_OBAT.namaObat}
@@ -122,6 +126,8 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
         error={errors.doseAmount}
       />
 
+      </div>
+      <div className="flex min-w-0 flex-col gap-4">
       <IntakeTimesField
         rows={values.times}
         onChange={(rows) => set("times", rows)}
@@ -152,6 +158,9 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
         onChange={(e) => set("notes", e.target.value)}
         error={errors.notes}
       />
+
+      </div>
+      </div>
 
       <Notice tone="plain">{FORM_OBAT.kirimAi}</Notice>
 

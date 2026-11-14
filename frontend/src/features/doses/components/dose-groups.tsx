@@ -1,5 +1,6 @@
 import { Moon, Sun, Sunrise } from "lucide-react";
 import { DOSIS, formatJam, namaKelompokDosis, type KelompokWaktu } from "@/shared/copy";
+import { StaggerItem, StaggerList } from "@/shared/motion";
 import type { Dose, TodaysDoses } from "../schemas/todays-doses";
 import { DoseCard } from "./dose-card";
 import type { DoseActionProps } from "./dose-actions";
@@ -41,9 +42,9 @@ export function DoseGroups({ data, ...actions }: DoseActionProps & { data: Today
                   <h2 className="text-section">{namaKelompokDosis(period)}</h2>
                   <p className="text-body text-ink-secondary">{times}</p>
                 </div>
-                <ul className="flex flex-col gap-3">
-                  {doses.map((dose) => <li key={dose.slotId}><DoseCard dose={dose} summary={summaries.get(dose.medicineId)} {...actions} /></li>)}
-                </ul>
+                <StaggerList className="flex flex-col gap-3">
+                  {doses.map((dose) => <StaggerItem key={dose.slotId}><DoseCard dose={dose} summary={summaries.get(dose.medicineId)} {...actions} /></StaggerItem>)}
+                </StaggerList>
               </section>
             );
           })}

@@ -101,9 +101,20 @@ export function DashboardContent({ data, onChooseScan, speechActive = true, ...a
               <Bacakan text={reading.join("\n")} active={speechActive} contextKey={`${data.date}:${next?.medicineId}:${next?.tanggal}:${next?.jam}`} />
             </section>
           )}
-          <DailyProgress summary={data.summary} />
-          <Button asChild variant="secondary"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
-          <DoseGroups data={data} {...actions} />
+          {/* Dua kolom bila area konten ≥ 48rem (Figma 184:326): dosis di kiri, progres di kanan.
+              Diukur dalam rem pada kontainer, bukan lebar layar: saat teks diperbesar 200%
+              tata letak kembali satu kolom tanpa geser samping. Kolom kanan tanpa elemen fokus,
+              jadi urutan Tab tetap mengikuti dosis. */}
+          <div className="flex min-w-0 flex-col gap-3 @3xl:grid @3xl:grid-cols-[minmax(0,1fr)_20rem] @3xl:items-start @3xl:gap-6">
+            <div className="flex min-w-0 flex-col gap-3 @3xl:sticky @3xl:top-8 @3xl:col-start-2 @3xl:row-start-1">
+              <DailyProgress summary={data.summary} />
+              {/* Desktop: tombol ini ada di header. */}
+              <Button asChild variant="secondary" className="lg:hidden"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
+            </div>
+            <div className="flex min-w-0 flex-col gap-3 @3xl:col-start-1 @3xl:row-start-1">
+              <DoseGroups data={data} {...actions} />
+            </div>
+          </div>
         </>
       )}
     </div>

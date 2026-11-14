@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Pangkas impor barrel Motion (motion/react = export * from framer-motion) agar
+    // hanya bagian yang dipakai ikut muat awal (P17: animasi tidak boleh membebani LCP).
+    optimizePackageImports: ["motion", "framer-motion"],
+  },
   async headers() {
     return [{ source: "/sw.js", headers: [
       { key: "Cache-Control", value: "no-store, max-age=0" },

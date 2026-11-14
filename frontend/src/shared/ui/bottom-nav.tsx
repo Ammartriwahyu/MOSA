@@ -6,14 +6,12 @@ import { usePathname } from "next/navigation";
 import { ROUTES } from "../config";
 import { DRAFT, TOMBOL } from "../copy";
 import { cx } from "./cx";
-
-function isActive(pathname: string, href: string): boolean {
-  return href === ROUTES.home ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
-}
+import { isActivePath as isActive } from "./is-active-path";
 
 /**
  * Navigasi bawah (Figma MOSA DRAFT 05): Jadwal · Scan Obat (tombol tengah) · Obat.
  * Label teks selalu tampil di bawah ikon (docs/06: tanpa ikon tanpa label).
+ * Mulai 1024 px digantikan SideNav.
  */
 export function BottomNav() {
   const pathname = usePathname();
@@ -44,9 +42,9 @@ export function BottomNav() {
   return (
     <nav
       aria-label={DRAFT.navigasiUtama}
-      className="@container fixed inset-x-0 bottom-0 z-30 border-t-2 border-line bg-surface"
+      className="@container fixed inset-x-0 bottom-0 z-30 border-t-2 border-line bg-surface lg:hidden"
     >
-      <div className="mx-auto grid max-w-app grid-cols-3 items-center gap-2 px-4.5 pt-2.5 pb-[max(1.5rem,env(safe-area-inset-bottom))] @max-[16em]:grid-cols-1">
+      <div className="mx-auto grid max-w-app grid-cols-3 md:max-w-2xl items-center gap-2 px-4.5 pt-2.5 pb-[max(1.5rem,env(safe-area-inset-bottom))] @max-[16em]:grid-cols-1">
         {tab(items[0])}
         <Link
           href={ROUTES.scan}

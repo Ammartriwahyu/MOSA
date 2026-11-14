@@ -4,6 +4,7 @@ import { Check, ChevronRight, Pill, Plus } from "lucide-react";
 import Link from "next/link";
 import { medicineDetail, ROUTES } from "@/shared/config";
 import { AUTH, DRAFT, formatJamMinum, formatKekuatan, jumlahObatTerdaftar, OBAT, SIMPAN_OBAT, UBAH_OBAT } from "@/shared/copy";
+import { StaggerItem, StaggerList } from "@/shared/motion";
 import { Badge, Button, EmptyState, ErrorState, Notice, PageHeader, Skeleton, Spinner, cx } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
 import { useMedicines } from "../hooks/use-medicines";
@@ -22,7 +23,7 @@ function AddButton() {
 
 function MedicineItem({ medicine, saved }: { medicine: Medicine; saved: boolean }) {
   return (
-    <li className="@container">
+    <StaggerItem className="@container">
       <Link
         href={medicineDetail(medicine.id)}
         className={cx("flex items-center gap-3.5 rounded-card bg-surface p-4.5 shadow-card @max-[16em]:flex-wrap", saved && "ring-2 ring-success-border")}
@@ -42,7 +43,7 @@ function MedicineItem({ medicine, saved }: { medicine: Medicine; saved: boolean 
         </span>
         <ChevronRight aria-hidden="true" className="ml-auto size-6.5 shrink-0 text-ink" />
       </Link>
-    </li>
+    </StaggerItem>
   );
 }
 
@@ -95,11 +96,11 @@ export function MedicineListScreen({ savedId, removed = false }: { savedId?: str
         <>
           <AddButton />
           <p className="text-body font-semibold text-ink-secondary">{jumlahObatTerdaftar(medicines.data.length)}</p>
-          <ul className="flex flex-col gap-4">
+          <StaggerList className="flex flex-col gap-4">
             {medicines.data.map((medicine) => (
               <MedicineItem key={medicine.id} medicine={medicine} saved={medicine.id === savedId} />
             ))}
-          </ul>
+          </StaggerList>
         </>
       )}
     </>

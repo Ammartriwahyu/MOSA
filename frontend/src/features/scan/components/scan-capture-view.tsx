@@ -55,11 +55,16 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true, o
     <input ref={upload} type="file" accept="image/*" hidden disabled={!enabled || processing} aria-label={SCAN_CAPTURE.upload} onChange={(event) => select(event.currentTarget)} />
     {photo && onUsePhoto ? <Button size="lg" variant="brand" disabled={!enabled || processing} onClick={onUsePhoto}>{SCAN_REQUEST.usePhoto}</Button> : null}
     {photo ? <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<Camera />} onClick={() => { capture.clear(); camera.current?.click(); }}>{SCAN_CAPTURE.retake}</Button>
-      : <div className="flex flex-col items-center gap-2"><button type="button" aria-label={SCAN_CAPTURE.camera} aria-describedby={instructionId} disabled={!enabled || processing}
+      // Perangkat dengan mouse (laptop/desktop) umumnya tanpa kamera belakang: tombol rana
+      // disembunyikan dan unggah foto menjadi aksi utama (P17). HP/tablet sentuh tetap memakai kamera.
+      : <div className="flex flex-col items-center gap-2 pointer-fine:hidden"><button type="button" aria-label={SCAN_CAPTURE.camera} aria-describedby={instructionId} disabled={!enabled || processing}
         onClick={() => camera.current?.click()} className="flex size-22 items-center justify-center rounded-pill border-4 border-on-action disabled:opacity-50">
         <span aria-hidden="true" className="size-17 rounded-pill bg-on-action" />
       </button><p className="text-body">{SCAN_CAPTURE.cameraHint}</p></div>}
-    <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{photo ? SCAN_CAPTURE.another : SCAN_CAPTURE.upload}</Button>
+    {photo ? <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.another}</Button> : <>
+      <div className="pointer-fine:hidden"><Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.upload}</Button></div>
+      <div className="hidden pointer-fine:block"><Button size="lg" variant="brand" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.upload}</Button></div>
+    </>}
     <Button asChild size="lg" variant="secondary"><Link href={ROUTES.home}>{SCAN_CAPTURE.backToSchedule}</Link></Button>
   </div>;
 }

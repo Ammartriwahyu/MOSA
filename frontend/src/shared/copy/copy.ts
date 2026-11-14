@@ -358,6 +358,10 @@ export const DRAFT = {
   navObat: "Obat", // DRAFT
   /** Label aksesibel wilayah navigasi bawah. */ // DRAFT
   navigasiUtama: "Navigasi utama", // DRAFT
+  /** Label aksesibel navigasi samping desktop; nama beda dari navigasi bawah (hanya satu tampil). */ // DRAFT
+  navigasiSamping: "Menu aplikasi", // DRAFT
+  /** Tautan lewati menu untuk pengguna keyboard (WCAG 2.4.1). */ // DRAFT
+  lewatiKeIsi: "Langsung ke isi halaman", // DRAFT
   /** Label aksesibel tombol ikon di header (Figma: panah kiri, roda gigi). */ // DRAFT
   kembali: "Kembali", // DRAFT
   pengaturan: "Pengaturan", // DRAFT
@@ -402,7 +406,6 @@ export const PENGATURAN = {
 
 /** Layar masuk, daftar, onboarding, persetujuan (Figma MOSA DRAFT 01–03). Semua DRAFT. */
 export const AUTH = {
-  tagline: "MOSA · Pendamping Minum Obat", // DRAFT
   onboardingJudul: "Minum obat tepat waktu", // DRAFT
   onboardingIsi: "Bantu lansia dan keluarga mengikuti instruksi obat dari apoteker.", // DRAFT
   mulaiSekarang: "Mulai Sekarang", // DRAFT
