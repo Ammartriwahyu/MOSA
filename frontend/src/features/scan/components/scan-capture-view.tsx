@@ -4,8 +4,9 @@ import { Camera, Clock, Info, ImagePlus, LoaderCircle, X } from "lucide-react";
 import Link from "next/link";
 import { useId, useRef, type RefObject } from "react";
 import { ROUTES } from "@/shared/config";
-import { SCAN_CAPTURE, SCAN_REQUEST, TOMBOL, jadwalTargetScan } from "@/shared/copy";
+import { DRAFT, SCAN_CAPTURE, SCAN_REQUEST, TOMBOL, jadwalTargetScan } from "@/shared/copy";
 import { Button, IconLink, Notice, cx } from "@/shared/ui";
+import { useLiveCamera } from "../hooks/use-live-camera";
 import type { usePhotoCapture } from "../hooks/use-photo-capture";
 import type { ScanTarget } from "../lib/scan-target";
 
@@ -19,9 +20,17 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true, o
   const instructionId = useId();
   const { photo, processing, error } = capture;
   const errorText = error === "unsupported" ? SCAN_CAPTURE.unsupported : error === "too_large" ? SCAN_CAPTURE.tooLarge : error === "unreadable" ? SCAN_CAPTURE.unreadable : SCAN_CAPTURE.compressionFailed;
+  const { status: cameraStatus, attach: attachVideo, grab: grabFrame } = useLiveCamera(enabled && !photo && !processing);
+  // Cadangan (kamera bawaan HP lewat input file) hanya bila pratinjau langsung tidak bisa dibuka.
+  const fallback = cameraStatus === "denied" || cameraStatus === "unavailable";
+  const viewfinder = enabled && !fallback && !photo && !processing;
   function select(input: HTMLInputElement) {
     const file = input.files?.[0]; input.value = "";
     if (file && enabled) void capture.select(file);
+  }
+  async function shoot() {
+    const frame = await grabFrame();
+    if (frame) void capture.select(frame); else camera.current?.click();
   }
   return <div className={cx("-mx-gutter -mt-6 -mb-10 flex min-h-dvh flex-col gap-4 px-gutter pt-6 pb-10", photo ? "bg-canvas text-ink" : "bg-camera text-on-action")}>
     <header className="flex items-center gap-3">
@@ -35,8 +44,11 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true, o
       <p>{target.mode === "selected" ? <>{SCAN_CAPTURE.selectedMode}<br />{jadwalTargetScan(target.date, target.time)}</> : SCAN_CAPTURE.genericMode}</p>
     </div>
     <div className={photo ? "rounded-tile bg-surface p-5" : undefined}>
-    <div className={cx("relative flex w-full items-center justify-center overflow-hidden rounded-sheet bg-camera-surface", photo ? "aspect-[6/5] p-4" : "p-10")}>
-      {photo ?
+    <div className={cx("relative flex w-full items-center justify-center overflow-hidden rounded-sheet bg-camera-surface", photo ? "aspect-[6/5] p-4" : viewfinder ? "aspect-[3/4] @2xl:aspect-[4/3]" : "p-10")}>
+      {viewfinder ? <>
+        <video ref={attachVideo} autoPlay muted playsInline aria-hidden="true" className={cx("absolute inset-0 size-full object-cover", cameraStatus === "live" ? undefined : "invisible")} />
+        {cameraStatus === "live" ? null : <span role="status" className="inline-flex items-center gap-3 text-body text-on-action"><LoaderCircle aria-hidden="true" className="size-7 shrink-0 animate-spin text-success-border" />{DRAFT.kameraMenyala}</span>}
+      </> : photo ?
 
         // eslint-disable-next-line @next/next/no-img-element
         <img src={photo.url} alt={SCAN_CAPTURE.preview} className="h-full w-full object-contain" />
@@ -51,18 +63,20 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true, o
     <p id={instructionId} className="text-center text-body">{photo ? SCAN_CAPTURE.review : SCAN_CAPTURE.instruction}</p>
     {photo ? <p role="status" className="text-body text-success">{SCAN_CAPTURE.ready}</p> : null}
     {error ? <Notice tone="danger" role="alert">{errorText}</Notice> : null}
+    {enabled && !photo && cameraStatus === "denied" ? <Notice tone="plain" role="status">{DRAFT.kameraDitolak}</Notice> : null}
     <input ref={camera} type="file" accept="image/*" capture="environment" hidden disabled={!enabled || processing} aria-label={SCAN_CAPTURE.camera} onChange={(event) => select(event.currentTarget)} />
     <input ref={upload} type="file" accept="image/*" hidden disabled={!enabled || processing} aria-label={SCAN_CAPTURE.upload} onChange={(event) => select(event.currentTarget)} />
     {photo && onUsePhoto ? <Button size="lg" variant="brand" disabled={!enabled || processing} onClick={onUsePhoto}>{SCAN_REQUEST.usePhoto}</Button> : null}
-    {photo ? <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<Camera />} onClick={() => { capture.clear(); camera.current?.click(); }}>{SCAN_CAPTURE.retake}</Button>
+    {photo ? <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<Camera />} onClick={() => { capture.clear(); if (fallback) camera.current?.click(); }}>{SCAN_CAPTURE.retake}</Button>
 
-      : <div className="flex flex-col items-center gap-2 pointer-fine:hidden"><button type="button" aria-label={SCAN_CAPTURE.camera} aria-describedby={instructionId} disabled={!enabled || processing}
-        onClick={() => camera.current?.click()} className="flex size-22 items-center justify-center rounded-pill border-4 border-on-action disabled:opacity-50">
+      : <div className={cx("flex flex-col items-center gap-2", viewfinder ? undefined : "pointer-fine:hidden")}><button type="button" aria-label={SCAN_CAPTURE.camera} aria-describedby={instructionId}
+        disabled={!enabled || processing || (viewfinder && cameraStatus !== "live")}
+        onClick={() => { if (viewfinder) void shoot(); else camera.current?.click(); }} className="flex size-22 items-center justify-center rounded-pill border-4 border-on-action disabled:opacity-50">
         <span aria-hidden="true" className="size-17 rounded-pill bg-on-action" />
       </button><p className="text-body">{SCAN_CAPTURE.cameraHint}</p></div>}
     {photo ? <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.another}</Button> : <>
-      <div className="pointer-fine:hidden"><Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.upload}</Button></div>
-      <div className="hidden pointer-fine:block"><Button size="lg" variant="brand" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.upload}</Button></div>
+      <div className={viewfinder ? undefined : "pointer-fine:hidden"}><Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.upload}</Button></div>
+      <div className={viewfinder ? "hidden" : "hidden pointer-fine:block"}><Button size="lg" variant="brand" disabled={!enabled || processing} icon={<ImagePlus />} onClick={() => upload.current?.click()}>{SCAN_CAPTURE.upload}</Button></div>
     </>}
     <Button asChild size="lg" variant="secondary"><Link href={ROUTES.home}>{SCAN_CAPTURE.backToSchedule}</Link></Button>
   </div>;

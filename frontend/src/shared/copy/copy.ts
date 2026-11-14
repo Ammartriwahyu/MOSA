@@ -326,6 +326,10 @@ export const DRAFT = {
   pengaturan: "Pengaturan",
 
   deskripsiAplikasi: "MOSA: Medication Organizer, Scanner & Assistant",
+
+  // DRAFT: pratinjau kamera langsung di halaman scan
+  kameraMenyala: "Menyalakan kamera…",
+  kameraDitolak: "Izin kamera belum diberikan. Izinkan kamera di pengaturan browser, atau unggah foto.",
 } as const;
 
 export const PREFERENSI = {
