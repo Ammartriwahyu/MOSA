@@ -1,4 +1,4 @@
-import { Camera, Check, CheckCheck, ChevronRight, Clock, Info, Pill, Plus } from "lucide-react";
+import { Camera, Check, CheckCheck, Clock, Info, Pill, Plus } from "lucide-react";
 import Link from "next/link";
 import { ROUTES, scanForDose } from "@/shared/config";
 import { bannerJatuhTempo, DASBOR, formatJam, formatKekuatan, OBAT, progresDosis, TOMBOL, waktuJadwalDasbor } from "@/shared/copy";
@@ -8,17 +8,21 @@ import { DashboardDay } from "./dashboard-day";
 import { DoseGroups } from "./dose-groups";
 import type { DoseActionProps } from "./dose-actions";
 
+/**
+ * Aksi utama dasbor: satu tombol ketuk besar (bukan geser). Tanda ">>>" pada Figma
+ * menyiratkan gestur geser yang sulit bagi lansia dan tidak berfungsi, jadi tidak
+ * dipakai (WCAG 2.5.1: tanpa gestur jalur). Ikon + teks di tengah seperti tombol lain.
+ */
 function ScanButton({ due = [], onChooseScan, disabled = false }: { due?: readonly Dose[]; onChooseScan?: (trigger: HTMLButtonElement) => void; disabled?: boolean }) {
   const contents = <>
-    <span aria-hidden="true" className="flex size-touch shrink-0 items-center justify-center rounded-field bg-surface text-action"><Camera className="size-6.5" /></span>
-    <span className="min-w-0 flex-1 text-left @max-[16em]:order-3 @max-[16em]:basis-full">{TOMBOL.scanObat}</span>
-    <span aria-hidden="true" className="ml-auto flex shrink-0 -space-x-2.5"><ChevronRight className="size-5 opacity-40" /><ChevronRight className="size-5 opacity-70" /><ChevronRight className="size-5" /></span>
+    <Camera aria-hidden="true" className="size-7 shrink-0" />
+    <span className="min-w-0 text-center">{TOMBOL.scanObat}</span>
   </>;
   if (disabled || (due.length > 1 && onChooseScan)) return (
-    <Button size="lg" className="justify-start gap-3.5 pl-2 pr-5.5 @max-[16em]:flex-wrap" disabled={disabled} onClick={(event) => onChooseScan?.(event.currentTarget)}>{contents}</Button>
+    <Button size="lg" className="gap-3 @max-[16em]:flex-wrap" disabled={disabled} onClick={(event) => onChooseScan?.(event.currentTarget)}>{contents}</Button>
   );
   return (
-    <Button asChild size="lg" className="justify-start gap-3.5 pl-2 pr-5.5 @max-[16em]:flex-wrap">
+    <Button asChild size="lg" className="gap-3 @max-[16em]:flex-wrap">
       <Link href={due.length === 1 ? scanForDose(due[0].slotId) : ROUTES.scan}>{contents}</Link>
     </Button>
   );
