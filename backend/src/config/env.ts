@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-// Push diaktifkan eksplisit agar konfigurasi lama MVP tetap dapat digunakan.
 const DEV_FRONTEND_ORIGIN = "http://localhost:3000";
 
 const envSchema = z.object({
@@ -8,12 +7,12 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().min(1).max(65_535).default(8787),
   FRONTEND_ORIGIN: z.url(),
   SUPABASE_URL: z.url(),
-  // Secret key (sb_secret_...) pengganti service_role; hanya di server.
+
   SUPABASE_SECRET_KEY: z.string().min(1),
-  // Nama model tidak ditulis di kode (docs/04, D8); kunci hanya di server.
+
   GEMINI_API_KEY: z.string().min(1),
   GEMINI_MODEL: z.string().min(1),
-  // Jatah panggilan AI per rumah tangga per hari WIB (D8). 20 = USULAN sampai uji kuota.
+
   AI_DAILY_LIMIT: z.coerce.number().int().min(1).max(1_000).default(20),
   SCAN_TOKEN_SECRET: z.string().min(32),
   PUSH_ENABLED: z.enum(["true", "false"]).default("false").transform((value) => value === "true"),
@@ -36,14 +35,9 @@ export type Env = z.infer<typeof envSchema>;
 
 type EnvSource = Record<string, string | undefined>;
 
-/**
- * Membaca dan memvalidasi environment. Gagal cepat (throw) karena konfigurasi
- * yang salah adalah bug penyebaran, bukan kegagalan yang diharapkan.
- * Pesan galat hanya menyebut nama variabel, tidak pernah nilainya.
- */
 export function loadEnv(source: EnvSource): Env {
   const input: EnvSource = { ...source };
-  // Di lokal, frontend default berjalan di port 3000. Di produksi wajib diisi.
+
   if (input.NODE_ENV !== "production" && !input.FRONTEND_ORIGIN) {
     input.FRONTEND_ORIGIN = DEV_FRONTEND_ORIGIN;
   }

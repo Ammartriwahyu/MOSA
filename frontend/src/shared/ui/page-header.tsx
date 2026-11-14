@@ -5,13 +5,12 @@ import { IconLink } from "./icon-button";
 
 export type PageHeaderProps = {
   title: string;
-  /** Tujuan tombol kembali; tanpa nilai = tidak ada tombol kembali. */
+
   backHref?: string;
-  /** Aksi di kanan (mis. IconLink Pengaturan). */
+
   action?: ReactNode;
 };
 
-/** Header halaman (Figma MOSA DRAFT A3, A10): kembali · judul di tengah · aksi/spacer. */
 export function PageHeader({ title, backHref, action }: PageHeaderProps) {
   return (
     <header className="@container flex flex-wrap items-center justify-between gap-3">

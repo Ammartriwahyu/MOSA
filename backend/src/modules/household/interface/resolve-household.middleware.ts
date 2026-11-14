@@ -4,10 +4,6 @@ import { isPublicPath } from "../../../shared/interface/session";
 import type { EnsureHousehold } from "../application/ensure-household.use-case";
 import { hasDataConsent } from "../domain/household";
 
-/**
- * Dari userId (sesi) dapatkan atau buat rumah tangga, lalu pasang householdId
- * dan status persetujuan data di konteks. Harus dipasang setelah authenticate.
- */
 export function resolveHousehold(ensureHousehold: EnsureHousehold): MiddlewareHandler {
   return async (c, next) => {
     if (isPublicPath(c.req.path)) return next();

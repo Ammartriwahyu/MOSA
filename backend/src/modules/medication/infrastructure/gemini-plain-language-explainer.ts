@@ -5,7 +5,6 @@ import type { GeminiJsonGenerator } from "../../../shared/infrastructure/gemini-
 import type { ExplainerText, PlainLanguageExplainer } from "../application/ports/plain-language-explainer";
 import { LIMITS } from "../domain/medicine";
 
-// docs/04 Pemanggilan A. Satu tempat untuk diperbaiki setelah uji manual.
 export const EXPLAINER_SYSTEM_INSTRUCTION = `Kamu menulis ulang instruksi obat dengan bahasa Indonesia yang sangat sederhana
 untuk lansia. Tugasmu hanya menyederhanakan kalimat dari teks yang diberikan.
 
@@ -29,10 +28,8 @@ const responseSchema = z.object({
   penjelasan: z.string().trim().min(1).max(LIMITS.explanation),
 });
 
-// Teks pengguna tidak boleh bisa menutup penanda <data> (injeksi prompt).
 const escapeMarkup = (value: string): string => value.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 
-/** Data dikirim terpisah dari instruksi, di dalam penanda (docs/04). */
 export function toExplainerPrompt(text: ExplainerText): string {
   return [
     "<data>",
@@ -46,7 +43,6 @@ export function toExplainerPrompt(text: ExplainerText): string {
 export class GeminiPlainLanguageExplainer implements PlainLanguageExplainer {
   constructor(private readonly gemini: GeminiJsonGenerator) {}
 
-  // householdId tidak dipakai di sini: hanya untuk jatah harian (RateLimitedExplainer).
   async explain(_householdId: string, text: ExplainerText): Promise<Result<string, DomainError>> {
     const raw = await this.gemini.generateJson({
       systemInstruction: EXPLAINER_SYSTEM_INSTRUCTION,

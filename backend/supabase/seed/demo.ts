@@ -1,8 +1,4 @@
-// Seed akun Demo Juri. Idempoten: setiap kali dijalankan, akun demo kembali ke
-// keadaan awal (obat demo, tanpa catatan minum, tanpa obat tambahan).
-//   pnpm --filter backend seed:demo       jadwal normal
-//   pnpm --filter backend seed:demo-due   jadwal Metformin digeser ke menit sekarang (latihan demo)
-// Tidak pernah mencetak kunci, kata sandi, atau email.
+
 import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import {
@@ -42,7 +38,7 @@ async function ensureDemoUser(): Promise<void> {
   const existing = await supabase.auth.admin.getUserById(DEMO_USER_ID);
 
   if (existing.data.user) {
-    // Menyamakan email/kata sandi dengan .env bila diganti.
+
     const { error } = await supabase.auth.admin.updateUserById(DEMO_USER_ID, attributes);
     if (error) fail(`memperbarui pengguna demo (${error.status ?? "?"} ${error.code ?? ""})`);
     return;
@@ -67,7 +63,7 @@ async function resetDemoHousehold(): Promise<void> {
       owner_user_id: DEMO_USER_ID,
       is_demo: true,
       data_consent_at: DEMO_DATA_CONSENT_AT,
-      // Dikosongkan agar juri melihat persetujuan scan dan pilihan Teks/Suara.
+
       scan_consent_at: null,
       output_mode: null,
     },
@@ -77,7 +73,7 @@ async function resetDemoHousehold(): Promise<void> {
 
   const medicines = demoMedicines(mode, new Date()).map((medicine) => ({
     ...medicine,
-    // Reset demo juga memulihkan waktu aktif jadwal, bukan menyisakan edit juri.
+
     intake_times_started_at: Object.fromEntries(medicine.intake_times.map((time) => [time, medicine.created_at])),
   }));
   const keepIds = medicines.map((m) => m.id);

@@ -10,11 +10,6 @@ import { deleteHouseholdData } from "../api/delete-account";
 
 type Props = { open: boolean; onOpenChange: (open: boolean) => void; email: string | null };
 
-/**
- * Pop-up hapus seluruh data & akun (Figma A10). Dua langkah: buka pop-up, lalu
- * masukkan ulang kata sandi (diverifikasi ke Supabase) sebelum DELETE dikirim.
- * Fokus awal di kotak dialog, bukan tombol hapus (docs/06).
- */
 export function DeleteAccountDialog({ open, onOpenChange, email }: Props) {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -46,10 +41,8 @@ export function DeleteAccountDialog({ open, onOpenChange, email }: Props) {
     setBusy(true);
     setError(null);
 
-    // Langkah keamanan: kata sandi harus benar sebelum data dihapus.
     const verified = await signIn(email, password);
-    // Pergantian akun melepas dialog: proses lama tidak boleh mengambil token
-    // akun baru, meneruskan DELETE, atau mengeluarkan sesi yang baru masuk.
+
     if (signal.aborted) return;
     if (!verified.ok) {
       setBusy(false);
@@ -65,7 +58,7 @@ export function DeleteAccountDialog({ open, onOpenChange, email }: Props) {
       setError(isApiError(failure, "DEMO_PROTECTED") ? PENGATURAN.demoDilindungi : AUTH.galatUmum);
       return;
     }
-    // Akun sudah tidak ada di server: hapus sesi lokal; penjaga rute membuka onboarding.
+
     if (!signal.aborted) await signOut("local");
   }
 

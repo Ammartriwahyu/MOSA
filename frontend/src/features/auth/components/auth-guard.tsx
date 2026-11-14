@@ -18,13 +18,6 @@ function FullScreenSpinner() {
   );
 }
 
-/**
- * Penjaga rute halaman setelah masuk.
- * - Belum masuk → onboarding (/welcome).
- * - Belum menyetujui penyimpanan data → /consent (kecuali `requireConsent={false}`).
- * Saat keluar, cache data dihapus agar data akun sebelumnya tidak tampil di HP
- * yang sama. Keamanan data tetap di backend (token dan persetujuan diperiksa tiap permintaan).
- */
 export function AuthGuard({ children, requireConsent = true }: { children: ReactNode; requireConsent?: boolean }) {
   const status = useSessionStatus();
   const userId = useSessionIdentity();
@@ -62,6 +55,6 @@ export function AuthGuard({ children, requireConsent = true }: { children: React
     }
     if (household.isPending || missingConsent) return <FullScreenSpinner />;
   }
-  // Pergantian akun melepas state halaman dan audio lama, meski status tetap signed-in.
+
   return <Fragment key={userId}>{children}</Fragment>;
 }

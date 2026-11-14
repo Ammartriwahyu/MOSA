@@ -31,10 +31,6 @@ function PreparingExplanation() {
   );
 }
 
-/**
- * Alur Tambah/Ubah Obat. Isian disimpan di sini, bukan di formulir, agar
- * "Perbaiki lagi" bisa kembali tanpa kehilangan isian (docs/01 §2).
- */
 export function MedicineEditor({ initialValues, mode, saving, onSave, backHref }: {
   initialValues: MedicineFormValues;
   mode: "create" | "edit";
@@ -43,7 +39,7 @@ export function MedicineEditor({ initialValues, mode, saving, onSave, backHref }
   backHref: string;
 }) {
   const router = useRouter();
-  // Refetch tidak boleh menimpa koreksi yang sedang diketik.
+
   const [values, setValues] = useState(() => initialValues);
   const [review, setReview] = useState<MedicineReview | null>(null);
   const [error, setError] = useState<string | null>(null);

@@ -5,13 +5,12 @@ import { AUTH } from "@/shared/copy";
 import { Badge } from "@/shared/ui";
 import { BrandHeader } from "./brand-header";
 
-/** Onboarding (Figma MOSA DRAFT 01 · 135:2722). */
 export function WelcomeScreen() {
   return (
     <>
       <BrandHeader />
 
-      {/* Ilustrasi contoh jadwal: dekoratif, bukan data pengguna. */}
+      { }
       <div aria-hidden="true" className="flex flex-col items-center gap-4.5 rounded-hero bg-linear-to-b from-hero-from to-hero-to p-6">
         <span className="flex aspect-square size-37.5 h-auto max-w-full items-center justify-center rounded-pill bg-surface text-brand shadow-card">
           <Pill className="size-19" />

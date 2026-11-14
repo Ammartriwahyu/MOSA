@@ -7,7 +7,6 @@ import {
 } from "../support/in-memory-household-repository";
 import { TEST_NOW, testContainer } from "../support/test-container";
 
-// Data fiktif: akun baru (belum setuju), akun lansia (sudah setuju), akun Demo Juri.
 const TOKENS = {
   "token-baru": "user-baru",
   "token-lansia": "user-lansia",

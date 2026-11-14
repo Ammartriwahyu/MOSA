@@ -1,4 +1,4 @@
-/** Batas kirim sama dengan backend PACKAGE_IMAGE_LIMITS; bukan batas file asli kamera. */
+
 export const PHOTO_POLICY = Object.freeze({
   maxBytes: 1_500_000, maxInputBytes: 20_000_000, maxPixels: 48_000_000,
   maxDimension: 1600, resizePasses: 4, resizeFactor: 0.8, timeoutMs: 15_000,

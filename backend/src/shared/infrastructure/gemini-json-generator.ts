@@ -2,7 +2,6 @@ import { GoogleGenAI, type GenerateContentParameters } from "@google/genai";
 import { domainError, type DomainError } from "../domain/domain-error";
 import { err, ok, type Result } from "../domain/result";
 
-/** Bentuk minimal `ai.models.generateContent`; tes menggantinya dengan fungsi palsu. */
 export type GenerateContent = (
   params: GenerateContentParameters,
 ) => Promise<{ readonly text?: string | undefined }>;
@@ -11,20 +10,20 @@ export type GeminiJsonRequest = {
   readonly systemInstruction: string;
   readonly contents: GenerateContentParameters["contents"];
   readonly responseJsonSchema: Readonly<Record<string, unknown>>;
-  /** Konsumen scan memvalidasi null sebagai bacaan gagal; default penjelasan tetap galat. */
+
   readonly invalidJson?: "null";
 };
 
 export type GeminiJsonOptions = {
   readonly model: string;
-  /** Batas waktu total, termasuk percobaan ulang (docs/04: 15–20 detik). */
+
   readonly timeoutMs?: number;
   readonly retryDelayMs?: number;
 };
 
 const DEFAULT_TIMEOUT_MS = 20_000;
 const DEFAULT_RETRY_DELAY_MS = 1_000;
-// docs/04 pengaman #7: ulang maksimal sekali, hanya untuk 429/503.
+
 const RETRYABLE_STATUS = new Set([429, 503]);
 const TEMPERATURE = 0.2;
 
@@ -50,7 +49,6 @@ function wait(ms: number, signal: AbortSignal): Promise<void> {
   });
 }
 
-/** Deadline tetap berlaku bila implementasi SDK mengabaikan sinyal batal. */
 async function generateBeforeDeadline(
   generate: GenerateContent,
   params: GenerateContentParameters,
@@ -79,18 +77,11 @@ function parseJson(text: string | undefined, invalidJson?: "null"): Result<unkno
   }
 }
 
-/** Klien Gemini sungguhan. Hanya dibuat di composition root dari env server. */
 export function createGeminiGenerateContent(apiKey: string): GenerateContent {
   const ai = new GoogleGenAI({ apiKey });
   return (params) => ai.models.generateContent(params);
 }
 
-/**
- * Pemanggil Gemini bersama untuk penjelasan obat dan baca kemasan: keluaran
- * JSON, suhu rendah, batas waktu, satu percobaan ulang. Mengembalikan JSON
- * mentah; adaptor pemanggil yang memvalidasinya dengan zod. Galat SDK tidak
- * diteruskan ke klien maupun log (bisa memuat potongan permintaan).
- */
 export class GeminiJsonGenerator {
   private readonly timeoutMs: number;
   private readonly retryDelayMs: number;

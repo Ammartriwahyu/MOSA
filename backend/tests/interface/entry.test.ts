@@ -1,9 +1,5 @@
 import { afterAll, beforeAll, describe, expect, test, vi } from "vitest";
 
-// Menguji entri sungguhan (src/index.ts) seperti yang dijalankan Vercel dan server lokal.
-// Nilai env fiktif; tes ini tidak menghubungi Supabase.
-// Impor pertama src/index.ts memuat seluruh aplikasi; saat BE+FE diuji paralel
-// bisa melewati batas bawaan 5 detik (gagal acak 13–14 Nov), jadi diberi 20 detik.
 describe("entri src/index.ts", { timeout: 20_000 }, () => {
   beforeAll(() => {
     vi.stubEnv("SUPABASE_URL", "http://127.0.0.1:1");

@@ -7,13 +7,11 @@
 - **Mode desain:** mobile ukuran `ISI` px; ada versi desktop? `ISI`
 - **Komponen/tokens sudah dibuat di Figma (variables/styles)?** `ya / tidak`
 
-## Cara Claude memakai Figma
-1. Butuh koneksi **Figma MCP** di Claude Code (server `Figma`). Bila tidak tersedia, Claude berhenti dan meminta Anda mengekspor tangkapan layar tiap frame ke `docs/design/screenshots/<nama-frame>.png`; pekerjaan dilanjutkan dari gambar itu.
-2. Muat skill `figma-design-to-code` sebelum memanggil `get_design_context`; setiap implementasi layar mengikuti skill proyek `figma-to-code` (`.claude/skills/figma-to-code/SKILL.md`).
-3. P07 menghasilkan `docs/design/screen-map.md` (frame → rute → fitur → endpoint) dan token tema. Prompt layar berikutnya (P08–P12) membaca peta itu.
-4. Output kode dari Figma adalah **acuan**, bukan hasil akhir: disesuaikan dengan struktur feature-based, komponen `shared/ui`, token tema, dan pedoman `docs/06`.
+## Implementasi desain
+
+Output kode dari Figma adalah **acuan**, bukan hasil akhir: disesuaikan dengan struktur feature-based, komponen `shared/ui`, token tema, dan pedoman `docs/06`.
 
 ## Aturan
 - Jangan mengubah desain di Figma tanpa diminta.
 - Bila ada teks di Figma yang berbeda dari kalimat baku `docs/02`, **kalimat baku menang**; catat selisihnya.
-- Bila ada elemen di Figma yang tidak ada di PRD (fitur di luar MVP), jangan dibangun; tandai di `docs/design/screen-map.md` sebagai "di luar cakupan".
+- Bila ada elemen di Figma yang tidak ada di PRD (fitur di luar MVP), jangan dibangun.

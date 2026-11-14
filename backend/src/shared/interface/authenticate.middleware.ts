@@ -6,7 +6,6 @@ import { isPublicPath } from "./session";
 
 const BEARER = /^Bearer\s+(\S+)$/i;
 
-/** Membaca `Authorization: Bearer <token>`, memverifikasinya, lalu memasang userId. */
 export function authenticate(verifier: AccessTokenVerifier): MiddlewareHandler {
   return async (c, next) => {
     if (isPublicPath(c.req.path)) return next();

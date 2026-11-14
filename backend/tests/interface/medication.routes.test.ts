@@ -7,7 +7,6 @@ import { InMemoryHouseholdRepository, householdFixture } from "../support/in-mem
 import { InMemoryMedicineRepository } from "../support/in-memory-medicine-repository";
 import { TEST_NOW, testContainer } from "../support/test-container";
 
-// Data fiktif: dua rumah tangga yang sudah setuju, satu yang belum.
 const TOKENS = { "token-a": "user-a", "token-b": "user-b", "token-baru": "user-baru" };
 
 const MEDICINE = {

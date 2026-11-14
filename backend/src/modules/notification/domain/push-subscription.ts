@@ -5,7 +5,6 @@ export type PushKeys = { p256dh: string; auth: string };
 export type PushRegistration = { endpoint: string; keys: PushKeys };
 export type PushSubscription = PushRegistration & { id: string; householdId: string };
 
-/** Hanya layanan push yang didukung: jangan jadikan server proxy URL pengguna. */
 export function validPushEndpoint(endpoint: string): boolean {
   if (endpoint.length > 4096 || endpoint.trim() !== endpoint) return false;
   try {

@@ -9,11 +9,6 @@ import { Button, CheckboxCard, Notice, PageHeader, Spinner } from "@/shared/ui";
 import { signOut } from "../api/auth-service";
 import { useHousehold, useRecordDataConsent } from "../hooks/use-household";
 
-/**
- * Persetujuan data untuk sesi yang belum menyetujui (mis. daftar dengan konfirmasi
- * email, atau backend membalas CONSENT_REQUIRED). Tidak ada di Figma: memakai pola
- * kotak persetujuan layar 03.
- */
 export function ConsentScreen() {
   const router = useRouter();
   const household = useHousehold();

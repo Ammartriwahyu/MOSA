@@ -16,8 +16,6 @@ export type HouseholdUseCases = {
   deleteHouseholdData: DeleteHouseholdData;
 };
 
-// Rute /v1/household* (docs/03 §9). Bebas dari cek persetujuan data agar
-// persetujuan bisa dicatat; householdId selalu dari sesi.
 export function householdRoutes(useCases: HouseholdUseCases): Hono {
   return new Hono()
     .get("/household", async (c) => {

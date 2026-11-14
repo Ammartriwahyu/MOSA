@@ -39,9 +39,7 @@ describe("alur gagal/alternatif HTTP tidak menyebabkan minum ganda", () => {
     const old = (await dashboard(system, token)).doses[0]!;
     await call(system, token, "POST", confirmPath(old.slotId), { mode: "basic" }, 201);
     await call(system, token, "PATCH", `/v1/medicines/${medicine.id}`, { ...MEDICINE_INPUT, intakeTimes: ["07:15", "08:00", "19:00"] });
-    // Clock aplikasi tetap 12 Nov; clock_timestamp() PGlite mengikuti mesin.
-    // Selaraskan hanya waktu aktif baru pada fixture, bukan mengganti trigger/RPC.
-    // Pelestarian waktu jam lama dan penciptaan metadata trigger diuji terpisah pada SQL.
+
     await system.db.query(`update public.medicines set intake_times_started_at = intake_times_started_at || $2::jsonb where id=$1`,
       [medicine.id, JSON.stringify({ "07:15": "2026-11-12T00:30:00Z", "08:00": "2026-11-12T00:30:00Z" })]);
     const changed = await dashboard(system, token);
@@ -102,7 +100,7 @@ describe("alur gagal/alternatif HTTP tidak menyebabkan minum ganda", () => {
   });
   test("dua POST HTTP bersamaan untuk token sama memberi satu 201 dan satu 409; replay mempertahankan level", async () => {
     const { token } = await prepared(); const selected = (await scan(token)).slots[0]!;
-    // HTTP benar-benar paralel; transport PGlite mengantrekan satu koneksi SQL.
+
     const responses = await Promise.all([1, 2].map(() => fetch(`${system.origin}${confirmPath(selected.slotId)}`, { method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ mode: "verified", scanToken: selected.scanToken }), signal: AbortSignal.timeout(4_000) })));
     expect(responses.map((response) => response.status).sort()).toEqual([201, 409]);
     await Promise.all(responses.map((response) => response.json()));

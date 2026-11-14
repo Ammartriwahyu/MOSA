@@ -3,7 +3,6 @@ import { err, ok, type Result } from "../../../shared/domain/result";
 import type { Household } from "../domain/household";
 import type { HouseholdRepository } from "../domain/household-repository";
 
-/** Memuat rumah tangga sesi; tidak ada → NOT_FOUND (mis. akun terhapus di tengah permintaan). */
 export async function loadHousehold(
   households: HouseholdRepository,
   householdId: string,

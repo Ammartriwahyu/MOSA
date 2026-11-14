@@ -22,7 +22,6 @@ vi.mock("@/shared/lib", async (importOriginal) => ({
   }),
 }));
 
-// Data fiktif untuk uji; seluruh kolom harus tetap bisa diperiksa sebelum simpan.
 const INPUT = {
   labelSource: "keluarga" as const, name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji",
   doseAmount: "1 tablet", usageRule: "Sesudah makan", intakeTimes: ["19:00"],

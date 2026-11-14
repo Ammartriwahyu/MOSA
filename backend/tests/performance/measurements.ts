@@ -1,4 +1,4 @@
-/** Nearest-rank percentile; sampel tidak diinterpolasi menjadi angka yang tidak diukur. */
+
 export function summarizeDurations(samples: readonly number[]) {
   if (!samples.length || samples.some((value) => !Number.isFinite(value) || value < 0)) {
     throw new Error("Sampel benchmark harus berisi durasi terbatas dan nonnegatif.");

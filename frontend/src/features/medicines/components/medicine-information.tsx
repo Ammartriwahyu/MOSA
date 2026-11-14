@@ -5,7 +5,6 @@ import { Card, Notice } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
 import { LabelSourceChip } from "./label-source-chip";
 
-/** Snapshot scan tidak membawa seluruh jam minum atau createdAt. Jangan membangkitkannya di UI. */
 export type MedicineSnapshot = Omit<Medicine, "intakeTimes" | "createdAt"> & { intakeTimes?: string[] };
 export function MedicineIdentity({ medicine }: { medicine: MedicineSnapshot }) {
   return (
@@ -23,10 +22,6 @@ export function MedicineIdentity({ medicine }: { medicine: MedicineSnapshot }) {
   );
 }
 
-/**
- * Penjelasan AI hanya ada bila pengisi menekan "Ya, sudah benar". Tanpa itu
- * (AI gagal, D3) lansia membaca informasi asli pengisi di bawahnya.
- */
 export function MedicineExplanation({ medicine }: { medicine: MedicineSnapshot }) {
   if (medicine.explanationOrigin !== "ai_dikonfirmasi" || medicine.explanation === null) {
     return <Notice tone="plain">{DRAFT.penjelasanBelumTersedia}</Notice>;
@@ -53,7 +48,6 @@ function originalRows(medicine: MedicineSnapshot) {
   ];
 }
 
-/** Urutan dan nilai yang sama dengan kartu di layar; AI yang belum diperiksa tidak dibacakan. */
 export function medicineInformationText(medicine: MedicineSnapshot, schedule: readonly string[] = []) {
   const checked = medicine.explanationOrigin === "ai_dikonfirmasi" && medicine.explanation !== null;
   return [
@@ -86,5 +80,4 @@ export function MedicineOriginalInfo({ medicine }: { medicine: MedicineSnapshot 
     </Card>
   );
 }
-
 

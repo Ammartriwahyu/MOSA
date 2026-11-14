@@ -72,7 +72,7 @@ async function revokeLocal() {
   if (subscription) await bounded(subscription.unsubscribe());
   return subscription?.endpoint ?? null;
 }
-/** Sign-out tetap boleh selesai saat offline; flag worker dimatikan sebelum mencabut endpoint. */
+
 export async function detachPush(): Promise<void> {
   if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
   epoch++;
@@ -85,7 +85,7 @@ export async function detachPush(): Promise<void> {
     changed();
   });
 }
-/** INITIAL_SESSION/akun lain: jangan mengadopsi langganan dari pemilik sebelumnya. */
+
 export function observePushIdentity(next: string | null): void {
   const previous = identity; identity = next;
   let bound: string | null;
@@ -109,12 +109,12 @@ export async function inspectPush(): Promise<PushStatus> {
   return subscription && bound === api.userId && await isControlled() ? "enabled" : "disabled";
 }
 export function enablePush(key: string): Promise<void> {
-  // Dipanggil di dalam klik: minta izin sebelum await pertama.
+
   let permission: Promise<NotificationPermission>;
   try { permission = Notification.permission === "granted" ? Promise.resolve("granted") : Notification.requestPermission(); }
   catch (error: unknown) { return Promise.reject(error); }
   const version = epoch;
-  // Dialog izin tidak menahan antrean: logout harus tetap dapat mencabut pengingat.
+
   return bounded(permission, 30_000).then((granted) => {
     if (granted !== "granted") throw new Error("push-denied");
     if (version !== epoch) throw new Error("push-cancelled");

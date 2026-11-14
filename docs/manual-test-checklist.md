@@ -44,7 +44,7 @@ Jalankan M01–M10 pada masing-masing perangkat. Periksa pesan dan teks asli di 
 
 ## Hasil aktual per skenario
 
-Rujukan dari [matriks AC](ac-traceability.md) menuju tabel ini. Langkah dan harapan M01–M15 ada di atas; tabel ini hanya untuk hasil aktual. Kedua perangkat masih **Belum**. Kolom bukti diisi penguji dengan perangkat/versi OS/browser, commit, waktu WIB, hasil dan temuan. Pada M15 catat kedua HP dan waktu pembaruan yang teramati.
+Langkah dan harapan M01–M15 ada di atas; tabel ini hanya untuk hasil aktual. Kedua perangkat masih **Belum**. Kolom bukti diisi penguji dengan perangkat/versi OS/browser, commit, waktu WIB, hasil dan temuan. Pada M15 catat kedua HP dan waktu pembaruan yang teramati.
 
 | ID | Android Chrome | iPhone Safari | Bukti / temuan aktual |
 |---|---|---|---|

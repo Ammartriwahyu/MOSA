@@ -1,7 +1,6 @@
 import { AUTH } from "@/shared/copy";
 import type { AuthFailure } from "../api/auth-service";
 
-/** Kalimat (copy) untuk setiap kegagalan Supabase Auth. */
 export const AUTH_FAILURE_MESSAGE: Record<AuthFailure, string> = {
   invalid_credentials: AUTH.galatMasuk,
   email_not_confirmed: AUTH.galatEmailBelumDikonfirmasi,

@@ -2,7 +2,6 @@ import type { Strength } from "../../../shared/domain/strength";
 import type { PackageMismatch } from "./match-package";
 import type { RegisteredMedicine } from "./package-reading";
 
-/** Kontrak snapshot dari dosing melalui port; domain verification tidak mengimpor modul dosing. */
 export type VerificationSlot = {
   readonly slotId: string;
   readonly medicineId: string;
@@ -18,7 +17,7 @@ export type VerificationDose = VerificationSlot & (
 export type DoseContext = {
   readonly target: { readonly mode: "generic" } | { readonly mode: "selected"; readonly slotId: string };
   readonly doses: readonly VerificationDose[];
-  /** Jadwal berikutnya untuk obat yang cocok, dihitung dosing, atau null. */
+
   readonly nextDose: VerificationSlot | null;
 };
 
@@ -30,7 +29,6 @@ type MatchedInfo = {
 
 export type NonEmptySlots = readonly [VerificationSlot, ...VerificationSlot[]];
 
-/** Keputusan murni: belum ada token, penulisan konfirmasi, atau kalimat UI. */
 export type VerificationOutcome = PackageMismatch | (MatchedInfo & (
   | { readonly outcome: "dosis_sudah_tercatat"; readonly slots: NonEmptySlots }
   | { readonly outcome: "bisa_konfirmasi"; readonly slots: NonEmptySlots }

@@ -157,7 +157,7 @@ describe("foto sementara dan target scan", () => {
     setup(); await waitFor(() => expect(screen.getByLabelText(SCAN_CAPTURE.upload)).toBeEnabled());
     const input = screen.getByLabelText(SCAN_CAPTURE.upload);
     fireEvent.change(input, { target: { files: [new File(["a"], "a.jpg", { type: "image/jpeg" })] } });
-    // Event terlambat/native dapat tiba meskipun picker sedang dinonaktifkan.
+
     fireEvent.change(input, { target: { files: [new File(["b"], "b.jpg", { type: "image/jpeg" })] } });
     await screen.findByAltText(SCAN_CAPTURE.preview);
     await act(async () => { first(prepared()); });

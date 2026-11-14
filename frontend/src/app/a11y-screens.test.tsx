@@ -35,7 +35,7 @@ test.each(screens)("%s: satu h1, landmark utama, dan axe seluruh layar", async (
   client.setQueryData(["medicines"], [medicine]); client.setQueryData(["medicines", medicine.id], medicine);
   client.setQueryData(["doses", "today"], { date: "2026-11-13", serverTime: "2026-11-13T00:30:00Z", summary: { confirmed: 0, total: 0 }, doses: [], carryoverDoses: [], earlyDoses: [], medicines: [] });
   render(<QueryClientProvider client={client}>{app ? <AppShell>{ui()}</AppShell> : <PlainShell>{ui()}</PlainShell>}</QueryClientProvider>);
-  // Dialog modal menyembunyikan main di belakangnya dari accessibility tree.
+
   if (screen.queryByRole("dialog")) expect(screen.getAllByRole("heading", { level: 1, hidden: true })).toHaveLength(1);
   else { expect(screen.getAllByRole("main")).toHaveLength(1); expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1); }
   const result = await axe.run(document.body, { rules: { "color-contrast": { enabled: false } } });

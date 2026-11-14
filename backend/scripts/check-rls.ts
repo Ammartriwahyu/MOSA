@@ -1,6 +1,4 @@
-// Membuktikan klien publik (publishable/anon key) tidak bisa membaca atau menulis
-// tabel apa pun. Memakai nilai publik dari frontend/.env.local (lihat README).
-// Hanya mencetak nama tabel dan status HTTP, tidak pernah isi data atau kunci.
+
 import { probePublicTable } from "./lib/rls-probe";
 
 const TABLES = [
@@ -33,7 +31,7 @@ for (const r of results) {
 const unproven = results.filter((r) => !r.blocked);
 if (unproven.length > 0) {
   console.error(`RLS BELUM TERBUKTI: ${unproven.length} pemeriksaan belum membuktikan penolakan akses publik.`);
-  // Biarkan koneksi HTTP dan keluaran selesai dibersihkan sebelum proses tutup.
+
   process.exitCode = 1;
 } else {
   console.info("RLS OK: semua akses publik ditolak.");

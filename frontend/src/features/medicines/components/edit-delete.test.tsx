@@ -24,7 +24,6 @@ vi.mock("@/shared/lib", async (importOriginal) => ({
   }),
 }));
 
-// Data fiktif. Penjelasan lama sengaja berbeda untuk membuktikan tidak dipakai ulang.
 const MEDICINE: Medicine = {
   id: "11111111-1111-4111-8111-111111111111", name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji",
   doseAmount: "1 tablet", usageRule: "Sesudah makan", intakeTimes: ["06:30", "18:30"],

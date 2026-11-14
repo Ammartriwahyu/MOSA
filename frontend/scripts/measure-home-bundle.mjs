@@ -7,8 +7,6 @@ import { fileURLToPath } from "node:url";
 import { gzipSync } from "node:zlib";
 import { JSDOM } from "jsdom";
 
-// Membaca aset dari HTTP produksi localhost, bukan menelusuri .next/node_modules.
-// HTML tidak menjalankan JavaScript; tidak membuka sesi atau meminta API data.
 const cwd = dirname(dirname(fileURLToPath(import.meta.url)));
 const require = createRequire(join(cwd, "package.json"));
 const reservation = createServer();
@@ -37,7 +35,7 @@ try {
   }
   if (!html) throw new Error("Server produksi belum siap pada batas waktu.");
   const readyMs = Math.round((performance.now() - started) * 100) / 100;
-  // JSDOM tanpa runScripts/resources: hanya parser HTML lokal, tidak mengeksekusi aplikasi.
+
   const dom = new JSDOM(html, { url: origin });
   try {
     const scripts = [...new Set([...dom.window.document.querySelectorAll("script[src]:not([nomodule])")].map((element) => element.getAttribute("src")))];

@@ -13,7 +13,6 @@ const payloadSchema = z.strictObject({ householdId: z.string().min(1).max(200), 
 const invalid = () => err(domainError("SCAN_TOKEN_INVALID", "Token scan tidak valid atau kedaluwarsa."));
 const fingerprint = (medicine: { name: string; strength: string }) => createHash("sha256").update(JSON.stringify([medicine.name, medicine.strength])).digest("hex");
 
-/** Token versi 1, exp epoch ms; digest HMAC dibandingkan dengan panjang tetap. */
 export class HmacScanTokens implements ScanTokenSigner {
   constructor(private readonly secret: string, private readonly clock: Clock) {
     if (Buffer.byteLength(secret, "utf8") < 32) throw new Error("SCAN_TOKEN_SECRET minimal 32 byte.");
@@ -44,7 +43,6 @@ export class HmacScanTokens implements ScanTokenSigner {
   private digest(message: string): Buffer { return createHmac("sha256", this.secret).update(message).digest(); }
 }
 
-/** Nama/kekuatan yang diedit sesudah scan tidak boleh memakai bukti kemasan lama. */
 export class CurrentMedicineScanTokenVerifier implements ScanTokenVerifier {
   constructor(private readonly tokens: HmacScanTokens, private readonly medicines: DosingMedicineReader) {}
   async verify(token: string) {

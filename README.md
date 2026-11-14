@@ -6,9 +6,9 @@ Pendamping minum obat untuk lansia dan keluarga: jadwal harian, instruksi yang d
 
 ## Status
 
-Fitur MVP telah diimplementasikan dan diuji otomatis. Verifikasi P15: **677 tes backend + 559 frontend**, 48 pemeriksaan batas impor dan build frontend lulus. [Matriks AC](docs/ac-traceability.md): **20 Lulus otomatis, 6 Belum lengkap, 0 Gagal**. Pemeriksaan perangkat/layanan nyata dan kesiapan rilis masih terbuka; [laporan P15](docs/review-report.md) menjelaskan buktinya.
+Fitur MVP telah diimplementasikan dan diuji otomatis. Pemeriksaan perangkat/layanan nyata dan kesiapan rilis masih terbuka; lihat [checklist perangkat](docs/manual-test-checklist.md).
 
-Backend Web Push tersedia sebagai fitur opsional; [API dan batas pengiriman](docs/web-push-backend.md) sudah disiapkan. PWA dan [pengaturan push](docs/pwa-push.md) tersedia; aktivasi membutuhkan konfigurasi pasangan backend/frontend dan pengujian perangkat. Pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah. [Hasil klon bersih](docs/clean-clone-test.md) membedakan pemeriksaan kode/startup dari demo layanan nyata.
+Backend Web Push tersedia sebagai fitur opsional; [API dan batas pengiriman](docs/web-push-backend.md) sudah disiapkan. PWA dan [pengaturan push](docs/pwa-push.md) tersedia; aktivasi membutuhkan konfigurasi pasangan backend/frontend dan pengujian perangkat. Pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah.
 
 ## Menjalankan di localhost
 
@@ -102,9 +102,8 @@ Jalankan tes frontend tanpa lint/build/dev lain bersamaan. CI menjalankan instal
 
 [Panduan deploy](docs/deploy.md) menjelaskan dua proyek Vercel, environment, CORS, Auth dan prosedur verifikasi. Persiapan rilis lokal mencakup pin Node 24.x, [cadangan seed dan runbook demo](docs/demo-runbook.md) serta [checklist dan gerbang freeze](docs/release-checklist.md). Deployment, konfigurasi cloud, smoke layanan/perangkat, rekaman dan tag freeze belum dijalankan. URL produksi belum diverifikasi pada pekerjaan ini.
 
-- [Panduan lokal](docs/local-development.md) dan [hasil klon bersih](docs/clean-clone-test.md).
-- [Keamanan/privasi/AI](docs/security-privacy-audit.md), [aksesibilitas](docs/a11y-audit.md), [laporan P15](docs/review-report.md).
-- [Matriks AC](docs/ac-traceability.md), [audit copy](docs/copy-audit.md), [checklist perangkat](docs/manual-test-checklist.md).
+- [Panduan lokal](docs/local-development.md).
+- [Checklist perangkat](docs/manual-test-checklist.md).
 
 ## Atribusi
 

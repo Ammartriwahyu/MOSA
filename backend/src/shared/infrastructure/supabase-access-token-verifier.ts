@@ -14,11 +14,6 @@ function isServiceFailure(error: AuthError): boolean {
   return isAuthRetryableFetchError(error) || (error.status ?? 0) >= 500;
 }
 
-/**
- * Verifikasi lewat Supabase Auth (`auth.getUser(token)`, docs/03 §11).
- * Dipilih daripada verifikasi JWT lokal agar token akun yang sudah dihapus
- * langsung ditolak, bukan baru setelah kedaluwarsa.
- */
 export class SupabaseAccessTokenVerifier implements AccessTokenVerifier {
   constructor(private readonly client: AdminClient) {}
 
@@ -29,7 +24,7 @@ export class SupabaseAccessTokenVerifier implements AccessTokenVerifier {
       if (error && isServiceFailure(error)) return err(AUTH_UNAVAILABLE);
       return err(UNAUTHENTICATED);
     } catch {
-      // Batas waktu atau jaringan putus.
+
       return err(AUTH_UNAVAILABLE);
     }
   }

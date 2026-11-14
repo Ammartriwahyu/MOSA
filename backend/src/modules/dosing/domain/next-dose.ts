@@ -11,7 +11,6 @@ export type NextDose = {
   readonly period: DosePeriod;
 };
 
-/** Rentang pencarian P05: sisa hari kalender WIB ini dan besok. */
 export function nextDoseDates(now: number): Result<readonly [WibDate, WibDate], DomainError> {
   if (!Number.isFinite(now) || !Number.isFinite(new Date(now).getTime())) {
     return err(domainError("VALIDATION_FAILED", "Waktu pencarian dosis tidak valid.", { field: "now" }));
@@ -20,8 +19,6 @@ export function nextDoseDates(now: number): Result<readonly [WibDate, WibDate], 
   return ok([today, addWibDays(today, 1)] as const);
 }
 
-/** "Berikutnya" = J > sekarang, bukan jendela yang sedang terbuka. Slot yang
- * sudah dikonfirmasi lebih awal tidak boleh disarankan untuk diminum lagi. */
 export function findNextDose(input: {
   schedule: MedicineSchedule;
   now: number;

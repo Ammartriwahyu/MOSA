@@ -12,7 +12,6 @@ import type { MedicineRepository } from "../domain/medicine-repository";
 
 const notFound = (): DomainError => domainError("NOT_FOUND", "Obat tidak ditemukan.");
 
-/** Obat aktif milik rumah tangga sesi; milik orang lain diperlakukan sama dengan tidak ada. */
 async function loadActive(
   medicines: MedicineRepository,
   householdId: string,
@@ -23,7 +22,6 @@ async function loadActive(
   return found.value ? ok(found.value) : err(notFound());
 }
 
-/** Simpan obat baru setelah pop-up "Ya, sudah benar" (atau tanpa AI, D3). */
 export class CreateMedicine {
   constructor(
     private readonly medicines: MedicineRepository,
@@ -37,7 +35,6 @@ export class CreateMedicine {
   }
 }
 
-/** Ubah obat: alur penuh seperti Tambah Obat (PRD §19 #11). Riwayat minum tetap. */
 export class UpdateMedicine {
   constructor(private readonly medicines: MedicineRepository) {}
 
@@ -71,7 +68,6 @@ export class GetMedicine {
   }
 }
 
-/** Hapus obat = nonaktifkan (hapus lunak): jadwal berikutnya berhenti, riwayat tetap. */
 export class DeactivateMedicine {
   constructor(private readonly medicines: MedicineRepository) {}
 

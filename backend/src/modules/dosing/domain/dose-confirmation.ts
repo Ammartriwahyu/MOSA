@@ -16,7 +16,7 @@ export type DoseConfirmation = {
 
 export interface DoseConfirmationRepository {
   list(householdId: string, dates: readonly WibDate[], medicineId?: string): Promise<Result<readonly DoseConfirmation[], DomainError>>;
-  /** Atomik: cek ulang obat aktif/jadwal terkini, jendela, dan keunikan slot. */
+
   confirm(input: { householdId: string; slot: DoseSlot; confirmedAt: number; level: ConfirmationLevel;
     scanMedicine?: { readonly name: string; readonly strength: string } }): Promise<Result<DoseConfirmation, DomainError>>;
 }

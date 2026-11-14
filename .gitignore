@@ -1,9 +1,44 @@
-# Alat AI (tidak dipublikasikan)
+# Tooling asisten (hanya lokal)
+# Konfigurasi dan instruksi
 CLAUDE.md
+CLAUDE.local.md
 AGENTS.md
+AGENTS.override.md
+GEMINI.md
 .claude/
+.claude.json
+.cursor/
+.cursorrules
+.cursorignore
+.codex/
+.aider*
+.windsurf/
+.windsurfrules
+.continue/
+.github/copilot-instructions.md
+.copilot/
+.gemini/
+.cline/
+.clinerules
+.roo/
+.roomodes
+.kiro/
+.trae/
+.junie/
+.opencode/
 .mcp.json
+
+# Prompt, memory, dan catatan kerja
 PROGRESS.md
+progress.md
+PLAN.md
+plan.md
+TODO.md
+todo.md
+NOTES.md
+notes.md
+MEMORY.md
+memory.md
 KIT.md
 prompts/
 docs/10-git-workflow.md
@@ -11,6 +46,20 @@ docs/11-hemat-token.md
 docs/12-rencana-branch.md
 docs/design/ORIENTATION.md
 docs/design/screen-map.md
+
+# Laporan kerja yang disimpan lokal
+docs/qa-20261114-report.md
+docs/review-report.md
+docs/copy-audit.md
+docs/security-privacy-audit.md
+docs/a11y-audit.md
+docs/clean-clone-test.md
+docs/ac-traceability.md
+
+# Rekaman sesi
+.ai-sessions/
+.ai-transcripts/
+.ai-logs/
 
 # Dependensi
 node_modules/

@@ -13,7 +13,6 @@ export function atWib(date: string, time: string): number {
   return fromWib(wibDate(date), parsed.value);
 }
 
-// Data fiktif: dua jadwal tanpa identitas atau teks obat.
 export const MEDICINE_SCHEDULE: MedicineSchedule = {
   medicineId: "obat-uji-1",
   active: true,

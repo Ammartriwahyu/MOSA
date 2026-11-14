@@ -11,7 +11,6 @@ import { Button, Dialog, Notice, Spinner } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
 import { useDeactivateMedicine } from "../hooks/use-medicines";
 
-/** MOSA DRAFT A9: membuka dialog belum mengubah apa pun di server. */
 export function DeleteMedicineAction({ medicine, onDialogChange }: { medicine: Medicine; onDialogChange?: (open: boolean) => void }) {
   const router = useRouter();
   const deactivate = useDeactivateMedicine(medicine.id);

@@ -2,8 +2,6 @@ import type { LogEvent, Logger } from "../application/logger";
 
 type LogSink = (line: string) => void;
 
-// Kolom disalin satu per satu: properti tambahan yang lolos dari pemeriksaan
-// tipe (objek berlebih) tetap tidak akan tercetak.
 function toLine(level: "info" | "error", event: LogEvent, now: Date): string {
   return JSON.stringify({
     level,

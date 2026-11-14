@@ -10,7 +10,6 @@ import type { Medicine } from "../api/medicines";
 import { MedicineDetailScreen } from "./medicine-detail-screen";
 import { MedicineListScreen } from "./medicine-list-screen";
 
-// Data fiktif untuk uji.
 const AMLODIPIN: Medicine = {
   id: "11111111-1111-4111-8111-111111111111",
   name: "Amlodipin",

@@ -44,7 +44,7 @@ export class ListTodaysDoses {
       if (!info.has(row.medicineId) || !dates.includes(row.scheduledDate)) continue;
       const slot = createDoseSlot({ medicineId: row.medicineId, scheduledDate: row.scheduledDate, scheduledTime: row.scheduledTime });
       if (!slot.ok) return slot;
-      // Konfirmasi lama tetap tampil walau jam itu baru saja dihapus dari jadwal.
+
       slots.set(slot.value.slotId, slot.value);
       recorded.set(slot.value.slotId, row);
     }

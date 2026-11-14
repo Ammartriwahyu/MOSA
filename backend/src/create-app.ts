@@ -14,12 +14,9 @@ import { healthRoutes } from "./shared/interface/health.routes";
 import { requestLogger } from "./shared/interface/request-logger";
 import { requireDataConsent } from "./shared/interface/require-data-consent.middleware";
 
-// Nama berkas sengaja bukan app.ts/server.ts: Vercel mendeteksi src/app.ts,
-// src/index.ts, dan src/server.ts sebagai entri. Entri tunggal = src/index.ts.
 export function createApp(container: Container): Hono {
   const app = new Hono();
 
-  // ID selalu dibuat server: header klien bisa berisi identitas/data obat.
   app.use("*", requestId({ headerName: "" }));
   app.use("*", async (c, next) => {
     await next();
@@ -29,7 +26,7 @@ export function createApp(container: Container): Hono {
     c.header("Referrer-Policy", "no-referrer");
   });
   app.use("*", requestLogger(container.logger));
-  // CORS sebelum autentikasi: preflight OPTIONS dijawab tanpa token.
+
   app.use(
     "/v1/*",
     cors({
@@ -39,8 +36,7 @@ export function createApp(container: Container): Hono {
       maxAge: 600,
     }),
   );
-  // Urutan wajib: token → rumah tangga → persetujuan. Rute publik dilewati di tiap middleware.
-  // Hanya POST internal ini memakai rahasia cron; bukan pengecualian prefix /internal/*.
+
   app.route("/v1", reminderCronRoutes(container.notification, container.cronSecret));
   app.use("/v1/*", authenticate(container.tokenVerifier));
   app.use("/v1/*", resolveHousehold(container.ensureHousehold));

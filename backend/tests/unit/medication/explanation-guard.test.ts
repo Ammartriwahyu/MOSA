@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { isFaithfulExplanation } from "../../../src/modules/medication/domain/services/explanation-guard";
 
-// Data fiktif.
 const SOURCE = "Diminum 2 x 1 tablet sesudah makan, jam 07.00 dan 19.00\nJangan diminum bersama susu";
 
 describe("isFaithfulExplanation", () => {
@@ -43,7 +42,7 @@ describe("isFaithfulExplanation", () => {
     expect(isFaithfulExplanation("Jangan diminum bersama susu", "Jangan diminum tanpa susu.")).toBe(false);
   });
   test("larangan boleh ditulis ulang dengan kata pengisi selama semua kata aslinya tetap ada", () => {
-    // Keluaran nyata gemini-3.1-flash-lite (14 Nov 2026) yang sebelumnya ditolak.
+
     expect(isFaithfulExplanation("Sesudah makan malam\nHindari jus jeruk bali", "Minum obat ini setelah makan malam. Jangan minum jus jeruk bali.")).toBe(true);
     expect(isFaithfulExplanation("Jangan diminum bersama susu", "Jangan minum obat ini bersama susu.")).toBe(true);
   });

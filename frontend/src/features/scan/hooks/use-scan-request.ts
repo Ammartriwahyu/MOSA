@@ -19,7 +19,6 @@ function failureReason(error: unknown): ScanRequestFailure {
   return "unavailable";
 }
 
-/** Blob/base64/token tidak masuk QueryClient atau antrean mutasi/offline. */
 export function useScanRequest(onFailure?: (reason: ScanRequestFailure) => void) {
   const [state, setState] = useState<ScanRequestState>({ phase: "ready", cancelled: false });
   const current = useRef<Job | null>(null);

@@ -17,7 +17,7 @@ export class WebPushSender implements PushSender {
       return result.statusCode >= 200 && result.statusCode < 300 ? "sent" :
         result.statusCode === 404 || result.statusCode === 410 ? "expired" : "failed";
     } catch (error: unknown) {
-      // Jangan meneruskan error web-push: body/header/endpoint dapat memuat rahasia.
+
       return typeof error === "object" && error !== null && "statusCode" in error &&
         (error.statusCode === 404 || error.statusCode === 410) ? "expired" : "failed";
     }

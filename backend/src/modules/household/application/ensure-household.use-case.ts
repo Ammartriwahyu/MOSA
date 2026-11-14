@@ -3,7 +3,6 @@ import { ok, type Result } from "../../../shared/domain/result";
 import type { Household } from "../domain/household";
 import type { HouseholdRepository } from "../domain/household-repository";
 
-/** Mengambil rumah tangga milik pengguna, membuatnya bila belum ada. Idempoten. */
 export class EnsureHousehold {
   constructor(private readonly households: HouseholdRepository) {}
 
@@ -12,8 +11,6 @@ export class EnsureHousehold {
     if (!existing.ok) return existing;
     if (existing.value) return ok(existing.value);
 
-    // Dua permintaan pertama bisa datang bersamaan dari dua HP: createIfAbsent
-    // tidak menggandakan, lalu keduanya membaca baris yang sama.
     const created = await this.households.createIfAbsent(input.userId);
     if (!created.ok) return created;
 

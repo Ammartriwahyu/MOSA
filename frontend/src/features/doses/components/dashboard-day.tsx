@@ -3,7 +3,6 @@ import { cx } from "@/shared/ui";
 
 const shortWeekday = new Intl.DateTimeFormat("id-ID", { weekday: "short", timeZone: "Asia/Jakarta" });
 
-/** Kalender dekoratif mengikuti tanggal WIB server; bukan pemilih riwayat. */
 export function DashboardDay({ date, serverTime, calendar = false }: { date: string; serverTime: string; calendar?: boolean }) {
   const today = new Date(`${date}T12:00:00+07:00`);
   const days = [-1, 0, 1, 2, 3].map((offset) => {

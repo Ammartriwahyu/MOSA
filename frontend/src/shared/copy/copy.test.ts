@@ -27,7 +27,6 @@ import {
   verifikasiBenar,
 } from "./copy";
 
-// Sumber kebenaran: docs/02. Setiap kalimat baku tetap harus muncul persis di dokumen.
 const docs02 = readFileSync(
   join(import.meta.dirname, "../../../../docs/02-copywriting-baku.md"),
   "utf8",

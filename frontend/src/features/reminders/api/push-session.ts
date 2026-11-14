@@ -1,7 +1,6 @@
 import { readPublicEnv } from "@/shared/config";
 import { createApiClient, getSupabaseBrowserClient } from "@/shared/lib";
 
-/** Token hanya di closure permintaan: respons lama tidak boleh memakai akun baru. */
 export async function capturePushSession() {
   const { data, error } = await getSupabaseBrowserClient().auth.getSession();
   if (error || !data.session) throw new Error("push-session");

@@ -41,7 +41,6 @@ function ReadyCapture({ target, headingRef, userId, outputMode }: { target: Excl
     } : undefined} />;
 }
 
-/** Key akun/target membuang Blob dan URL saat konteks scan berganti. */
 export function ScanCaptureFlow({ userId, target }: { userId: string; target: Exclude<ScanTarget, { mode: "invalid" }> }) {
   const consent = useScanConsent(userId);
   const router = useRouter();

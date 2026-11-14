@@ -1,13 +1,9 @@
-// Data akun Demo Juri (docs/01 §8). Seluruhnya fiktif.
-// ID tetap membuat seed idempoten: dijalankan ulang = upsert, bukan duplikat.
 
 export const DEMO_USER_ID = "d3e40000-0000-4000-8000-000000000001";
 export const DEMO_HOUSEHOLD_ID = "d3e40000-0000-4000-8000-000000000002";
 export const AMLODIPIN_ID = "d3e40000-0000-4000-8000-000000000011";
 export const METFORMIN_ID = "d3e40000-0000-4000-8000-000000000012";
 
-// Tanggal tetap di masa lalu agar semua slot hari ini dibuat
-// (obat yang disimpan setelah jam J tidak punya slot J hari itu, docs/07 D11).
 const SEEDED_AT = "2026-11-01T00:00:00+07:00";
 export const DEMO_DATA_CONSENT_AT = "2026-11-01T08:00:00+07:00";
 
@@ -35,7 +31,6 @@ export type DemoMedicineRow = {
 
 const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
 
-/** Jam WIB "HH:mm" dari sebuah waktu, dibulatkan ke bawah ke menit (UTC+7, tanpa DST). */
 export function wibTimeOfDay(now: Date): string {
   const wib = new Date(now.getTime() + WIB_OFFSET_MS);
   const hh = String(wib.getUTCHours()).padStart(2, "0");
@@ -43,8 +38,6 @@ export function wibTimeOfDay(now: Date): string {
   return `${hh}:${mm}`;
 }
 
-// Bentuk normal nama/kekuatan ditulis tangan di sini. Bila normalizer domain
-// (feat/be-medication-domain) menghasilkan bentuk lain, samakan lalu jalankan ulang seed.
 export function demoMedicines(mode: SeedMode, now: Date): DemoMedicineRow[] {
   const amlodipin: DemoMedicineRow = {
     id: AMLODIPIN_ID,
@@ -79,8 +72,7 @@ export function demoMedicines(mode: SeedMode, now: Date): DemoMedicineRow[] {
     usage_rule: "bersama makan",
     warnings: "Tidak ada larangan khusus",
     notes: null,
-    // Mode jatuh tempo: satu jadwal tepat di menit sekarang (WIB), sehingga dosisnya
-    // jatuh tempo sekarang baik jendela dibuka di J maupun J-30 (docs/07 D1).
+
     intake_times: mode === "jatuh_tempo" ? [wibTimeOfDay(now)] : ["12:00", "18:00"],
     label_source: "keluarga",
     explanation: "Minum obat ini bersama makan. Tidak ada larangan khusus.",

@@ -1,4 +1,4 @@
-// Komponen dasar (Figma MOSA DRAFT, docs/06). Teks selalu dari shared/copy lewat props.
+
 export { AppShell, PlainShell } from "./app-shell";
 export { FlowShell } from "./flow-shell";
 export { Badge, Chip, type BadgeTone } from "./badge";

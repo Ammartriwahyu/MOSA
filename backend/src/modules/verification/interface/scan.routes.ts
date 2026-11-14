@@ -12,7 +12,7 @@ export function scanRoutes(useCases: ScanUseCases): Hono {
     const body = await parseScanBody(c);
     if (!body.ok) return domainErrorResponse(c, body.error);
     const result = await useCases.verifyPackage.execute({ ...body.value, householdId: sessionOf(c).householdId });
-    // Termasuk token: jangan cache respons scan pada browser maupun CDN.
+
     return result.ok ? c.json(scanResponse(result.value)) : domainErrorResponse(c, result.error);
   });
 }

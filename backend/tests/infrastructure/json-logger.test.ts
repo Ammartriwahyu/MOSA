@@ -25,7 +25,7 @@ describe("createJsonLogger", () => {
   test("properti tambahan (mis. isi body atau data obat) tidak pernah tercetak", () => {
     const lines: string[] = [];
     const logger = createJsonLogger({ info: (l) => lines.push(l), error: (l) => lines.push(l) });
-    // Objek berlebih lolos pemeriksaan tipe struktural bila lewat variabel.
+
     const leaky = { event: "http_request", body: "Amlodipin 5 mg", photo: "data:image/png" } as const;
     const event: LogEvent = leaky;
 

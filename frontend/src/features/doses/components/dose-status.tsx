@@ -8,11 +8,6 @@ import { TRANSITION } from "@/shared/motion";
 import { Badge } from "@/shared/ui";
 import type { Dose } from "../schemas/todays-doses";
 
-/**
- * Lencana status dosis. Bila status berubah setelah tampil (mis. baru dikonfirmasi),
- * lencana "berdenyut" sekali dengan spring redam; saat halaman dimuat tidak bergerak.
- * Mulai dari opacity 0,4 sehingga status tidak pernah tersembunyi.
- */
 export function DoseStatus({ dose }: { dose: Dose }) {
   const [firstStatus] = useState(dose.status);
   const changed = dose.status !== firstStatus;
@@ -29,7 +24,6 @@ export function DoseStatus({ dose }: { dose: Dose }) {
   );
 }
 
-/** Status berasal dari server; waktu perangkat tidak dipakai untuk mengubahnya. */
 function StatusBadge({ dose }: { dose: Dose }) {
   if (dose.status === "sudah") {
     return dose.confirmation?.level === "scan_terverifikasi"

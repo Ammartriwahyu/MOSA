@@ -6,7 +6,7 @@ import type { ExplanationOrigin, LabelSource, Medicine, MedicineDraft } from "..
 import type { MedicineRepository } from "../domain/medicine-repository";
 
 type MedicineRow = Omit<Database["public"]["Tables"]["medicines"]["Row"], "intake_times_started_at">;
-// Kolom yang ditulis dari draft; id, household_id, active, created_at diatur terpisah.
+
 type MedicineWrite = Omit<
   Database["public"]["Tables"]["medicines"]["Insert"],
   "id" | "household_id" | "active" | "created_at" | "intake_times_started_at"
@@ -15,14 +15,12 @@ type MedicineWrite = Omit<
 const COLUMNS =
   "id, household_id, name, name_normalized, strength, strength_normalized, purpose, dose_amount, usage_rule, warnings, notes, intake_times, label_source, explanation, explanation_origin, active, created_at";
 
-// ID dari URL yang bukan UUID membuat Postgres galat; diperlakukan sama dengan tidak ada.
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const databaseUnavailable = (): DomainError =>
   domainError("DATABASE_UNAVAILABLE", "Database tidak dapat dihubungi.");
 const notFound = (): DomainError => domainError("NOT_FOUND", "Obat tidak ditemukan.");
 
-// Nilai di luar daftar dicegah CHECK database; pemetaan ini hanya mempersempit tipe.
 const toLabelSource = (value: string): LabelSource => (value === "keluarga" ? "keluarga" : "apoteker");
 const toOrigin = (value: string): ExplanationOrigin =>
   value === "ai_dikonfirmasi" ? "ai_dikonfirmasi" : "teks_pengisi";
@@ -67,7 +65,6 @@ function toWrite(draft: MedicineDraft): MedicineWrite {
   };
 }
 
-/** Setiap query menyertakan household_id dari sesi (docs/03 §11). */
 export class SupabaseMedicineRepository implements MedicineRepository {
   constructor(private readonly client: AdminClient) {}
 

@@ -16,27 +16,21 @@ import { IntakeTimesField } from "./intake-times-field";
 import { LabelSourceField } from "./label-source-field";
 
 export type MedicineFormProps = {
-  /** Isian awal; dipakai lagi saat "Perbaiki lagi" dan Ubah Obat agar isian tidak hilang. */
+
   values: MedicineFormValues;
   onValuesChange: (values: MedicineFormValues) => void;
   onValid: (output: MedicineFormOutput) => void;
-  /** Saat menunggu proses lanjutan (mis. AI), tombol dinonaktifkan. */
+
   busy?: boolean;
   instructions?: string;
 };
 
-/**
- * Formulir 9 isian (docs/01 §2, Figma MOSA DRAFT 17 · 135:4216). Nama obat:
- * pilih dari 15 obat familiar atau ketik sendiri (datalist bawaan); daftar
- * hanya mengisi nama, kekuatan selalu diisi terpisah (PRD §19 #15).
- */
 export function MedicineForm({ values, onValuesChange, onValid, busy = false, instructions = FORM_OBAT.catatanIsi }: MedicineFormProps) {
   const listId = useId();
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<FormErrors>({});
   const [attempt, setAttempt] = useState(0);
 
-  // Setelah gagal kirim, fokus ke isian salah pertama (docs/06: galat jelas dan terjangkau).
   useEffect(() => {
     if (attempt === 0) return;
     formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"], [data-invalid] input')?.focus();
@@ -44,7 +38,7 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
 
   const set = <K extends keyof MedicineFormValues>(key: K, value: MedicineFormValues[K]) => {
     onValuesChange({ ...values, [key]: value });
-    // Galat kolom hilang begitu kolom itu diubah; dicek lagi saat kirim.
+
     const field = key === "noWarnings" ? "warnings" : key;
     if (field in errors) {
       setErrors((prev) => {
@@ -75,15 +69,15 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
 
       <LabelSourceField value={values.labelSource} onChange={(v) => set("labelSource", v)} error={errors.labelSource} />
 
-      {/* Dua kolom bila area konten ≥ 42rem (Figma Desktop 17 · 184:1663); satu kolom saat
-          teks diperbesar. Urutan DOM = urutan baca: data obat lalu jadwal, larangan, catatan. */}
+      {
+}
       <div className="flex flex-col gap-4 @2xl:grid @2xl:grid-cols-2 @2xl:items-start @2xl:gap-x-8">
       <div className="flex min-w-0 flex-col gap-4">
       <h2 className="text-card-title">{FORM_OBAT.dataObat}</h2>
       <TextField
         label={FORM_OBAT.namaObat}
         hint={FORM_OBAT.namaPetunjuk}
-        // Nama obat dan kekuatan bukan kata kamus: garis merah ejaan membuatnya tampak salah.
+
         spellCheck={false}
         autoCapitalize="words"
         list={listId}

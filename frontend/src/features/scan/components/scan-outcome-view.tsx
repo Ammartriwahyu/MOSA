@@ -28,7 +28,6 @@ const TONE = {
   success: "border-success-border bg-success-soft text-success",
 };
 
-/** Hasil scan dan pemilihan slot tidak mencatat minum. Lanjut membuka dialog terpisah. */
 export function ScanOutcomeView({ result, onAgain, onContinue, confirmationDisabled = false, speechActive = true, contextKey = "scan" }: {
   result: ScanResponse; onAgain: () => void; onContinue?: (slot: ScanSlot, button: HTMLButtonElement) => void; confirmationDisabled?: boolean;
   speechActive?: boolean; contextKey?: string;

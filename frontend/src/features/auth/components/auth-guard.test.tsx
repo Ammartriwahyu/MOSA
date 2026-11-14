@@ -8,7 +8,6 @@ import { afterEach } from "vitest";
 import { DRAFT, TOMBOL } from "@/shared/copy";
 import { AuthGuard } from "./auth-guard";
 
-// Supabase Auth palsu: menyimpan listener dan bisa memancarkan event sesi.
 const auth = vi.hoisted(() => {
   const listeners = new Set<(event: string, session: object | null) => void>();
   return {
@@ -103,7 +102,6 @@ describe("AuthGuard", () => {
     expect(auth.unsubscribe).toHaveBeenCalled();
   });
 });
-
 
 afterEach(() => { vi.unstubAllGlobals(); });
 test("pergantian akun signed-in melepas pembacaan lama; refresh token akun yang sama tidak memulai ulang", async () => {

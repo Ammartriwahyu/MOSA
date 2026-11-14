@@ -12,14 +12,13 @@ const layer = (name, moduleName) => ({
   element: { type: "layer", captured: moduleName ? { layer: name, moduleName } : { layer: name } },
 });
 const shared = (name) => ({ element: { type: "shared", captured: { layer: name } } });
-// Berkas entri (src/*.ts) diklasifikasikan sebagai berkas, bukan elemen (pola elemen = folder).
+
 const entry = { file: { categories: "entry" } };
 const config = { element: { type: "config" } };
 
-// Batas lapisan DDD (docs/03 §4). Kebijakan berupa larangan; selebihnya boleh.
 const layerPolicies = [
   {
-    // 1. domain (modul dan shared) murni: tanpa lapisan lain, tanpa pustaka, tanpa Node.
+
     from: [layer("domain"), shared("domain")],
     disallow: {
       to: [
@@ -38,7 +37,7 @@ const layerPolicies = [
     message: "domain tidak boleh mengimpor modul lain.",
   },
   {
-    // 2. application: hanya domain + port miliknya.
+
     from: layer("application"),
     disallow: {
       to: [
@@ -53,7 +52,7 @@ const layerPolicies = [
     message: "application hanya boleh mengimpor domain dan port modulnya sendiri.",
   },
   {
-    // 3. infrastructure: tidak menyentuh interface atau domain/infrastructure modul lain.
+
     from: layer("infrastructure"),
     disallow: {
       to: [
@@ -66,7 +65,7 @@ const layerPolicies = [
     message: "infrastructure tidak boleh mengimpor interface atau domain/infrastructure modul lain.",
   },
   {
-    // 4. interface: memanggil use case, tidak pernah infrastructure.
+
     from: layer("interface"),
     disallow: {
       to: [
@@ -79,13 +78,13 @@ const layerPolicies = [
     message: "interface hanya memanggil use case; tidak boleh mengimpor infrastructure.",
   },
   {
-    // shared tidak bergantung pada modul mana pun atau titik masuk aplikasi.
+
     from: { element: { type: "shared" } },
     disallow: { to: [{ element: { type: "layer" } }, entry] },
     message: "shared/ tidak boleh mengimpor modules/ atau berkas entri.",
   },
   {
-    // Lapisan di dalam shared/ mengikuti aturan yang sama dengan modul.
+
     from: shared("application"),
     disallow: { to: [config, shared(["infrastructure", "interface"]), ANY_PACKAGE] },
     message: "shared/application hanya boleh mengimpor shared/domain.",

@@ -6,7 +6,6 @@ export function hasDeviceScanConsent(): boolean {
   catch { return false; }
 }
 
-/** Hanya dipanggil sesudah POST akun sukses. Tidak menyimpan foto atau identitas. */
 export function rememberDeviceScanConsent(): void {
   try { window.localStorage.setItem(SCAN_CONSENT_STORAGE_KEY, "true"); }
   catch { /* Persetujuan sesi ini tetap berlaku; kunjungan baru akan meminta lagi. */ }

@@ -47,8 +47,6 @@ import { createSupabaseAdminClient } from "./shared/infrastructure/supabase-clie
 import { SupabaseDatabasePing } from "./shared/infrastructure/supabase-database-ping";
 import { systemClock } from "./shared/infrastructure/system-clock";
 
-// Satu-satunya tempat merakit repository, adaptor, dan use case (docs/03 §4).
-// Container hanya berisi port dan use case, sehingga tes bisa merakit versi palsu.
 export type Container = {
   frontendOrigin: string;
   logger: Logger;
@@ -64,13 +62,13 @@ export type Container = {
 };
 
 export function buildContainer(env: Env): Container {
-  // Satu klien Supabase per proses.
+
   const supabase = createSupabaseAdminClient(env.SUPABASE_URL, env.SUPABASE_SECRET_KEY);
   const households = new SupabaseHouseholdRepository(supabase);
   const medicines = new SupabaseMedicineRepository(supabase);
   const dosingMedicines = new SupabaseDosingMedicineReader(supabase);
   const confirmations = new SupabaseDoseConfirmationRepository(supabase);
-  // Satu klien Gemini per proses, dipakai bersama penjelasan obat dan baca kemasan.
+
   const gemini = new GeminiJsonGenerator(createGeminiGenerateContent(env.GEMINI_API_KEY), {
     model: env.GEMINI_MODEL,
   });
@@ -79,7 +77,7 @@ export function buildContainer(env: Env): Container {
   const scanTokens = new HmacScanTokens(env.SCAN_TOKEN_SECRET, systemClock);
   let notification: NotificationUseCases | undefined;
   if (env.PUSH_ENABLED) {
-    // loadEnv mewajibkan empat nilai ini ketika push aktif.
+
     if (!env.CRON_SECRET || !env.VAPID_PUBLIC_KEY || !env.VAPID_PRIVATE_KEY || !env.VAPID_SUBJECT) {
       throw new Error("Konfigurasi push belum lengkap.");
     }

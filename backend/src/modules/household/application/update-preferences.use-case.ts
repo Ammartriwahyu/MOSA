@@ -4,7 +4,6 @@ import { changeOutputMode, type Household, type OutputMode } from "../domain/hou
 import type { HouseholdRepository } from "../domain/household-repository";
 import { loadHousehold } from "./load-household";
 
-/** Mengubah pilihan output Teks/Suara (MVP-06). */
 export class UpdatePreferences {
   constructor(private readonly households: HouseholdRepository) {}
 

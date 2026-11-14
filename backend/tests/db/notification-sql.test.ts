@@ -61,7 +61,7 @@ describe("RPC push pada migrasi PostgreSQL asli", () => {
   });
   test("role server boleh memanggil RPC dan cascade membersihkan langganan/dispatch", async () => {
     const result = await queryAs<{ value: boolean }>(db, "service_role", "select public.register_push_subscription($1,$2,'key','auth') as value", [A.house, endpoint]);
-    expect(result.rows[0]?.value).toBe(true); // queryAs rollback, lalu buat data untuk cascade.
+    expect(result.rows[0]?.value).toBe(true);
     await register(); const id = await subscriptionId(); if (!id) throw Error("fixture"); await claim(id);
     await db.query("delete from auth.users where id=$1", [A.user]);
     expect((await db.query("select * from push_subscriptions")).rows).toHaveLength(0);

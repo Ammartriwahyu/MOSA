@@ -17,9 +17,8 @@ function nonEmpty(slots: readonly VerificationSlot[]): NonEmptySlots | null {
   return first ? [first, ...rest] : null;
 }
 
-/** Prioritas docs/01 §5. Status/jendela berasal dari satu snapshot Clock di dosing. */
 export function decideOutcome(match: PackageMatch, context: DoseContext): Result<VerificationOutcome, DomainError> {
-  // Bacaan gagal tidak boleh berubah menjadi konfirmasi hanya karena ada jadwal.
+
   if (match.outcome !== "cocok") return ok(match);
   const { medicine, readStrength } = match;
   if (context.nextDose && context.nextDose.medicineId !== medicine.medicineId) {
@@ -35,11 +34,11 @@ export function decideOutcome(match: PackageMatch, context: DoseContext): Result
       if (selected.status === "sudah") return ok({ outcome: "dosis_sudah_tercatat", ...info, slots: [slotOnly(selected)] });
       if (selected.status === "jatuh_tempo") return ok({ outcome: "bisa_konfirmasi", ...info, slots: [slotOnly(selected)] });
     }
-    // Target eksplisit tidak diganti ke slot lain, termasuk slot lain obat yang sama.
+
   } else {
     const ownDoses = context.doses.filter((dose) => dose.medicineId === medicine.medicineId);
     const due = nonEmpty(ownDoses.filter((dose) => dose.status === "jatuh_tempo"));
-    // Q2: semua jendela tetap terbuka, pemanggil harus meminta pengguna memilih satu slot.
+
     if (due) return ok({ outcome: "bisa_konfirmasi", ...info, slots: due });
     const confirmed = nonEmpty(ownDoses.filter((dose) => dose.status === "sudah" && dose.windowOpen));
     if (confirmed) return ok({ outcome: "dosis_sudah_tercatat", ...info, slots: confirmed });

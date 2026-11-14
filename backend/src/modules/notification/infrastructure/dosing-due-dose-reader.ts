@@ -3,7 +3,6 @@ import type { GetHousehold } from "../../household/application/get-household.use
 import { ok } from "../../../shared/domain/result";
 import type { DueDoseReader } from "../application/ports";
 
-/** Dosing menetapkan classifyDose, D11/Q5 dan carryover; notification tidak menghitung ulang. */
 export class DosingDueDoseReader implements DueDoseReader {
   constructor(private readonly doses: ListTodaysDoses, private readonly households: GetHousehold) {}
   async read(householdId: string) {

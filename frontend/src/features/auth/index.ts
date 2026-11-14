@@ -1,4 +1,4 @@
-// Satu-satunya pintu keluar fitur auth (dicek lint).
+
 export { householdQueryKey, type Household } from "./api/household";
 export { signIn, signOut, type Account } from "./api/auth-service";
 export { AuthGuard } from "./components/auth-guard";

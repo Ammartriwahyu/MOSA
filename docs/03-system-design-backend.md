@@ -1,6 +1,6 @@
 # System Design Backend (DDD) dan Struktur Monorepo: TepatMinum / MOSA
 
-Versi 1.1 · 10 November 2026 · mengikuti arahan mentor: struktur `frontend` + `backend`, frontend berbasis fitur (feature-based), backend berarsitektur DDD, dan AI agent dibekali skill.
+Versi 1.1 · 10 November 2026 · mengikuti arahan mentor: struktur `frontend` + `backend`, frontend berbasis fitur (feature-based), backend berarsitektur DDD.
 
 Dokumen ini turunan dari PRD v2.0 dan analisis v2.1. Aturan yang berasal dari rekomendasi PM (belum disetujui tim) diberi tanda **[ASUMSI]** dan dikumpulkan di Bagian 16.
 
@@ -32,14 +32,12 @@ nama-project/
 ├─ frontend/                 # Next.js, feature-based
 ├─ backend/                  # Hono, DDD
 ├─ docs/                     # PRD, dokumen ini, ADR singkat
-├─ CLAUDE.md                 # aturan untuk AI agent (lihat Bagian 15)
-├─ .claude/skills/           # skill AI agent
 ├─ package.json              # skrip pembantu di akar (opsional)
 ├─ pnpm-workspace.yaml
 └─ README.md
 ```
 
-Folder `docs/`, `CLAUDE.md`, dan `.claude/` tidak mengganggu struktur dua folder utama yang diminta mentor.
+Folder `docs/` berisi dokumentasi pendukung struktur dua folder utama.
 
 ---
 
@@ -639,24 +637,6 @@ Hari ini Selasa 10 November. Titik penting: **Kamis 12 November siang** (keputus
 | Sabtu | Uji di HP nyata, perbaikan, README, akun Demo Juri, keep-alive, **freeze 23.59** | Sama |
 
 Peringatan jujur: memisahkan backend dan menerapkan DDD menambah beban awal sekitar setengah hari dibanding Next.js saja. Untuk menjaga tenggat: kerjakan **irisan vertikal** (satu fitur dari rute sampai database, lalu fitur berikutnya), pertahankan DDD secukupnya (Bagian 4), dan tunda `notification` bila Kamis siang belum ada alur inti yang stabil.
-
----
-
-## 15. Skill dan aturan untuk AI agent
-
-Bagian ini mengasumsikan "AI agent" yang dimaksud mentor adalah agen penulis kode (misalnya Claude Code) yang dibekali aturan dan skill agar kodenya konsisten dan mengikuti praktik terbaik. Bila yang dimaksud adalah AI di dalam produk (Gemini), lihat Bagian 6.2, 6.4, dan 11.
-
-Kit yang disertakan (berkas terpisah, salin ke akar repo):
-
-```
-nama-project/
-├─ CLAUDE.md                              # ringkasan proyek, perintah, aturan arsitektur, definisi selesai
-└─ .claude/skills/
-   ├─ backend-ddd/SKILL.md                # lapisan, aturan dependensi, cara menambah use case
-   ├─ frontend-feature-based/SKILL.md     # struktur fitur, aturan impor, aksesibilitas lansia
-   ├─ medication-domain-rules/SKILL.md    # aturan keselamatan: AI tidak memutuskan, jendela dosis, ✓/✓✓
-   └─ testing-and-quality/SKILL.md        # pola uji, perintah, definisi selesai, gaya commit
-```
 
 ---
 

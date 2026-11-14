@@ -18,9 +18,8 @@ import { domainError } from "../../../src/shared/domain/domain-error";
 import { err, ok } from "../../../src/shared/domain/result";
 import { InMemoryMedicineRepository } from "../../support/in-memory-medicine-repository";
 
-const NOW = Date.parse("2026-11-11T08:00:00Z"); // 15.00 WIB
+const NOW = Date.parse("2026-11-11T08:00:00Z");
 
-// Data fiktif.
 const INPUT: MedicineInput = {
   name: "Amlodipin",
   strength: "5 mg",
@@ -51,7 +50,7 @@ describe("ExplainMedicineText", () => {
   test("hanya aturan pakai, larangan, dan catatan yang dikirim ke AI (docs/01 §2, D4)", async () => {
     const explain = vi.fn<PlainLanguageExplainer["explain"]>(async () => ok("Minum obat ini sesudah makan."));
     const useCase = new ExplainMedicineText({ explain });
-    // Properti tambahan (mis. nama obat, nama pasien) tidak boleh ikut terkirim.
+
     const leaky = { householdId: "rumah-1", usageRule: " sesudah makan ", warnings: "Tidak ada larangan khusus", notes: "", name: "Amlodipin", namaPasien: "Ibu Uji" };
 
     const result = await useCase.execute(leaky);

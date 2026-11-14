@@ -27,7 +27,7 @@ export function useScanConsent(userId: string) {
     try {
       const saved = await mutation.mutateAsync();
       if (!active.current) return;
-      // GET lama tidak boleh menimpa hasil POST dengan scanConsentAt=null.
+
       await client.cancelQueries({ queryKey: scanConsentQueryKey(userId) });
       if (!active.current) return;
       client.setQueryData(scanConsentQueryKey(userId), saved);

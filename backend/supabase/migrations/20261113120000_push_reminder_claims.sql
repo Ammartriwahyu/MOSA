@@ -1,5 +1,4 @@
--- Backend saja. Satu endpoint tidak dapat dipindahkan ke rumah tangga lain.
--- Kunci parent menserialisasi batas 10 perangkat, termasuk permintaan bersamaan.
+
 create or replace function public.register_push_subscription(
   p_household_id uuid, p_endpoint text, p_p256dh text, p_auth text
 ) returns boolean language plpgsql security invoker set search_path = public, pg_temp as $$
@@ -19,8 +18,6 @@ begin
   return registered is not null;
 end $$;
 
--- Klaim per slot DAN perangkat; dua HP boleh mendapat pengingat yang sama.
--- Catatan berarti percobaan sudah diklaim, bukan bukti notifikasi terlihat.
 create or replace function public.claim_push_reminder(
   p_household_id uuid, p_subscription_id uuid, p_medicine_id uuid,
   p_scheduled_date date, p_scheduled_time time

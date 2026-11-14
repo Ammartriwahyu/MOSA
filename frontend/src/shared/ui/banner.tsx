@@ -1,21 +1,16 @@
 import type { ReactNode } from "react";
 
 export type BannerProps = {
-  /** Kalimat utama (mis. copy B1 "Sekarang waktunya minum …"). */
+
   title: string;
-  /** Chip waktu di atas judul (mis. "07.00–09.00 WIB"), opsional. */
+
   eyebrow?: ReactNode;
-  /** Detail di bawah judul. */
+
   children?: ReactNode;
-  /** Tombol (Scan Obat, Bacakan). */
+
   actions?: ReactNode;
 };
 
-/**
- * Banner pengingat dosis jatuh tempo (Figma 05: gradasi hijau). `aria-live`
- * agar pembaca layar mengumumkan perubahan (docs/06). Kedua ujung gradasi
- * memenuhi kontras teks putih; chip memakai latar pekat saat teks diperbesar.
- */
 export function Banner({ title, eyebrow, children, actions }: BannerProps) {
   return (
     <section

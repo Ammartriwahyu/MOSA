@@ -9,7 +9,6 @@ export function confirmedDoseFixture(level: NonNullable<Dose["confirmation"]>["l
   } };
 }
 
-/** Enam slot fiktif, lima obat, semua variasi status. Hanya untuk tes/pratinjau. */
 export function doseCardsFixture(): TodaysDoses {
   function slot(id: string, name: string, time: string, period: Dose["period"], status: Dose["status"], source: Dose["medicine"]["labelSource"] = "apoteker"): Dose {
     return doseFixture({

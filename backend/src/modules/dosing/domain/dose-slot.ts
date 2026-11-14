@@ -2,7 +2,6 @@ import { domainError, type DomainError } from "../../../shared/domain/domain-err
 import { err, ok, type Result } from "../../../shared/domain/result";
 import { fromWib, parseTimeOfDay, parseWibDate, type WibDate } from "../../../shared/domain/wib-time";
 
-/** Value object yang dihitung, tidak disimpan di database (docs/03 §6.3). */
 export type DoseSlot = {
   readonly slotId: string;
   readonly medicineId: string;
@@ -30,7 +29,6 @@ export function createDoseSlot(input: {
   });
 }
 
-/** Menerima parameter yang sudah didekode router; tidak melakukan decode URL kedua kali. */
 export function parseDoseSlotId(slotId: string): Result<DoseSlot, DomainError> {
   const invalid = () => err(domainError("VALIDATION_FAILED", "Identitas slot dosis tidak valid.", { field: "slotId" }));
   const parts = slotId.split(":");

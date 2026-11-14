@@ -18,7 +18,7 @@ function reviewKey(dose: Dose): string {
 
 export function useDoseConfirmation(query: UseQueryResult<TodaysDoses, Error>, fallbackFocus: RefObject<HTMLElement | null>) {
   const client = useQueryClient();
-  // Jangan mengantre konfirmasi offline untuk dijalankan otomatis ketika tersambung lagi.
+
   const mutation = useMutation({ mutationFn: confirmBasicDose, retry: false, networkMode: "always" });
   const [selected, setSelected] = useState<Dose | null>(null);
   const [verified, setVerified] = useState(false);
@@ -68,7 +68,7 @@ export function useDoseConfirmation(query: UseQueryResult<TodaysDoses, Error>, f
       await client.cancelQueries({ queryKey: dosesQueryKey });
       await mutation.mutateAsync(selected.slotId);
       setNotice({ kind: "saved", dose: selected }); close(true);
-      // Batalkan GET lama (termasuk polling selama POST), lalu minta ringkasan server.
+
       await client.cancelQueries({ queryKey: dosesQueryKey });
       await client.invalidateQueries({ queryKey: dosesQueryKey });
     } catch (cause) {

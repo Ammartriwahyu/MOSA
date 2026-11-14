@@ -3,8 +3,6 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import boundaries from "eslint-plugin-boundaries";
 
-// Batas fitur (docs/03 §13): fitur hanya dipakai lewat index.ts-nya,
-// dan shared/ tidak boleh bergantung pada fitur mana pun.
 const featureBoundaries = {
   files: ["src/**/*.{ts,tsx}"],
   plugins: { boundaries },

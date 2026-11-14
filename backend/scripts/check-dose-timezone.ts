@@ -3,8 +3,6 @@ import { buildDailySlots } from "../src/modules/dosing/domain/daily-slots";
 import { classifyDose } from "../src/modules/dosing/domain/dose-window";
 import { parseWibDate } from "../src/shared/domain/wib-time";
 
-// Proses terpisah dari Vitest (yang sengaja memakai America/New_York).
-// Tidak membaca .env; semua waktu dan identitas di bawah adalah data uji fiktif.
 process.env.TZ = "UTC";
 assert.equal(new Date("2026-11-11T00:00:00Z").getTimezoneOffset(), 0);
 const date = parseWibDate("2026-11-11");

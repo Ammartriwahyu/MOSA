@@ -14,7 +14,6 @@ export type ScanContextSnapshot = {
   readonly nextDoses: readonly { medicineId: string; nextDose: NextDose | null }[];
 };
 
-/** Snapshot untuk port lintas modul; memakai waktu yang diberikan use case pemanggil. */
 export class GetScanContext {
   constructor(private readonly medicines: DosingMedicineReader, private readonly confirmations: DoseConfirmationRepository) {}
 
@@ -44,7 +43,7 @@ export class GetScanContext {
       if (!activeIds.has(row.medicineId) || !searchDates.has(row.scheduledDate)) continue;
       const slot = createDoseSlot({ medicineId: row.medicineId, scheduledDate: row.scheduledDate, scheduledTime: row.scheduledTime });
       if (!slot.ok) return slot;
-      // Riwayat target eksplisit tetap ada walau jamnya sudah dihapus (Q5).
+
       slots.set(slot.value.slotId, slot.value);
       confirmedIds.add(slot.value.slotId);
     }

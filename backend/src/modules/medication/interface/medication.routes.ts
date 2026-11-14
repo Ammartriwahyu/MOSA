@@ -22,8 +22,6 @@ export type MedicationUseCases = {
   deactivateMedicine: DeactivateMedicine;
 };
 
-// Rute /v1/medicines* (docs/03 §9). householdId selalu dari sesi; obat milik
-// rumah tangga lain dibalas 404 oleh use case. Isi obat tidak pernah dicatat di log.
 export function medicationRoutes(useCases: MedicationUseCases): Hono {
   return new Hono()
     .post("/medicines/explain", async (c) => {
@@ -32,7 +30,7 @@ export function medicationRoutes(useCases: MedicationUseCases): Hono {
       if (!body.ok) return domainErrorResponse(c, body.error);
       const result = await useCases.explainMedicineText.execute({ ...body.value, householdId });
       if (!result.ok) return domainErrorResponse(c, result.error);
-      // Draf saja: tersimpan hanya bila pengisi menekan "Ya, sudah benar" lalu POST /medicines.
+
       return c.json({ explanation: result.value });
     })
     .post("/medicines", async (c) => {

@@ -5,7 +5,6 @@ import { recordConsent, type ConsentKind, type Household } from "../domain/house
 import type { HouseholdRepository } from "../domain/household-repository";
 import { loadHousehold } from "./load-household";
 
-/** Mencatat persetujuan 'data' (saat daftar) atau 'scan' (sebelum scan pertama). */
 export class RecordConsent {
   constructor(
     private readonly households: HouseholdRepository,

@@ -13,7 +13,7 @@ import { parseStrength } from "../../../src/modules/medication/domain/value-obje
 describe("normalizeMedicineName (docs/01 §5)", () => {
   test.each([
     ["Amlodipin", "amlodipin"],
-    ["Amlodipine besylate", "amlodipin"], // AC-21
+    ["Amlodipine besylate", "amlodipin"],
     ["AMLODIPINE BESILAT 5 mg", "amlodipin"],
     ["Metformin HCl", "metformin"],
     ["Metformin hidroklorida tablet", "metformin"],
@@ -76,7 +76,6 @@ describe("parseScheduleTimes", () => {
   });
 });
 
-// Data fiktif.
 const VALID: MedicineInput = {
   name: "Amlodipin",
   strength: "5 mg",

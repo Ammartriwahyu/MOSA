@@ -3,7 +3,6 @@ import type { MedicineRepository } from "../../src/modules/medication/domain/med
 import { domainError, type DomainError } from "../../src/shared/domain/domain-error";
 import { err, ok, type Result } from "../../src/shared/domain/result";
 
-/** Repository obat palsu untuk tes application. Data fiktif. */
 export class InMemoryMedicineRepository implements MedicineRepository {
   readonly rows = new Map<string, Medicine>();
   private sequence = 0;

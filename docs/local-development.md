@@ -124,4 +124,4 @@ Perintah mereset demo dan menggeser satu jadwal Metformin ke menit sekarang dala
 | Suara Indonesia tidak tersedia | Teks tetap terlihat; siapkan suara lokal Indonesia pada perangkat dan uji ulang |
 | HP kedua belum memperbarui | Muat ulang atau kembali fokus; dasbor juga diperbarui setiap 20 detik saat aktif |
 
-Gerbang kode: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm --filter frontend build`. Jalankan tes frontend tanpa lint/build/dev lain bersamaan. HTTP E2E memakai SQL memori dan Auth/PostgREST/AI tiruan; itu bukan bukti layanan/perangkat. Lihat [laporan P15](review-report.md) dan [hasil klon bersih](clean-clone-test.md).
+Gerbang kode: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm --filter frontend build`. Jalankan tes frontend tanpa lint/build/dev lain bersamaan. HTTP E2E memakai SQL memori dan Auth/PostgREST/AI tiruan; itu bukan bukti layanan/perangkat.

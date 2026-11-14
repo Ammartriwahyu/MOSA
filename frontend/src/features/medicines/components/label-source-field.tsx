@@ -10,11 +10,6 @@ const OPTIONS: ReadonlyArray<{ value: LabelSource; label: string }> = [
   { value: "keluarga", label: LABEL.diisiKeluarga },
 ];
 
-/**
- * "Siapa yang mengisi?" (Figma 17: segmented; docs/01 isian #9). Radio bawaan
- * agar panah keyboard dan pembaca layar bekerja. Tanpa pilihan bawaan: pengisi
- * wajib memilih sendiri (D9).
- */
 export function LabelSourceField({
   value,
   onChange,
@@ -30,7 +25,7 @@ export function LabelSourceField({
   return (
     <fieldset
       className="flex min-w-0 flex-col gap-2"
-      // Penanda untuk fokus otomatis ke galat pertama (radio tidak mendukung aria-invalid).
+
       data-invalid={error ? true : undefined}
       aria-describedby={error ? `${hintId} ${errorId}` : hintId}
     >

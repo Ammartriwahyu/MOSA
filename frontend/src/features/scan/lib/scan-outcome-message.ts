@@ -1,7 +1,6 @@
 import { DRAFT, NAMA_BELUM_TERLIHAT, OBAT_BELUM_TERDAFTAR, SCAN_OUTCOME, dosisSudahTercatat, jadwalBerikutnya, kekuatanBeda, tungguDulu, tungguDuluTanpaJadwal, verifikasiBenar } from "@/shared/copy";
 import type { ScanResponse } from "../schemas/scan-response";
 
-/** Tetap mengikuti keputusan server; tidak menghitung status/jendela atau memilih slot. */
 export function scanOutcomeMessages(result: ScanResponse, selectedSlotId: string | null): string[] {
   switch (result.outcome) {
     case "tidak_terbaca": return [NAMA_BELUM_TERLIHAT];

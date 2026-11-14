@@ -2,9 +2,6 @@ import { isAuthApiError, isAuthRetryableFetchError } from "@supabase/supabase-js
 import { getSupabaseBrowserClient } from "@/shared/lib";
 import { detachPush } from "@/features/reminders";
 
-// Pembungkus Supabase Auth: komponen tidak memegang token atau galat Supabase
-// mentah; sesi tetap dikelola Supabase (P08 batasan).
-
 export type AuthFailure =
   | "invalid_credentials"
   | "email_not_confirmed"
@@ -43,12 +40,6 @@ export async function signIn(email: string, password: string): Promise<AuthResul
   }
 }
 
-/**
- * Mendaftar akun. `hasSession = false` bila proyek Supabase mewajibkan
- * konfirmasi email (sesi baru ada setelah konfirmasi lalu masuk).
- * Nama pasien hanya disimpan di metadata akun Supabase Auth: tidak di database
- * aplikasi dan tidak pernah dikirim ke AI.
- */
 export async function signUp(input: {
   name: string;
   email: string;
@@ -67,10 +58,6 @@ export async function signUp(input: {
   }
 }
 
-/**
- * Keluar dari HP ini saja (`local`). Akun dipakai bersama di HP lansia dan wali
- * (PRD §8), jadi keluar di satu HP tidak boleh mengeluarkan HP lain.
- */
 export async function signOut(scope: "global" | "local" = "local"): Promise<void> {
   await detachPush().catch(() => undefined);
   try {
@@ -82,7 +69,6 @@ export async function signOut(scope: "global" | "local" = "local"): Promise<void
 
 export type Account = { email: string | null; name: string | null };
 
-/** Email dan nama pasien (metadata Auth) dari sesi di HP ini; tanpa panggilan database. */
 export async function getAccount(): Promise<Account> {
   const { data } = await getSupabaseBrowserClient().auth.getSession();
   const user = data.session?.user;

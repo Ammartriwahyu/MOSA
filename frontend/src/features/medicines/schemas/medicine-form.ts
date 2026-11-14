@@ -1,9 +1,5 @@
 import { DRAFT, FORM_OBAT } from "@/shared/copy";
 
-// Validasi formulir Tambah/Ubah Obat (docs/01 §2). Cermin aturan backend agar
-// galat muncul di kolom sebelum dikirim; backend tetap pemeriksa terakhir.
-
-/** Batas panjang sama dengan LIMITS di domain backend. */
 export const FORM_LIMITS = {
   name: 100,
   strength: 30,
@@ -14,9 +10,8 @@ export const FORM_LIMITS = {
   notes: 500,
 } as const;
 
-/** Jam minum: 1–6 jam "HH:mm" WIB, tanpa duplikat (docs/01 §2 isian #6). */
 export const MAX_INTAKE_TIMES = 6;
-/** Pilihan awal di Figma 17; jamnya bisa diubah. */
+
 export const PRESET_TIMES = ["07:00", "12:00", "19:00"] as const;
 
 export type LabelSource = "apoteker" | "keluarga";
@@ -35,7 +30,6 @@ export type MedicineFormValues = {
   notes: string;
 };
 
-/** Isian tervalidasi; bentuknya sama dengan body POST/PATCH /v1/medicines tanpa kolom penjelasan. */
 export type MedicineFormOutput = {
   labelSource: LabelSource;
   name: string;
@@ -53,7 +47,7 @@ export type FormField = TextField | "labelSource" | "times";
 export type FormErrors = Partial<Record<FormField, string>> & { timeRows?: Record<string, string> };
 
 const HH_MM = /^([01]\d|2[0-3]):[0-5]\d$/;
-// Angka lalu satuan: "5 mg", "0,5 mg", "125 mg/5 ml". Pembacaan pasti di backend (Strength).
+
 const STRENGTH = /^\d+(?:[.,]\d+)?\s*[\p{L}%µ]/u;
 
 export function emptyMedicineForm(): MedicineFormValues {
@@ -92,7 +86,6 @@ function validateTimes(rows: TimeRow[]): Pick<FormErrors, "times" | "timeRows"> 
   return Object.keys(timeRows).length > 0 ? { timeRows } : {};
 }
 
-/** Larangan wajib: isi sendiri atau centang "Tidak ada larangan khusus" (docs/01 §2 USULAN). */
 export function warningsValue(values: Pick<MedicineFormValues, "noWarnings" | "warnings">): string {
   return values.noWarnings ? DRAFT.tidakAdaLarangan : values.warnings.trim();
 }
