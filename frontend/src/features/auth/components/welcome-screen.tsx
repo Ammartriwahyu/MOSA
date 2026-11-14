@@ -1,8 +1,8 @@
-import { ArrowRight, CheckCheck, ChevronRight, Pill, Sunrise } from "lucide-react";
+import { ArrowRight, CheckCheck, Pill, Sunrise } from "lucide-react";
 import Link from "next/link";
 import { ROUTES } from "@/shared/config";
 import { AUTH } from "@/shared/copy";
-import { Badge } from "@/shared/ui";
+import { Badge, Button } from "@/shared/ui";
 import { BrandHeader } from "./brand-header";
 
 export function WelcomeScreen() {
@@ -32,20 +32,13 @@ export function WelcomeScreen() {
       <section className="@container flex flex-col gap-3.5 rounded-hero bg-linear-to-b from-brand to-brand-glow p-6 text-on-brand">
         <h1 className="text-center text-display">{AUTH.onboardingJudul}</h1>
         <p className="text-center text-body">{AUTH.onboardingIsi}</p>
-        <Link
-          href={ROUTES.register}
-          className="flex min-h-16 items-center gap-3.5 rounded-pill bg-action py-2 pr-5.5 pl-2 text-on-action @max-[16em]:flex-wrap"
-        >
-          <span aria-hidden="true" className="flex size-12 shrink-0 items-center justify-center rounded-field bg-surface text-ink">
-            <ArrowRight className="size-6.5" />
-          </span>
-          <span className="min-w-0 flex-1 text-card-title @max-[16em]:order-3 @max-[16em]:basis-full">{AUTH.mulaiSekarang}</span>
-          <span aria-hidden="true" className="ml-auto flex">
-            <ChevronRight className="-mr-2.5 size-5 opacity-60" />
-            <ChevronRight className="-mr-2.5 size-5 opacity-80" />
-            <ChevronRight className="size-5" />
-          </span>
-        </Link>
+        {/* Tombol ketuk biasa: tanpa kenop dan panah berderet yang menyiratkan geser (WCAG 2.5.1). */}
+        <Button asChild size="lg" className="gap-3 @max-[16em]:flex-wrap">
+          <Link href={ROUTES.register}>
+            <span className="min-w-0 text-center">{AUTH.mulaiSekarang}</span>
+            <ArrowRight aria-hidden="true" className="size-6 shrink-0" />
+          </Link>
+        </Button>
       </section>
 
       <p className="flex flex-wrap items-center justify-center gap-1.5 text-body text-ink-secondary">
