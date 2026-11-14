@@ -1,6 +1,6 @@
 "use client";
 
-import { m } from "motion/react";
+import * as m from "motion/react-m";
 import { useEffect, useState, type ReactNode } from "react";
 import { rise, stagger } from "./variants";
 

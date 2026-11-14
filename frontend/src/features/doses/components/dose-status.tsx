@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, CheckCheck, CircleAlert, Clock } from "lucide-react";
-import { m } from "motion/react";
+import * as m from "motion/react-m";
 import { useState } from "react";
 import { DOSIS, LABEL_STATUS } from "@/shared/copy";
 import { TRANSITION } from "@/shared/motion";
