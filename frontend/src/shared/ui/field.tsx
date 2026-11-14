@@ -12,8 +12,10 @@ type FieldFrameProps = {
   icon?: ReactNode;
 };
 
+// Kontrol di dalam bingkai tidak menggambar cincin fokus global (kotak hitam bersudut);
+// bingkai di sekitarnya yang menandai fokus (lihat Frame).
 const CONTROL =
-  "min-h-action-lg w-full min-w-0 bg-transparent text-body text-ink placeholder:text-muted";
+  "min-h-action-lg w-full min-w-0 bg-transparent text-body text-ink placeholder:text-muted focus-visible:outline-none focus-visible:shadow-none";
 
 function useFieldIds(hint?: string, error?: string) {
   const id = useId();
@@ -38,10 +40,14 @@ function Frame({
       <label htmlFor={id} className="text-body font-semibold text-ink">
         {label}
       </label>
+      {/* Fokus ditampilkan pada bingkai bulat (Figma 17: garis hijau tebal), bukan kotak
+          hitam bersudut di dalamnya. Garis tambahan berupa bayangan: tata letak tidak bergeser. */}
       <div
         className={cx(
-          "flex items-center gap-3 rounded-field border-2 bg-surface px-4.5 focus-within:border-brand",
-          error ? "border-danger" : "border-field-border",
+          "flex items-center gap-3 rounded-field border-2 bg-surface px-4.5 transition-[border-color,box-shadow] duration-150",
+          error
+            ? "border-danger focus-within:shadow-[0_0_0_2px_var(--color-danger)]"
+            : "border-field-border focus-within:border-brand focus-within:shadow-[0_0_0_2px_var(--color-brand)]",
         )}
       >
         {icon ? (
