@@ -157,6 +157,18 @@ html[data-pembuka] .pembuka {
   }
 }
 
+/* Buka/tutup dialog (P17): hanya opacity + transform, 200–240 ms, ease-out.
+   Radix menunggu animasi data-state=closed sebelum melepas dialog. Di bawah
+   prefers-reduced-motion durasi dipangkas oleh aturan global di @layer base. */
+@keyframes dialog-overlay-in { from { opacity: 0; } }
+@keyframes dialog-overlay-out { to { opacity: 0; } }
+@keyframes dialog-in { from { opacity: 0; transform: translateY(12px); } }
+@keyframes dialog-out { to { opacity: 0; transform: translateY(12px); } }
+.dialog-overlay[data-state="open"] { animation: dialog-overlay-in 200ms cubic-bezier(0.22, 1, 0.36, 1); }
+.dialog-overlay[data-state="closed"] { animation: dialog-overlay-out 150ms ease-out; }
+.dialog-content[data-state="open"] { animation: dialog-in 240ms cubic-bezier(0.22, 1, 0.36, 1); }
+.dialog-content[data-state="closed"] { animation: dialog-out 150ms ease-out; }
+
 @layer components {
   .dose-progress {
     appearance: none;
