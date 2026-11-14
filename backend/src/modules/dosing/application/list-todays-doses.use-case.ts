@@ -1,14 +1,14 @@
-import type { Clock } from "../../../shared/domain/clock";
-import type { DomainError } from "../../../shared/domain/domain-error";
-import { ok, type Result } from "../../../shared/domain/result";
-import { addWibDays, toWib, type WibDate } from "../../../shared/domain/wib-time";
-import { buildDailySlots } from "../domain/daily-slots";
-import type { DoseConfirmation, DoseConfirmationRepository } from "../domain/dose-confirmation";
-import { createDoseSlot, type DoseSlot } from "../domain/dose-slot";
-import { classifyDose, doseWindow, type DoseStatus } from "../domain/dose-window";
-import { findNextDose, nextDoseDates, type NextDose } from "../domain/next-dose";
-import { dosePeriod, type DosePeriod } from "../domain/time-periods";
-import type { DosingMedicine, DosingMedicineReader } from "./ports/dosing-medicine-reader";
+import type { Clock } from "../../../shared/domain/clock.js";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import { ok, type Result } from "../../../shared/domain/result.js";
+import { addWibDays, toWib, type WibDate } from "../../../shared/domain/wib-time.js";
+import { buildDailySlots } from "../domain/daily-slots.js";
+import type { DoseConfirmation, DoseConfirmationRepository } from "../domain/dose-confirmation.js";
+import { createDoseSlot, type DoseSlot } from "../domain/dose-slot.js";
+import { classifyDose, doseWindow, type DoseStatus } from "../domain/dose-window.js";
+import { findNextDose, nextDoseDates, type NextDose } from "../domain/next-dose.js";
+import { dosePeriod, type DosePeriod } from "../domain/time-periods.js";
+import type { DosingMedicine, DosingMedicineReader } from "./ports/dosing-medicine-reader.js";
 
 export type DoseView = { slot: DoseSlot; medicine: DosingMedicine; status: DoseStatus; confirmation: DoseConfirmation | null; period: DosePeriod };
 export type DoseSummary = { confirmed: number; total: number };

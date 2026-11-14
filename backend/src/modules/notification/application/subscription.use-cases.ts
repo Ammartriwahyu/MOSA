@@ -1,7 +1,7 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, type Result } from "../../../shared/domain/result";
-import { createPushRegistration, validPushEndpoint, type PushRegistration } from "../domain/push-subscription";
-import type { PushSubscriptionRepository } from "./ports";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, type Result } from "../../../shared/domain/result.js";
+import { createPushRegistration, validPushEndpoint, type PushRegistration } from "../domain/push-subscription.js";
+import type { PushSubscriptionRepository } from "./ports.js";
 
 export class SubscribePush {
   constructor(private readonly subscriptions: PushSubscriptionRepository) {}

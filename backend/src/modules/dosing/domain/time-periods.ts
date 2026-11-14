@@ -1,4 +1,4 @@
-import { minutesOfDay, type TimeOfDay } from "../../../shared/domain/wib-time";
+import { minutesOfDay, type TimeOfDay } from "../../../shared/domain/wib-time.js";
 
 export const PERIOD_START_MINUTES = Object.freeze({ pagi: 4 * 60, siang: 11 * 60, malam: 18 * 60 });
 export type DosePeriod = "pagi" | "siang" | "malam";

@@ -1,6 +1,6 @@
 import * as webpush from "web-push";
-import { validPushEndpoint, type PushSubscription } from "../domain/push-subscription";
-import type { PushSender, ReminderPayload } from "../application/ports";
+import { validPushEndpoint, type PushSubscription } from "../domain/push-subscription.js";
+import type { PushSender, ReminderPayload } from "../application/ports.js";
 
 export type PushTransport = typeof webpush.sendNotification;
 export class WebPushSender implements PushSender {

@@ -1,17 +1,17 @@
 import { Hono } from "hono";
-import { domainErrorResponse } from "../../../shared/interface/error-handler";
-import { parseJsonBody } from "../../../shared/interface/parse-json-body";
-import { sessionOf } from "../../../shared/interface/session";
-import type { ExplainMedicineText } from "../application/explain-medicine-text.use-case";
+import { domainErrorResponse } from "../../../shared/interface/error-handler.js";
+import { parseJsonBody } from "../../../shared/interface/parse-json-body.js";
+import { sessionOf } from "../../../shared/interface/session.js";
+import type { ExplainMedicineText } from "../application/explain-medicine-text.use-case.js";
 import type {
   CreateMedicine,
   DeactivateMedicine,
   GetMedicine,
   ListMedicines,
   UpdateMedicine,
-} from "../application/medicine-use-cases";
-import { toMedicineResponse } from "./medication.mapper";
-import { explainBodySchema, medicineBodySchema } from "./medication.schemas";
+} from "../application/medicine-use-cases.js";
+import { toMedicineResponse } from "./medication.mapper.js";
+import { explainBodySchema, medicineBodySchema } from "./medication.schemas.js";
 
 export type MedicationUseCases = {
   explainMedicineText: ExplainMedicineText;

@@ -1,9 +1,9 @@
-import type { AiUsageLimiter } from "../application/ai-usage-limiter";
-import type { Clock } from "../domain/clock";
-import { domainError, type DomainError } from "../domain/domain-error";
-import { err, ok, type Result } from "../domain/result";
-import { toWib } from "../domain/wib-time";
-import type { AdminClient } from "./supabase-client";
+import type { AiUsageLimiter } from "../application/ai-usage-limiter.js";
+import type { Clock } from "../domain/clock.js";
+import { domainError, type DomainError } from "../domain/domain-error.js";
+import { err, ok, type Result } from "../domain/result.js";
+import { toWib } from "../domain/wib-time.js";
+import type { AdminClient } from "./supabase-client.js";
 
 export class SupabaseAiUsageLimiter implements AiUsageLimiter {
   constructor(

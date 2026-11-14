@@ -1,6 +1,6 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import { fromWib, parseTimeOfDay, parseWibDate, type WibDate } from "../../../shared/domain/wib-time";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import { fromWib, parseTimeOfDay, parseWibDate, type WibDate } from "../../../shared/domain/wib-time.js";
 
 export type DoseSlot = {
   readonly slotId: string;

@@ -1,7 +1,7 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { PackageMatch } from "./match-package";
-import type { DoseContext, NonEmptySlots, VerificationOutcome, VerificationSlot } from "./verification-outcome";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { PackageMatch } from "./match-package.js";
+import type { DoseContext, NonEmptySlots, VerificationOutcome, VerificationSlot } from "./verification-outcome.js";
 
 function slotOnly({ slotId, medicineId, scheduledAt }: VerificationSlot): VerificationSlot {
   return { slotId, medicineId, scheduledAt };

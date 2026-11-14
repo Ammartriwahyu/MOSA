@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from "hono";
 import { routePath } from "hono/route";
-import type { Logger } from "../application/logger";
-import { requestMethod } from "./request-method";
+import type { Logger } from "../application/logger.js";
+import { requestMethod } from "./request-method.js";
 
 export function requestLogger(logger: Logger): MiddlewareHandler {
   return async (c, next) => {

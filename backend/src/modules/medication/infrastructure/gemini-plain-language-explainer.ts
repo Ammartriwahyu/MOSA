@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { GeminiJsonGenerator } from "../../../shared/infrastructure/gemini-json-generator";
-import type { ExplainerText, PlainLanguageExplainer } from "../application/ports/plain-language-explainer";
-import { LIMITS } from "../domain/medicine";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { GeminiJsonGenerator } from "../../../shared/infrastructure/gemini-json-generator.js";
+import type { ExplainerText, PlainLanguageExplainer } from "../application/ports/plain-language-explainer.js";
+import { LIMITS } from "../domain/medicine.js";
 
 export const EXPLAINER_SYSTEM_INSTRUCTION = `Kamu menulis ulang instruksi obat dengan bahasa Indonesia yang sangat sederhana
 untuk lansia. Tugasmu hanya menyederhanakan kalimat dari teks yang diberikan.

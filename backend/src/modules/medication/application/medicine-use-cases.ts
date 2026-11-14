@@ -1,14 +1,14 @@
-import type { Clock } from "../../../shared/domain/clock";
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
+import type { Clock } from "../../../shared/domain/clock.js";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
 import {
   deactivateMedicine,
   reviseMedicine,
   validateMedicineInput,
   type Medicine,
   type MedicineInput,
-} from "../domain/medicine";
-import type { MedicineRepository } from "../domain/medicine-repository";
+} from "../domain/medicine.js";
+import type { MedicineRepository } from "../domain/medicine-repository.js";
 
 const notFound = (): DomainError => domainError("NOT_FOUND", "Obat tidak ditemukan.");
 

@@ -1,4 +1,4 @@
-import { formatTimeOfDay, minutesOfDay, parseTimeOfDay } from "../../../../shared/domain/wib-time";
+import { formatTimeOfDay, minutesOfDay, parseTimeOfDay } from "../../../../shared/domain/wib-time.js";
 
 export const MAX_INTAKE_TIMES = 6;
 

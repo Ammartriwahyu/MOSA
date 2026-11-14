@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { domainError } from "../../../shared/domain/domain-error";
-import { err, ok } from "../../../shared/domain/result";
-import type { AdminClient } from "../../../shared/infrastructure/supabase-client";
-import type { DueReminder, PushSubscriptionRepository, ReminderDispatchRepository } from "../application/ports";
-import { createPushRegistration, type PushRegistration, type PushSubscription } from "../domain/push-subscription";
+import { domainError } from "../../../shared/domain/domain-error.js";
+import { err, ok } from "../../../shared/domain/result.js";
+import type { AdminClient } from "../../../shared/infrastructure/supabase-client.js";
+import type { DueReminder, PushSubscriptionRepository, ReminderDispatchRepository } from "../application/ports.js";
+import { createPushRegistration, type PushRegistration, type PushSubscription } from "../domain/push-subscription.js";
 
 const unavailable = () => err(domainError("DATABASE_UNAVAILABLE", "Layanan pengingat tidak dapat dihubungi."));
 const rowSchema = z.object({ id: z.uuid(), household_id: z.uuid(), endpoint: z.string(), p256dh: z.string(), auth: z.string() });

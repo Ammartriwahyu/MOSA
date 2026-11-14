@@ -1,6 +1,6 @@
-import type { DomainError } from "../../../shared/domain/domain-error";
-import type { Result } from "../../../shared/domain/result";
-import type { PushRegistration, PushSubscription } from "../domain/push-subscription";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import type { Result } from "../../../shared/domain/result.js";
+import type { PushRegistration, PushSubscription } from "../domain/push-subscription.js";
 
 export type DueReminder = { slotId: string; medicineId: string; scheduledDate: string; scheduledTime: string };
 export type ReminderPayload = { type: "dose_due"; slotId: string };

@@ -1,7 +1,7 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { WibDate } from "../../../shared/domain/wib-time";
-import { createDoseSlot, type DoseSlot } from "./dose-slot";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { WibDate } from "../../../shared/domain/wib-time.js";
+import { createDoseSlot, type DoseSlot } from "./dose-slot.js";
 
 export type MedicineSchedule = {
   readonly medicineId: string;

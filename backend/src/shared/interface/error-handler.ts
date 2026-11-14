@@ -2,9 +2,9 @@ import type { Context, ErrorHandler, NotFoundHandler } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { routePath } from "hono/route";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import type { Logger } from "../application/logger";
-import type { DomainError, DomainErrorCode, DomainErrorDetails } from "../domain/domain-error";
-import { requestMethod } from "./request-method";
+import type { Logger } from "../application/logger.js";
+import type { DomainError, DomainErrorCode, DomainErrorDetails } from "../domain/domain-error.js";
+import { requestMethod } from "./request-method.js";
 
 export type ErrorBody = {
   error: { code: string; message: string; details: DomainErrorDetails };

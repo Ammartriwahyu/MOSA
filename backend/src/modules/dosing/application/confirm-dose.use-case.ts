@@ -1,12 +1,12 @@
-import type { Clock } from "../../../shared/domain/clock";
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import { buildDailySlots } from "../domain/daily-slots";
-import type { DoseConfirmation, DoseConfirmationRepository } from "../domain/dose-confirmation";
-import { parseDoseSlotId } from "../domain/dose-slot";
-import { classifyDose } from "../domain/dose-window";
-import type { MedicineScheduleReader } from "./ports/medicine-schedule-reader";
-import type { ScanTokenVerifier } from "./ports/scan-token-verifier";
+import type { Clock } from "../../../shared/domain/clock.js";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import { buildDailySlots } from "../domain/daily-slots.js";
+import type { DoseConfirmation, DoseConfirmationRepository } from "../domain/dose-confirmation.js";
+import { parseDoseSlotId } from "../domain/dose-slot.js";
+import { classifyDose } from "../domain/dose-window.js";
+import type { MedicineScheduleReader } from "./ports/medicine-schedule-reader.js";
+import type { ScanTokenVerifier } from "./ports/scan-token-verifier.js";
 
 export class ConfirmDose {
   constructor(private readonly medicines: MedicineScheduleReader, private readonly confirmations: DoseConfirmationRepository,

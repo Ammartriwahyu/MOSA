@@ -1,13 +1,13 @@
 import { Hono } from "hono";
-import { domainErrorResponse } from "../../../shared/interface/error-handler";
-import { parseJsonBody } from "../../../shared/interface/parse-json-body";
-import { sessionOf } from "../../../shared/interface/session";
-import type { DeleteHouseholdData } from "../application/delete-household-data.use-case";
-import type { GetHousehold } from "../application/get-household.use-case";
-import type { RecordConsent } from "../application/record-consent.use-case";
-import type { UpdatePreferences } from "../application/update-preferences.use-case";
-import { toHouseholdResponse } from "./household.mapper";
-import { consentBodySchema, preferencesBodySchema } from "./household.schemas";
+import { domainErrorResponse } from "../../../shared/interface/error-handler.js";
+import { parseJsonBody } from "../../../shared/interface/parse-json-body.js";
+import { sessionOf } from "../../../shared/interface/session.js";
+import type { DeleteHouseholdData } from "../application/delete-household-data.use-case.js";
+import type { GetHousehold } from "../application/get-household.use-case.js";
+import type { RecordConsent } from "../application/record-consent.use-case.js";
+import type { UpdatePreferences } from "../application/update-preferences.use-case.js";
+import { toHouseholdResponse } from "./household.mapper.js";
+import { consentBodySchema, preferencesBodySchema } from "./household.schemas.js";
 
 export type HouseholdUseCases = {
   getHousehold: GetHousehold;

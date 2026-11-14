@@ -1,8 +1,8 @@
 import type { MiddlewareHandler } from "hono";
-import type { AccessTokenVerifier } from "../application/access-token-verifier";
-import { domainError } from "../domain/domain-error";
-import { domainErrorResponse } from "./error-handler";
-import { isPublicPath } from "./session";
+import type { AccessTokenVerifier } from "../application/access-token-verifier.js";
+import { domainError } from "../domain/domain-error.js";
+import { domainErrorResponse } from "./error-handler.js";
+import { isPublicPath } from "./session.js";
 
 const BEARER = /^Bearer\s+(\S+)$/i;
 

@@ -1,15 +1,15 @@
-import type { AiUsageLimiter } from "../../../shared/application/ai-usage-limiter";
-import type { Clock } from "../../../shared/domain/clock";
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import { decideOutcome } from "../domain/decide-outcome";
-import { matchPackage } from "../domain/match-package";
-import { createPackageImage, type PackageImage } from "../domain/package-image";
-import { SCAN_TOKEN_POLICY } from "../domain/scan-token-policy";
-import type { VerificationOutcome } from "../domain/verification-outcome";
-import type { PackageReader } from "./ports/package-reader";
-import type { ScanConsentReader, ScanContextReader, ScanSnapshot } from "./ports/scan-context-reader";
-import type { ScanTokenSigner } from "./ports/scan-token-signer";
+import type { AiUsageLimiter } from "../../../shared/application/ai-usage-limiter.js";
+import type { Clock } from "../../../shared/domain/clock.js";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import { decideOutcome } from "../domain/decide-outcome.js";
+import { matchPackage } from "../domain/match-package.js";
+import { createPackageImage, type PackageImage } from "../domain/package-image.js";
+import { SCAN_TOKEN_POLICY } from "../domain/scan-token-policy.js";
+import type { VerificationOutcome } from "../domain/verification-outcome.js";
+import type { PackageReader } from "./ports/package-reader.js";
+import type { ScanConsentReader, ScanContextReader, ScanSnapshot } from "./ports/scan-context-reader.js";
+import type { ScanTokenSigner } from "./ports/scan-token-signer.js";
 
 export type VerifyPackageResult = {
   readonly decision: VerificationOutcome; readonly snapshot: ScanSnapshot; readonly serverTime: number;

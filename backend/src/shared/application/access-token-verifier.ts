@@ -1,5 +1,5 @@
-import type { DomainError } from "../domain/domain-error";
-import type { Result } from "../domain/result";
+import type { DomainError } from "../domain/domain-error.js";
+import type { Result } from "../domain/result.js";
 
 export type VerifiedSession = { readonly userId: string };
 

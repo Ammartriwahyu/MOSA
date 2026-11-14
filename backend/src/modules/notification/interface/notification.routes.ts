@@ -2,12 +2,12 @@ import { createHash, timingSafeEqual } from "node:crypto";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { z } from "zod";
-import { domainError } from "../../../shared/domain/domain-error";
-import { domainErrorResponse } from "../../../shared/interface/error-handler";
-import { parseJsonBody } from "../../../shared/interface/parse-json-body";
-import { sessionOf } from "../../../shared/interface/session";
-import type { SendDueReminders } from "../application/send-due-reminders.use-case";
-import type { SubscribePush, UnsubscribePush } from "../application/subscription.use-cases";
+import { domainError } from "../../../shared/domain/domain-error.js";
+import { domainErrorResponse } from "../../../shared/interface/error-handler.js";
+import { parseJsonBody } from "../../../shared/interface/parse-json-body.js";
+import { sessionOf } from "../../../shared/interface/session.js";
+import type { SendDueReminders } from "../application/send-due-reminders.use-case.js";
+import type { SubscribePush, UnsubscribePush } from "../application/subscription.use-cases.js";
 
 export type NotificationUseCases = { subscribePush: SubscribePush; unsubscribePush: UnsubscribePush; sendDueReminders: SendDueReminders };
 const unavailable = () => domainError("PUSH_UNAVAILABLE", "Pengingat push belum tersedia.");

@@ -1,7 +1,7 @@
 import type { Context } from "hono";
 import type { z } from "zod";
-import { domainError, type DomainError } from "../domain/domain-error";
-import { err, ok, type Result } from "../domain/result";
+import { domainError, type DomainError } from "../domain/domain-error.js";
+import { err, ok, type Result } from "../domain/result.js";
 
 export const MAX_JSON_BODY_BYTES = 32 * 1024;
 

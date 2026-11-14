@@ -1,8 +1,8 @@
 import type { Context } from "hono";
 import { z } from "zod";
-import { domainError } from "../../../shared/domain/domain-error";
-import { err, ok } from "../../../shared/domain/result";
-import { createPackageImage, PACKAGE_IMAGE_LIMITS } from "../domain/package-image";
+import { domainError } from "../../../shared/domain/domain-error.js";
+import { err, ok } from "../../../shared/domain/result.js";
+import { createPackageImage, PACKAGE_IMAGE_LIMITS } from "../domain/package-image.js";
 
 const MAX_BASE64_LENGTH = Math.ceil(PACKAGE_IMAGE_LIMITS.maxBytes / 3) * 4;
 export const MAX_SCAN_REQUEST_BYTES = MAX_BASE64_LENGTH + 4096;

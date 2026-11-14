@@ -1,6 +1,6 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, type Result } from "../../../shared/domain/result";
-import type { ScanTokenClaims, ScanTokenVerifier } from "../application/ports/scan-token-verifier";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, type Result } from "../../../shared/domain/result.js";
+import type { ScanTokenClaims, ScanTokenVerifier } from "../application/ports/scan-token-verifier.js";
 
 export class UnavailableScanTokenVerifier implements ScanTokenVerifier {
   async verify(): Promise<Result<ScanTokenClaims, DomainError>> {

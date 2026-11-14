@@ -1,11 +1,11 @@
 import { Hono } from "hono";
 import { z } from "zod";
-import { domainErrorResponse } from "../../../shared/interface/error-handler";
-import { parseJsonBody } from "../../../shared/interface/parse-json-body";
-import { sessionOf } from "../../../shared/interface/session";
-import type { ConfirmDose } from "../application/confirm-dose.use-case";
-import type { ListTodaysDoses } from "../application/list-todays-doses.use-case";
-import { confirmationResponse, todaysDosesResponse } from "./dosing.mapper";
+import { domainErrorResponse } from "../../../shared/interface/error-handler.js";
+import { parseJsonBody } from "../../../shared/interface/parse-json-body.js";
+import { sessionOf } from "../../../shared/interface/session.js";
+import type { ConfirmDose } from "../application/confirm-dose.use-case.js";
+import type { ListTodaysDoses } from "../application/list-todays-doses.use-case.js";
+import { confirmationResponse, todaysDosesResponse } from "./dosing.mapper.js";
 
 export type DosingUseCases = { listTodaysDoses: ListTodaysDoses; confirmDose: ConfirmDose };
 const confirmSchema = z.object({ mode: z.enum(["basic", "verified"]), scanToken: z.string().min(1).max(4096).optional() });

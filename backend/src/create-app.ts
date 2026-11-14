@@ -1,18 +1,18 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { requestId } from "hono/request-id";
-import type { Container } from "./composition-root";
-import { dosingRoutes } from "./modules/dosing/interface/dosing.routes";
-import { householdRoutes } from "./modules/household/interface/household.routes";
-import { resolveHousehold } from "./modules/household/interface/resolve-household.middleware";
-import { medicationRoutes } from "./modules/medication/interface/medication.routes";
-import { scanRoutes } from "./modules/verification/interface/scan.routes";
-import { notificationRoutes, reminderCronRoutes } from "./modules/notification/interface/notification.routes";
-import { authenticate } from "./shared/interface/authenticate.middleware";
-import { createErrorHandler, handleNotFound } from "./shared/interface/error-handler";
-import { healthRoutes } from "./shared/interface/health.routes";
-import { requestLogger } from "./shared/interface/request-logger";
-import { requireDataConsent } from "./shared/interface/require-data-consent.middleware";
+import type { Container } from "./composition-root.js";
+import { dosingRoutes } from "./modules/dosing/interface/dosing.routes.js";
+import { householdRoutes } from "./modules/household/interface/household.routes.js";
+import { resolveHousehold } from "./modules/household/interface/resolve-household.middleware.js";
+import { medicationRoutes } from "./modules/medication/interface/medication.routes.js";
+import { scanRoutes } from "./modules/verification/interface/scan.routes.js";
+import { notificationRoutes, reminderCronRoutes } from "./modules/notification/interface/notification.routes.js";
+import { authenticate } from "./shared/interface/authenticate.middleware.js";
+import { createErrorHandler, handleNotFound } from "./shared/interface/error-handler.js";
+import { healthRoutes } from "./shared/interface/health.routes.js";
+import { requestLogger } from "./shared/interface/request-logger.js";
+import { requireDataConsent } from "./shared/interface/require-data-consent.middleware.js";
 
 export function createApp(container: Container): Hono {
   const app = new Hono();

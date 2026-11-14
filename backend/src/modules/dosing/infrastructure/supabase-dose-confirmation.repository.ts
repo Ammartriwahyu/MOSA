@@ -1,13 +1,13 @@
 import { z } from "zod";
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { WibDate } from "../../../shared/domain/wib-time";
-import type { AdminClient } from "../../../shared/infrastructure/supabase-client";
-import type { ConfirmedDoseReader } from "../application/ports/confirmed-dose-reader";
-import type { DoseConfirmation, DoseConfirmationRepository } from "../domain/dose-confirmation";
-import { createDoseSlot } from "../domain/dose-slot";
-import { DOSE_WINDOW } from "../domain/dose-window";
-import { databaseUnavailable, toConfirmation } from "./dosing-data";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { WibDate } from "../../../shared/domain/wib-time.js";
+import type { AdminClient } from "../../../shared/infrastructure/supabase-client.js";
+import type { ConfirmedDoseReader } from "../application/ports/confirmed-dose-reader.js";
+import type { DoseConfirmation, DoseConfirmationRepository } from "../domain/dose-confirmation.js";
+import { createDoseSlot } from "../domain/dose-slot.js";
+import { DOSE_WINDOW } from "../domain/dose-window.js";
+import { databaseUnavailable, toConfirmation } from "./dosing-data.js";
 
 const responseSchema = z.object({ code: z.enum(["OK", "NOT_FOUND", "VALIDATION_FAILED", "DOSE_ALREADY_CONFIRMED", "DOSE_NOT_DUE", "DOSE_MISSED", "SCAN_TOKEN_INVALID"]), confirmation: z.unknown().optional() });
 

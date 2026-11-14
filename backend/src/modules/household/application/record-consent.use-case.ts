@@ -1,9 +1,9 @@
-import type { Clock } from "../../../shared/domain/clock";
-import type { DomainError } from "../../../shared/domain/domain-error";
-import { ok, type Result } from "../../../shared/domain/result";
-import { recordConsent, type ConsentKind, type Household } from "../domain/household";
-import type { HouseholdRepository } from "../domain/household-repository";
-import { loadHousehold } from "./load-household";
+import type { Clock } from "../../../shared/domain/clock.js";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import { ok, type Result } from "../../../shared/domain/result.js";
+import { recordConsent, type ConsentKind, type Household } from "../domain/household.js";
+import type { HouseholdRepository } from "../domain/household-repository.js";
+import { loadHousehold } from "./load-household.js";
 
 export class RecordConsent {
   constructor(

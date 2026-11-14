@@ -1,8 +1,8 @@
-import type { GetScanContext } from "../../dosing/application/get-scan-context.use-case";
-import type { GetHousehold } from "../../household/application/get-household.use-case";
-import { ok } from "../../../shared/domain/result";
-import type { ScanConsentReader, ScanContextReader, ScanSnapshot } from "../application/ports/scan-context-reader";
-import type { VerificationDose } from "../domain/verification-outcome";
+import type { GetScanContext } from "../../dosing/application/get-scan-context.use-case.js";
+import type { GetHousehold } from "../../household/application/get-household.use-case.js";
+import { ok } from "../../../shared/domain/result.js";
+import type { ScanConsentReader, ScanContextReader, ScanSnapshot } from "../application/ports/scan-context-reader.js";
+import type { VerificationDose } from "../domain/verification-outcome.js";
 
 export class HouseholdScanConsentReader implements ScanConsentReader {
   constructor(private readonly households: GetHousehold) {}

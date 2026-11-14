@@ -1,4 +1,4 @@
-import type { ExplanationOrigin, LabelSource, Medicine } from "../domain/medicine";
+import type { ExplanationOrigin, LabelSource, Medicine } from "../domain/medicine.js";
 
 export type MedicineResponse = {
   id: string;

@@ -1,6 +1,6 @@
-import type { DoseView, TodaysDoses } from "../application/list-todays-doses.use-case";
-import type { DoseConfirmation } from "../domain/dose-confirmation";
-import { createDoseSlot } from "../domain/dose-slot";
+import type { DoseView, TodaysDoses } from "../application/list-todays-doses.use-case.js";
+import type { DoseConfirmation } from "../domain/dose-confirmation.js";
+import { createDoseSlot } from "../domain/dose-slot.js";
 
 export function confirmationResponse(row: DoseConfirmation) {
   const slot = createDoseSlot({ medicineId: row.medicineId, scheduledDate: row.scheduledDate, scheduledTime: row.scheduledTime });

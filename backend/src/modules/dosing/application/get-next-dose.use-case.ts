@@ -1,9 +1,9 @@
-import type { Clock } from "../../../shared/domain/clock";
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, type Result } from "../../../shared/domain/result";
-import { findNextDose, nextDoseDates, type NextDose } from "../domain/next-dose";
-import type { ConfirmedDoseReader } from "./ports/confirmed-dose-reader";
-import type { MedicineScheduleReader } from "./ports/medicine-schedule-reader";
+import type { Clock } from "../../../shared/domain/clock.js";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, type Result } from "../../../shared/domain/result.js";
+import { findNextDose, nextDoseDates, type NextDose } from "../domain/next-dose.js";
+import type { ConfirmedDoseReader } from "./ports/confirmed-dose-reader.js";
+import type { MedicineScheduleReader } from "./ports/medicine-schedule-reader.js";
 
 export class GetNextDose {
   constructor(
