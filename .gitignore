@@ -41,20 +41,11 @@ MEMORY.md
 memory.md
 KIT.md
 prompts/
-docs/10-git-workflow.md
-docs/11-hemat-token.md
-docs/12-rencana-branch.md
-docs/design/ORIENTATION.md
-docs/design/screen-map.md
 
-# Laporan kerja yang disimpan lokal
-docs/qa-20261114-report.md
-docs/review-report.md
-docs/copy-audit.md
-docs/security-privacy-audit.md
-docs/a11y-audit.md
-docs/clean-clone-test.md
-docs/ac-traceability.md
+# Dokumen produk, desain, dan laporan kerja disimpan lokal (bukan kode aplikasi).
+# Pengecualian: kalimat baku dibaca oleh tes copy (frontend/src/shared/copy/copy.test.ts).
+/docs/*
+!/docs/02-copywriting-baku.md
 
 # Rekaman sesi
 .ai-sessions/
