@@ -17,6 +17,55 @@ async function confirmationCount() {
 }
 
 describe("alur gagal/alternatif HTTP tidak menyebabkan minum ganda", () => {
+  test("scan ulang obat yang sama pada slot kedua menaikkan 1/2 menjadi 2/2 dengan dua level scan", async () => {
+    const { token } = await prepared();
+    const morning = (await scan(token)).slots[0]!;
+    await call(system, token, "POST", confirmPath(morning.slotId), { mode: "verified", scanToken: morning.scanToken }, 201);
+    expect((await dashboard(system, token)).summary).toEqual({ confirmed: 1, total: 2 });
+    system.setNow("2026-11-12T12:00:00Z");
+    const evening = (await scan(token)).slots[0]!;
+    expect(evening.slotId).not.toBe(morning.slotId);
+    await call(system, token, "POST", confirmPath(evening.slotId), { mode: "verified", scanToken: morning.scanToken }, 403);
+    expect((await dashboard(system, token)).summary.confirmed).toBe(1);
+    await call(system, token, "POST", confirmPath(evening.slotId), { mode: "verified", scanToken: evening.scanToken }, 201);
+    const after = await dashboard(system, token);
+    expect(after.summary).toEqual({ confirmed: 2, total: 2 });
+    expect(after.doses.map((dose) => dose.confirmation?.level)).toEqual(["scan_terverifikasi", "scan_terverifikasi"]);
+    expect(await confirmationCount()).toBe(2);
+  });
+
+  test("Q5 HTTP/SQL dengan waktu aktif terkendali: jam lampau tidak ditambah, riwayat tetap ada", async () => {
+    const { token, medicine } = await prepared();
+    const old = (await dashboard(system, token)).doses[0]!;
+    await call(system, token, "POST", confirmPath(old.slotId), { mode: "basic" }, 201);
+    await call(system, token, "PATCH", `/v1/medicines/${medicine.id}`, { ...MEDICINE_INPUT, intakeTimes: ["07:15", "08:00", "19:00"] });
+    // Clock aplikasi tetap 12 Nov; clock_timestamp() PGlite mengikuti mesin.
+    // Selaraskan hanya waktu aktif baru pada fixture, bukan mengganti trigger/RPC.
+    // Pelestarian waktu jam lama dan penciptaan metadata trigger diuji terpisah pada SQL.
+    await system.db.query(`update public.medicines set intake_times_started_at = intake_times_started_at || $2::jsonb where id=$1`,
+      [medicine.id, JSON.stringify({ "07:15": "2026-11-12T00:30:00Z", "08:00": "2026-11-12T00:30:00Z" })]);
+    const changed = await dashboard(system, token);
+    expect(changed.doses.map((dose) => dose.scheduledTime)).toEqual(["07:00", "08:00", "19:00"]);
+    expect(changed.summary).toEqual({ confirmed: 1, total: 3 });
+    const next = changed.doses.find((dose) => dose.scheduledTime === "08:00")!;
+    expect(next.status).toBe("jatuh_tempo");
+    await call(system, token, "POST", confirmPath(next.slotId), { mode: "basic" }, 201);
+    expect((await dashboard(system, token)).summary).toEqual({ confirmed: 2, total: 3 });
+    expect(await confirmationCount()).toBe(2);
+  });
+
+  test("slot bertumpuk tetap dua pilihan, mengonfirmasi satu tidak mengonsumsi yang lain", async () => {
+    const { token } = await system.register(); await consent(system, token); await consent(system, token, "scan");
+    await addMedicine(system, token, { intakeTimes: ["07:00", "07:15"] });
+    system.setNow("2026-11-12T00:00:00Z");
+    const first = await scan(token); expect(first.slots).toHaveLength(2);
+    await call(system, token, "POST", confirmPath(first.slots[0]!.slotId), { mode: "verified", scanToken: first.slots[0]!.scanToken }, 201);
+    const second = await scan(token); expect(second.slots).toHaveLength(1);
+    expect(second.slots[0]!.slotId).toBe(first.slots[1]!.slotId);
+    await call(system, token, "POST", confirmPath(second.slots[0]!.slotId), { mode: "verified", scanToken: second.slots[0]!.scanToken }, 201);
+    expect((await dashboard(system, token)).summary).toEqual({ confirmed: 2, total: 2 });
+  });
+
   test("AI penjelasan gagal: belum ada obat sebelum POST; fallback asli tersimpan dan scan gagal tidak mencatat", async () => {
     const { token } = await system.register(); await consent(system, token); system.failExplain();
     expect(await call(system, token, "POST", "/v1/medicines/explain", { usageRule: MEDICINE_INPUT.usageRule, warnings: MEDICINE_INPUT.warnings, notes: null }, 503)).toMatchObject({ error: { code: "AI_UNAVAILABLE" } });
