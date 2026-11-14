@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2023"],
+    // DOM: definisi lengkap Request/Response/AbortSignal. @types/node mengosongkan
+    // tipe web-nya bila lingkungan build memuat tipe browser (terjadi di build
+    // Vercel), sehingga tanpa DOM properti seperti `signal`/`status` tidak dikenal.
+    "lib": ["ES2023", "DOM"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "types": ["node"],
