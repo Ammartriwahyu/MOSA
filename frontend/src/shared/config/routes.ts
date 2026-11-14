@@ -33,7 +33,7 @@ export function outputPreferenceThen(next?: string): string {
   return next ? `${ROUTES.outputPreference}?next=${encodeURIComponent(next)}` : ROUTES.outputPreference;
 }
 
-/** Tujuan kembali yang aman: hanya path internal ("/…", bukan "//…"). */
+/** Browser menormalkan backslash dan membuang tab/baris baru sebelum membaca host. */
 export function safeInternalPath(value: string | null | undefined, fallback: string): string {
-  return value && value.startsWith("/") && !value.startsWith("//") ? value : fallback;
+  return value && value.startsWith("/") && !value.startsWith("//") && !/[\\\r\n\t]/.test(value) ? value : fallback;
 }

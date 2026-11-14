@@ -65,7 +65,7 @@ describe("OutputPreferenceScreen", () => {
     expect(backend.patch).toHaveBeenCalledWith("/v1/household/preferences", { outputMode: "suara" });
   });
 
-  test.each(["https://situs-lain.example", "//situs-lain.example"])(
+  test.each(["https://situs-lain.example", "//situs-lain.example", "/\\situs-lain.example", "/\n/situs-lain.example", "/\t/situs-lain.example"])(
     "tujuan luar %s ditolak → kembali ke jadwal",
     async (next) => {
       renderScreen(next);
