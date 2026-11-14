@@ -83,6 +83,9 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
       <TextField
         label={FORM_OBAT.namaObat}
         hint={FORM_OBAT.namaPetunjuk}
+        // Nama obat dan kekuatan bukan kata kamus: garis merah ejaan membuatnya tampak salah.
+        spellCheck={false}
+        autoCapitalize="words"
         list={listId}
         autoComplete="off"
         maxLength={FORM_LIMITS.name}
@@ -98,6 +101,8 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
       <TextField
         label={FORM_OBAT.kekuatan}
         hint={FORM_OBAT.kekuatanPetunjuk}
+        spellCheck={false}
+        autoCapitalize="none"
         maxLength={FORM_LIMITS.strength}
         value={values.strength}
         onChange={(e) => set("strength", e.target.value)}
