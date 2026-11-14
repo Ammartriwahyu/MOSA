@@ -6,9 +6,9 @@ Pendamping minum obat untuk lansia dan keluarga: jadwal harian, instruksi yang d
 
 ## Status
 
-Fitur MVP telah diimplementasikan dan diuji otomatis. Pemeriksaan perangkat/layanan nyata dan kesiapan rilis masih terbuka; lihat [checklist perangkat](docs/manual-test-checklist.md).
+Fitur MVP telah diimplementasikan dan diuji otomatis. Pemeriksaan perangkat dan layanan nyata dilakukan manual oleh tim.
 
-Backend Web Push tersedia sebagai fitur opsional; [API dan batas pengiriman](docs/web-push-backend.md) sudah disiapkan. PWA dan [pengaturan push](docs/pwa-push.md) tersedia; aktivasi membutuhkan konfigurasi pasangan backend/frontend dan pengujian perangkat. Pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah.
+Pengingat Web Push dan PWA tersedia sebagai fitur opsional; aktivasinya membutuhkan pasangan kunci VAPID di backend/frontend, `PUSH_ENABLED=true`, dan pemicu cron ke `POST /v1/internal/reminders/run`. Pengingat wali, AI pengisi formulir dan riwayat mingguan belum dibangun. Akun Demo Juri publik **belum ditetapkan**; lihat penyiapan di bawah.
 
 ## Menjalankan di localhost
 
@@ -24,7 +24,7 @@ if (!(Test-Path -LiteralPath backend/.env)) { Copy-Item -LiteralPath backend/.en
 if (!(Test-Path -LiteralPath frontend/.env.local)) { Copy-Item -LiteralPath frontend/.env.example -Destination frontend/.env.local }
 ```
 
-Pilih branch/commit rilis yang sudah ditinjau. **Isi nilai kosong sebelum menyalakan aplikasi**, terapkan seluruh enam migrasi, lalu periksa RLS. [Panduan lokal](docs/local-development.md) menyediakan tabel environment, urutan migrasi, opsi Docker dan bantuan galat. Contoh konfigurasi saja belum cukup untuk menjalankan Auth/database/AI.
+Pilih branch/commit rilis yang sudah ditinjau. **Isi nilai kosong sebelum menyalakan aplikasi**, terapkan seluruh migrasi di `backend/supabase/migrations/` secara berurutan, lalu periksa RLS. Contoh konfigurasi saja belum cukup untuk menjalankan Auth/database/AI.
 
 Setelah persiapan tersebut selesai, setiap kali ingin membuka demo:
 
@@ -62,7 +62,7 @@ Untuk latihan dosis jatuh tempo sekarang:
 pnpm --filter backend seed:demo-due
 ```
 
-Seed mereset obat tambahan/catatan akun demo; jalankan sebelum sesi demo saat akun tidak dipakai. Mode due menjadwalkan satu dosis Metformin pada menit sekarang dalam WIB, terbuka sampai 120 menit setelah jadwal. Kembali ke jadwal normal dengan `seed:demo`. [Rincian penyiapan demo](docs/local-development.md#5-menyiapkan-akun-demo-juri).
+Seed mereset obat tambahan/catatan akun demo; jalankan sebelum sesi demo saat akun tidak dipakai. Mode due menjadwalkan satu dosis Metformin pada menit sekarang dalam WIB, terbuka sampai 120 menit setelah jadwal. Kembali ke jadwal normal dengan `seed:demo`.
 
 ## Fitur dan batas penggunaan
 
@@ -77,7 +77,7 @@ Seed mereset obat tambahan/catatan akun demo; jalankan sebelum sesi demo saat ak
 
 Jendela dosis memakai J−30 hingga J+120 menit inklusif dalam WIB. Slot bertumpuk tetap tersedia untuk dipilih. Perubahan jam berlaku saat disimpan dan riwayat konfirmasi dipertahankan. Aplikasi tidak memutuskan dosis, mengubah resep atau menebak kemasan buram/kekuatan berbeda. Foto tidak disimpan oleh aplikasi; ketentuan penyedia AI tetap diperiksa tim dan data demo selalu fiktif.
 
-Tidak ada mode produk dengan AI/database palsu untuk menggantikan layanan yang mati. Tes memakai fixture khusus tes. Kamera, suara, pembaca layar, sesi dua HP, retensi penyedia dan deployment perlu [pemeriksaan manual](docs/manual-test-checklist.md).
+Tidak ada mode produk dengan AI/database palsu untuk menggantikan layanan yang mati. Tes memakai fixture khusus tes. Kamera, suara, pembaca layar, sesi dua HP, retensi penyedia dan deployment perlu pemeriksaan manual.
 
 ## Perintah dan struktur
 
@@ -96,14 +96,11 @@ Jalankan tes frontend tanpa lint/build/dev lain bersamaan. CI menjalankan instal
 - frontend/: Next.js App Router, arsitektur berbasis fitur.
 - backend/: Hono, domain/application/infrastructure/interface; database hanya diakses backend. Frontend memakai Supabase untuk Auth.
 - backend/supabase/migrations/: skema, RLS dan RPC aplikasi.
-- docs/: panduan, aturan, bukti uji dan tinjauan.
+- docs/02-copywriting-baku.md: kalimat baku keselamatan yang dicocokkan otomatis oleh tes copy.
 
-## Deploy dan bukti
+## Deploy
 
-[Panduan deploy](docs/deploy.md) menjelaskan dua proyek Vercel, environment, CORS, Auth dan prosedur verifikasi. Persiapan rilis lokal mencakup pin Node 24.x, [cadangan seed dan runbook demo](docs/demo-runbook.md) serta [checklist dan gerbang freeze](docs/release-checklist.md). Deployment, konfigurasi cloud, smoke layanan/perangkat, rekaman dan tag freeze belum dijalankan. URL produksi belum diverifikasi pada pekerjaan ini.
-
-- [Panduan lokal](docs/local-development.md).
-- [Checklist perangkat](docs/manual-test-checklist.md).
+Frontend dan backend dideploy sebagai dua proyek Vercel (Root Directory `frontend` dan `backend`, Node 24.x). Isi environment sesuai `frontend/.env.example` dan `backend/.env.example`; variabel `NEXT_PUBLIC_*` bertipe Config dan perlu redeploy setelah diubah, kunci rahasia backend bertipe Sensitive. Atur `FRONTEND_ORIGIN` backend ke URL frontend, serta Site URL dan Redirect URLs Supabase Auth.
 
 ## Atribusi
 
