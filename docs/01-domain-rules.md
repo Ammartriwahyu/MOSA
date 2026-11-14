@@ -22,6 +22,7 @@ AI tidak mendiagnosis, tidak menentukan dosis, tidak mengatur jadwal, tidak mene
 | 4 | Aturan Pakai | Ya | Beri petunjuk di bawah kolom: "Tulis hubungan dengan makan saja, tanpa jam. Contoh: sesudah makan." [USULAN] |
 | 5 | Jumlah per Minum | Ya | "1 tablet", "1/2 tablet" |
 | 6 | Jam Minum | Ya | Satu atau beberapa jam, "HH:mm" WIB, tanpa duplikat; menentukan kelompok waktu dan total harian |
+| 6a | Hari Minum | Ya (bawaan "Setiap hari") | Satu sampai tujuh hari (Senin–Minggu, WIB). Hari yang tidak dipilih tidak punya slot, tidak masuk total harian, dan tidak memicu pengingat [Disetujui pengguna 14 Nov 2026] |
 | 7 | Larangan / Peringatan | Ya, atau tegas "Tidak ada larangan khusus" [USULAN] | |
 | 8 | Catatan Pribadi | Tidak | |
 | 9 | Label Sumber | Ya | Segmented control: "Diisi apoteker" / "Diisi keluarga" |
@@ -53,6 +54,7 @@ Aturan tambahan [USULAN]:
 - Dua obat berjam sama: keduanya `jatuh_tempo`; scan satu hanya mengonfirmasi dosis obat itu.
 - Obat disimpan setelah J hari itu: slot J tidak dibuat untuk hari itu (hitungan harian 0/1, bukan 0/2 dengan satu terlewat).
 - **Disetujui PM 11 Nov 2026 (Q5):** perubahan jam langsung berlaku ketika disimpan. Jam yang dihapus tidak dapat dikonfirmasi lagi; jam baru hanya menghasilkan slot dengan J ≥ waktu pengaktifannya. Jam yang tidak berubah mempertahankan waktu aktif semula. Konfirmasi yang sudah tercatat tetap disimpan dan tetap dihitung pada tanggal jadwal asal, termasuk bila jamnya dihapus.
+- **Hari minum (disetujui pengguna 14 Nov 2026):** mengikuti Q5. Hari yang dihapus tidak dapat dikonfirmasi lagi; hari baru hanya menghasilkan slot dengan J ≥ waktu pengaktifannya; konfirmasi lama tetap tersimpan.
 - Hari berganti pukul 00.00 WIB.
 - Jendela yang melintasi tengah malam tetap berlaku sampai J+120 inklusif; slot dan konfirmasinya tetap memakai tanggal jadwal asal (flow alt #19). Jadwal 00.00–03.59 memakai tanggal kalender saat jadwal itu terjadi.
 - Kelompok waktu: Pagi 04.00–10.59, Siang 11.00–17.59, Malam 18.00–03.59.

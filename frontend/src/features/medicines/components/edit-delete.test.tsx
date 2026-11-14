@@ -26,7 +26,7 @@ vi.mock("@/shared/lib", async (importOriginal) => ({
 
 const MEDICINE: Medicine = {
   id: "11111111-1111-4111-8111-111111111111", name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji",
-  doseAmount: "1 tablet", usageRule: "Sesudah makan", intakeTimes: ["06:30", "18:30"],
+  doseAmount: "1 tablet", usageRule: "Sesudah makan", intakeTimes: ["06:30", "18:30"], intakeDays: [1, 2, 3, 4, 5, 6, 7],
   warnings: "Peringatan uji", notes: "Kotak biru", labelSource: "keluarga", explanation: "Penjelasan lama yang sudah diperiksa.",
   explanationOrigin: "ai_dikonfirmasi", createdAt: "2026-11-01T00:00:00Z",
 };
@@ -86,7 +86,7 @@ describe("Ubah Obat", () => {
     await waitFor(() => expect(router.replace).toHaveBeenCalledWith(`/medicines/${MEDICINE.id}?updated=1`));
     expect(requests("PATCH")).toEqual([[path, { method: "PATCH", body: {
       name: MEDICINE.name, strength: MEDICINE.strength, purpose: MEDICINE.purpose, doseAmount: MEDICINE.doseAmount,
-      usageRule: MEDICINE.usageRule, warnings: MEDICINE.warnings, notes: MEDICINE.notes, intakeTimes: MEDICINE.intakeTimes,
+      usageRule: MEDICINE.usageRule, warnings: MEDICINE.warnings, notes: MEDICINE.notes, intakeTimes: MEDICINE.intakeTimes, intakeDays: MEDICINE.intakeDays,
       labelSource: "apoteker", explanation: EXPLANATION, explanationOrigin: "ai_dikonfirmasi",
     } }]]);
     expect(client.getQueryData([...medicinesQueryKey, MEDICINE.id])).toEqual(server);

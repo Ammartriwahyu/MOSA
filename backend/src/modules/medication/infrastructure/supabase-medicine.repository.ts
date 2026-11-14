@@ -5,15 +5,15 @@ import type { AdminClient } from "../../../shared/infrastructure/supabase-client
 import type { ExplanationOrigin, LabelSource, Medicine, MedicineDraft } from "../domain/medicine.js";
 import type { MedicineRepository } from "../domain/medicine-repository.js";
 
-type MedicineRow = Omit<Database["public"]["Tables"]["medicines"]["Row"], "intake_times_started_at">;
+type MedicineRow = Omit<Database["public"]["Tables"]["medicines"]["Row"], "intake_times_started_at" | "intake_days_started_at">;
 
 type MedicineWrite = Omit<
   Database["public"]["Tables"]["medicines"]["Insert"],
-  "id" | "household_id" | "active" | "created_at" | "intake_times_started_at"
+  "id" | "household_id" | "active" | "created_at" | "intake_times_started_at" | "intake_days_started_at"
 >;
 
 const COLUMNS =
-  "id, household_id, name, name_normalized, strength, strength_normalized, purpose, dose_amount, usage_rule, warnings, notes, intake_times, label_source, explanation, explanation_origin, active, created_at";
+  "id, household_id, name, name_normalized, strength, strength_normalized, purpose, dose_amount, usage_rule, warnings, notes, intake_times, intake_days, label_source, explanation, explanation_origin, active, created_at";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -39,6 +39,7 @@ function toMedicine(row: MedicineRow): Medicine {
     warnings: row.warnings ?? "",
     notes: row.notes,
     intakeTimes: row.intake_times,
+    intakeDays: row.intake_days,
     labelSource: toLabelSource(row.label_source),
     explanation: row.explanation,
     explanationOrigin: toOrigin(row.explanation_origin),
@@ -59,6 +60,7 @@ function toWrite(draft: MedicineDraft): MedicineWrite {
     warnings: draft.warnings,
     notes: draft.notes,
     intake_times: [...draft.intakeTimes],
+    intake_days: [...draft.intakeDays],
     label_source: draft.labelSource,
     explanation: draft.explanation,
     explanation_origin: draft.explanationOrigin,

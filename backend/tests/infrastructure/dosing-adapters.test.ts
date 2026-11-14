@@ -10,7 +10,7 @@ const HOUSE = "11111111-1111-4111-8111-111111111111";
 const MED = "33333333-3333-4333-8333-333333333333";
 const DATE = wibDate("2026-11-11");
 const CONFIRMATION = { id: "konfirmasi-uji", household_id: HOUSE, medicine_id: MED, scheduled_date: DATE, scheduled_time: "07:00:00", confirmed_at: "2026-11-11T00:30:00Z", level: "dasar" };
-const MEDICINE = { id: MED, active: true, created_at: "2026-11-01T00:00:00Z", intake_times: ["07:00"], intake_times_started_at: { "07:00": "2026-11-01T00:00:00Z" }, name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji", dose_amount: "1 tablet", usage_rule: "Sesudah makan", warnings: "Tidak ada larangan khusus", notes: null, label_source: "keluarga", explanation: null, explanation_origin: "teks_pengisi" };
+const MEDICINE = { id: MED, active: true, created_at: "2026-11-01T00:00:00Z", intake_times: ["07:00"], intake_times_started_at: { "07:00": "2026-11-01T00:00:00Z" }, intake_days: [1, 4], intake_days_started_at: { "1": "2026-11-01T00:00:00Z", "4": "2026-11-01T00:00:00Z" }, name: "Obat Uji", strength: "5 mg", purpose: "Kegunaan uji", dose_amount: "1 tablet", usage_rule: "Sesudah makan", warnings: "Tidak ada larangan khusus", notes: null, label_source: "keluarga", explanation: null, explanation_origin: "teks_pengisi" };
 const fetcher = vi.fn<typeof fetch>();
 function adapters() {
   const client = createClient<Database>("http://supabase.contoh.test", "secret-fiktif", { auth: { persistSession: false, autoRefreshToken: false }, global: { fetch: fetcher } });
@@ -23,7 +23,8 @@ describe("adaptor dosing memakai Supabase SDK nyata dengan fetch uji", () => {
   test("pembacaan obat tersaring rumah tangga dan aktif; metadata waktu didekode", async () => {
     fetcher.mockResolvedValue(Response.json([MEDICINE]));
     const result = await adapters().medicines.listActive(HOUSE);
-    expect(result).toMatchObject({ ok: true, value: [{ medicineId: MED, intakeTimeStartedAt: { "07:00": Date.parse(MEDICINE.created_at) } }] });
+    expect(result).toMatchObject({ ok: true, value: [{ medicineId: MED, intakeTimeStartedAt: { "07:00": Date.parse(MEDICINE.created_at) },
+      intakeDays: [1, 4], intakeDayStartedAt: { "1": Date.parse(MEDICINE.created_at), "4": Date.parse(MEDICINE.created_at) } }] });
     expect(requestUrl().searchParams.get("household_id")).toBe(`eq.${HOUSE}`);
     expect(requestUrl().searchParams.get("active")).toBe("eq.true");
   });
@@ -33,6 +34,8 @@ describe("adaptor dosing memakai Supabase SDK nyata dengan fetch uji", () => {
   });
   test("metadata jam tidak lengkap ditolak, bukan dianggap jadwal lama", async () => {
     fetcher.mockResolvedValue(Response.json([{ ...MEDICINE, intake_times_started_at: {} }]));
+    expect(await adapters().medicines.listActive(HOUSE)).toMatchObject({ ok: false, error: { code: "DATABASE_UNAVAILABLE" } });
+    fetcher.mockResolvedValue(Response.json([{ ...MEDICINE, intake_days_started_at: { "1": MEDICINE.created_at } }]));
     expect(await adapters().medicines.listActive(HOUSE)).toMatchObject({ ok: false, error: { code: "DATABASE_UNAVAILABLE" } });
   });
   test("konfirmasi dibaca per rumah tangga/obat/tanggal dan time SQL dinormalisasi", async () => {

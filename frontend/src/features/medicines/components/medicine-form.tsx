@@ -12,6 +12,7 @@ import {
   type MedicineFormOutput,
   type MedicineFormValues,
 } from "../schemas/medicine-form";
+import { IntakeDaysField } from "./intake-days-field";
 import { IntakeTimesField } from "./intake-times-field";
 import { LabelSourceField } from "./label-source-field";
 
@@ -133,6 +134,8 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
         error={errors.times}
         rowErrors={errors.timeRows}
       />
+
+      <IntakeDaysField days={values.days} onChange={(days) => set("days", days)} error={errors.days} />
 
       <TextField
         label={OBAT.larangan}

@@ -1,4 +1,4 @@
-import { DRAFT, FORM_OBAT } from "@/shared/copy";
+import { DRAFT, FORM_OBAT, SEMUA_HARI } from "@/shared/copy";
 
 export const FORM_LIMITS = {
   name: 100,
@@ -25,6 +25,8 @@ export type MedicineFormValues = {
   usageRule: string;
   doseAmount: string;
   times: TimeRow[];
+  /** Hari ISO terpilih (1 = Senin … 7 = Minggu); semua = setiap hari. */
+  days: number[];
   noWarnings: boolean;
   warnings: string;
   notes: string;
@@ -38,12 +40,13 @@ export type MedicineFormOutput = {
   usageRule: string;
   doseAmount: string;
   intakeTimes: string[];
+  intakeDays: number[];
   warnings: string;
   notes: string | null;
 };
 
 type TextField = keyof typeof FORM_LIMITS;
-export type FormField = TextField | "labelSource" | "times";
+export type FormField = TextField | "labelSource" | "times" | "days";
 export type FormErrors = Partial<Record<FormField, string>> & { timeRows?: Record<string, string> };
 
 const HH_MM = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -59,6 +62,7 @@ export function emptyMedicineForm(): MedicineFormValues {
     usageRule: "",
     doseAmount: "",
     times: PRESET_TIMES.map((time) => ({ key: time, time, checked: false })),
+    days: [...SEMUA_HARI],
     noWarnings: false,
     warnings: "",
     notes: "",
@@ -111,6 +115,7 @@ export function validateMedicineForm(values: MedicineFormValues): ValidationResu
   if (notes) errors.notes = notes;
 
   Object.assign(errors, validateTimes(values.times));
+  if (values.days.length === 0) errors.days = DRAFT.galatHariMinimal;
 
   if (Object.keys(errors).length > 0 || values.labelSource === null) return { ok: false, errors };
 
@@ -124,6 +129,7 @@ export function validateMedicineForm(values: MedicineFormValues): ValidationResu
       usageRule: values.usageRule.trim(),
       doseAmount: values.doseAmount.trim(),
       intakeTimes: values.times.filter((row) => row.checked).map((row) => row.time).sort(),
+      intakeDays: [...new Set(values.days)].sort((a, b) => a - b),
       warnings: warningsValue(values),
       notes: values.notes.trim() || null,
     },

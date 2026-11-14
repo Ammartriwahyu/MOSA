@@ -33,6 +33,7 @@ describe("validateMedicineForm", () => {
         usageRule: "Sesudah makan",
         doseAmount: "1 tablet",
         intakeTimes: ["07:00", "19:00"],
+        intakeDays: [1, 2, 3, 4, 5, 6, 7],
         warnings: "Jangan dihentikan mendadak",
         notes: null,
       },
@@ -75,6 +76,15 @@ describe("validateMedicineForm", () => {
       }),
     );
     expect(result).toMatchObject({ ok: false, errors: { timeRows: { b: FORM_OBAT.galatJamSama, c: FORM_OBAT.galatJamKosong } } });
+  });
+
+  test("hari minum: bawaan setiap hari, hari tertentu terurut, kosong ditolak", () => {
+    const daily = validateMedicineForm(filled());
+    expect(daily.ok && daily.value.intakeDays).toEqual([1, 2, 3, 4, 5, 6, 7]);
+    const some = validateMedicineForm(filled({ days: [5, 1, 3] }));
+    expect(some.ok && some.value.intakeDays).toEqual([1, 3, 5]);
+    const none = validateMedicineForm(filled({ days: [] }));
+    expect(!none.ok && none.errors.days).toBe(DRAFT.galatHariMinimal);
   });
 
   test("'Tidak ada larangan khusus' mengisi larangan secara tegas", () => {

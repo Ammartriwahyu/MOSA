@@ -1,11 +1,11 @@
 import { Pill, Sparkles } from "lucide-react";
 import { Fragment } from "react";
-import { DRAFT, formatJamMinum, formatKekuatan, LABEL, OBAT } from "@/shared/copy";
+import { DRAFT, formatHariMinum, formatJamMinum, formatKekuatan, LABEL, OBAT } from "@/shared/copy";
 import { Card, Notice } from "@/shared/ui";
 import type { Medicine } from "../api/medicines";
 import { LabelSourceChip } from "./label-source-chip";
 
-export type MedicineSnapshot = Omit<Medicine, "intakeTimes" | "createdAt"> & { intakeTimes?: string[] };
+export type MedicineSnapshot = Omit<Medicine, "intakeTimes" | "intakeDays" | "createdAt"> & { intakeTimes?: string[]; intakeDays?: number[] };
 export function MedicineIdentity({ medicine }: { medicine: MedicineSnapshot }) {
   return (
     <Card className="flex-row items-center gap-3.5 p-5">
@@ -43,6 +43,7 @@ function originalRows(medicine: MedicineSnapshot) {
     { label: OBAT.aturanPakai, value: medicine.usageRule },
     { label: OBAT.jumlahPerMinum, value: medicine.doseAmount },
     ...(medicine.intakeTimes ? [{ label: OBAT.jamMinum, value: formatJamMinum(medicine.intakeTimes) }] : []),
+    ...(medicine.intakeDays ? [{ label: DRAFT.hariMinum, value: formatHariMinum(medicine.intakeDays) }] : []),
     { label: OBAT.larangan, value: medicine.warnings },
     ...(medicine.notes ? [{ label: OBAT.catatanPribadi, value: medicine.notes }] : []),
   ];

@@ -19,6 +19,8 @@ export const medicineBodySchema = z.object({
   warnings: text,
   notes: optionalText,
   intakeTimes: z.array(z.string().max(10)).max(12),
+  // Klien lama tanpa kolom ini tetap berarti "setiap hari".
+  intakeDays: z.array(z.number().int()).max(7).default([1, 2, 3, 4, 5, 6, 7]),
   labelSource: z.enum(["apoteker", "keluarga"]),
   explanationOrigin: z.enum(["ai_dikonfirmasi", "teks_pengisi"]),
   explanation: optionalText,

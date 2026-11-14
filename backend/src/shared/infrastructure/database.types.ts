@@ -67,14 +67,14 @@ isOneToOne: false
                   ]
                 },"medicines": {
                   Row: {
-                    "active": boolean,"created_at": string,"dose_amount": string,"explanation": string | null,"explanation_origin": string,"household_id": string,"id": string,"intake_times": (string)[],"intake_times_started_at": Json,"label_source": string,"name": string,"name_normalized": string,"notes": string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings": string | null
+                    "active": boolean,"created_at": string,"dose_amount": string,"explanation": string | null,"explanation_origin": string,"household_id": string,"id": string,"intake_days": (number)[],"intake_days_started_at": Json,"intake_times": (string)[],"intake_times_started_at": Json,"label_source": string,"name": string,"name_normalized": string,"notes": string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "active"?: boolean,"created_at"?: string,"dose_amount": string,"explanation"?: string | null,"explanation_origin": string,"household_id": string,"id"?: string,"intake_times": (string)[],"intake_times_started_at"?: Json,"label_source": string,"name": string,"name_normalized": string,"notes"?: string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings"?: string | null
+                    "active"?: boolean,"created_at"?: string,"dose_amount": string,"explanation"?: string | null,"explanation_origin": string,"household_id": string,"id"?: string,"intake_days"?: (number)[],"intake_days_started_at"?: Json,"intake_times": (string)[],"intake_times_started_at"?: Json,"label_source": string,"name": string,"name_normalized": string,"notes"?: string | null,"purpose": string,"strength": string,"strength_normalized": string,"usage_rule": string,"warnings"?: string | null
                   }
                   Update: {
-                    "active"?: boolean,"created_at"?: string,"dose_amount"?: string,"explanation"?: string | null,"explanation_origin"?: string,"household_id"?: string,"id"?: string,"intake_times"?: (string)[],"intake_times_started_at"?: Json,"label_source"?: string,"name"?: string,"name_normalized"?: string,"notes"?: string | null,"purpose"?: string,"strength"?: string,"strength_normalized"?: string,"usage_rule"?: string,"warnings"?: string | null
+                    "active"?: boolean,"created_at"?: string,"dose_amount"?: string,"explanation"?: string | null,"explanation_origin"?: string,"household_id"?: string,"id"?: string,"intake_days"?: (number)[],"intake_days_started_at"?: Json,"intake_times"?: (string)[],"intake_times_started_at"?: Json,"label_source"?: string,"name"?: string,"name_normalized"?: string,"notes"?: string | null,"purpose"?: string,"strength"?: string,"strength_normalized"?: string,"usage_rule"?: string,"warnings"?: string | null
                   }
                   Relationships: [
                     {

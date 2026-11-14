@@ -10,6 +10,7 @@ export type MedicineResponse = {
   warnings: string;
   notes: string | null;
   intakeTimes: string[];
+  intakeDays: number[];
   labelSource: LabelSource;
   explanation: string | null;
   explanationOrigin: ExplanationOrigin;
@@ -27,6 +28,7 @@ export function toMedicineResponse(medicine: Medicine): MedicineResponse {
     warnings: medicine.warnings,
     notes: medicine.notes,
     intakeTimes: [...medicine.intakeTimes],
+    intakeDays: [...medicine.intakeDays],
     labelSource: medicine.labelSource,
     explanation: medicine.explanation,
     explanationOrigin: medicine.explanationOrigin,

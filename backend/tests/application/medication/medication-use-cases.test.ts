@@ -29,6 +29,7 @@ const INPUT: MedicineInput = {
   warnings: "Jangan dihentikan mendadak",
   notes: "Simpan di kotak biru",
   intakeTimes: ["07:00", "19:00"],
+  intakeDays: [1, 2, 3, 4, 5, 6, 7],
   labelSource: "apoteker",
   explanationOrigin: "ai_dikonfirmasi",
   explanation: "Minum obat ini sesudah makan. Jangan dihentikan mendadak.",

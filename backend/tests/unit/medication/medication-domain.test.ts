@@ -85,6 +85,7 @@ const VALID: MedicineInput = {
   warnings: "Jangan dihentikan mendadak",
   notes: null,
   intakeTimes: ["19:00", "07:00"],
+  intakeDays: [1, 2, 3, 4, 5, 6, 7],
   labelSource: "apoteker",
   explanationOrigin: "ai_dikonfirmasi",
   explanation: "Minum obat ini sesudah makan. Jangan dihentikan mendadak.",
@@ -138,6 +139,15 @@ describe("validateMedicineInput", () => {
     expect(JSON.stringify(result.error)).not.toContain("lima");
   });
 
+  test("hari minum kosong atau di luar 1–7 ditolak", () => {
+    for (const intakeDays of [[], [0], [8], [1, 1]]) {
+      const result = validateMedicineInput({ ...VALID, intakeDays });
+      expect(!result.ok && result.error.details).toEqual({ fields: ["intakeDays"] });
+    }
+    const valid = validateMedicineInput({ ...VALID, intakeDays: [5, 1] });
+    expect(valid.ok && valid.value.intakeDays).toEqual([1, 5]);
+  });
+
   test("catatan kosong disimpan sebagai null", () => {
     const result = validateMedicineInput({ ...VALID, notes: "   " });
     expect(result.ok && result.value.notes).toBeNull();
@@ -158,6 +168,7 @@ describe("reviseMedicine dan deactivateMedicine", () => {
     warnings: "x",
     notes: null,
     intakeTimes: ["07:00"],
+    intakeDays: [1, 2, 3, 4, 5, 6, 7],
     labelSource: "keluarga",
     explanation: "Penjelasan lama.",
     explanationOrigin: "ai_dikonfirmasi",

@@ -43,6 +43,13 @@ export function endOfWibDay(date: WibDate): number {
   return startOfWibDay(date) + DAY_MS;
 }
 
+/** Hari ISO tanggal WIB: 1 = Senin … 7 = Minggu (sama dengan `isodow` PostgreSQL). */
+export function isoWeekday(date: WibDate): number {
+  const { year, month, day } = dateParts(date);
+  const weekday = new Date(Date.UTC(year, month - 1, day)).getUTCDay();
+  return weekday === 0 ? 7 : weekday;
+}
+
 export function addWibDays(date: WibDate, days: number): WibDate {
   return toWib(startOfWibDay(date) + days * DAY_MS).date;
 }
