@@ -75,9 +75,9 @@ export function MedicineForm({ values, onValuesChange, onValid, busy = false, in
 
       <LabelSourceField value={values.labelSource} onChange={(v) => set("labelSource", v)} error={errors.labelSource} />
 
-      {/* ≥ 1024 px: dua kolom (Figma Desktop 17 · 184:1663). Urutan DOM = urutan baca:
-          kolom kiri (data obat) lalu kolom kanan (jadwal, larangan, catatan). */}
-      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
+      {/* Dua kolom bila area konten ≥ 42rem (Figma Desktop 17 · 184:1663); satu kolom saat
+          teks diperbesar. Urutan DOM = urutan baca: data obat lalu jadwal, larangan, catatan. */}
+      <div className="flex flex-col gap-4 @2xl:grid @2xl:grid-cols-2 @2xl:items-start @2xl:gap-x-8">
       <div className="flex min-w-0 flex-col gap-4">
       <h2 className="text-card-title">{FORM_OBAT.dataObat}</h2>
       <TextField

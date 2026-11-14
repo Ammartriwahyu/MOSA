@@ -101,15 +101,17 @@ export function DashboardContent({ data, onChooseScan, speechActive = true, ...a
               <Bacakan text={reading.join("\n")} active={speechActive} contextKey={`${data.date}:${next?.medicineId}:${next?.tanggal}:${next?.jam}`} />
             </section>
           )}
-          {/* ≥ 1024 px: dua kolom (Figma 184:326): dosis hari ini di kiri, progres di kanan.
-              Kolom kanan tanpa elemen yang bisa difokus, jadi urutan Tab tetap mengikuti dosis. */}
-          <div className="flex min-w-0 flex-col gap-3 lg:grid lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-6">
-            <div className="flex min-w-0 flex-col gap-3 lg:sticky lg:top-8 lg:col-start-2 lg:row-start-1">
+          {/* Dua kolom bila area konten ≥ 48rem (Figma 184:326): dosis di kiri, progres di kanan.
+              Diukur dalam rem pada kontainer, bukan lebar layar: saat teks diperbesar 200%
+              tata letak kembali satu kolom tanpa geser samping. Kolom kanan tanpa elemen fokus,
+              jadi urutan Tab tetap mengikuti dosis. */}
+          <div className="flex min-w-0 flex-col gap-3 @3xl:grid @3xl:grid-cols-[minmax(0,1fr)_20rem] @3xl:items-start @3xl:gap-6">
+            <div className="flex min-w-0 flex-col gap-3 @3xl:sticky @3xl:top-8 @3xl:col-start-2 @3xl:row-start-1">
               <DailyProgress summary={data.summary} />
               {/* Desktop: tombol ini ada di header. */}
               <Button asChild variant="secondary" className="lg:hidden"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
             </div>
-            <div className="flex min-w-0 flex-col gap-3 lg:col-start-1 lg:row-start-1">
+            <div className="flex min-w-0 flex-col gap-3 @3xl:col-start-1 @3xl:row-start-1">
               <DoseGroups data={data} {...actions} />
             </div>
           </div>

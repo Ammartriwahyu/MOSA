@@ -57,8 +57,8 @@ export function MedicineDetailScreen({ id, updated = false }: { id: string; upda
       );
   } else {
     body = (
-      // ≥ 1024 px: dua kolom (Figma Desktop 21 · 184:2123). Urutan DOM sama dengan mobile.
-      <div className="flex min-w-0 flex-col gap-3 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
+      // Dua kolom bila area konten ≥ 42rem (Figma Desktop 21 · 184:2123). Urutan DOM sama dengan mobile.
+      <div className="flex min-w-0 flex-col gap-3 @2xl:grid @2xl:grid-cols-2 @2xl:items-start @2xl:gap-6">
         <div className="flex min-w-0 flex-col gap-3">
         {updated ? <Notice tone="brand" role="status">{UBAH_OBAT.berhasil}</Notice> : null}
         <MedicineIdentity medicine={medicine.data} />
