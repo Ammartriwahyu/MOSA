@@ -29,8 +29,7 @@ describe("constraint data pada migrasi PostgreSQL asli", () => {
     expect(result.rows).toEqual([{ count: 4 }]);
   });
   test("RPC basic dan scan berturut-turut pada slot sama hanya menghasilkan satu catatan", async () => {
-    // Satu koneksi PGlite: ini membuktikan serialisasi/replay dan constraint,
-    // bukan klaim uji race pada dua koneksi server PostgreSQL.
+
     const results = await Promise.all([
       db.query<{ result: { code: string } }>("select public.confirm_dose($1,$2,'2026-11-11','19:00','2026-11-11T12:00:00Z','dasar',30,120) as result", [account.house, account.medicine]),
       db.query<{ result: { code: string } }>("select public.confirm_scanned_dose($1,$2,'2026-11-11','19:00','2026-11-11T12:00:00Z','scan_terverifikasi',30,120,'Obat Fiktif','5 mg') as result", [account.house, account.medicine]),

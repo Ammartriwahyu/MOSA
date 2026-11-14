@@ -1,9 +1,5 @@
 import type { PGlite } from "@electric-sql/pglite";
 
-/** Transport uji untuk subset PostgREST yang benar-benar dipakai adaptor asli.
- * Query/filter tak dikenal ditolak, bukan diabaikan atau dijawab fixture sukses.
- * Nilai selalu parameter SQL; identifier hanya boleh berasal dari skema migrasi.
- */
 export async function postgresTransport(db: PGlite) {
   const metadata = await db.query<{ table_name: string; column_name: string; data_type: string }>("select table_name,column_name,data_type from information_schema.columns where table_schema='public'");
   const columns = new Map<string, Set<string>>();
@@ -87,8 +83,7 @@ export async function postgresTransport(db: PGlite) {
       sql += ` returning ${fields}`;
     } else throw new Error("Metode transport uji tidak didukung.");
     const result = await db.query<Record<string, unknown>>(sql, values);
-    // PGlite rendert date sebagai Date JS, PostgREST sebagai YYYY-MM-DD.
-    // Jangan mengubah timestamp atau JSONB dari fungsi SQL.
+
     const rows = result.rows.map((row) => Object.fromEntries(Object.entries(row).map(([key, value]) => [key,
       dates.get(name)?.has(key) && value instanceof Date ? value.toISOString().slice(0, 10) : value])));
     if (request.headers.get("Accept")?.includes("application/vnd.pgrst.object+json")) {

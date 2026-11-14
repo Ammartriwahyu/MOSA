@@ -1,6 +1,5 @@
 import { vi } from "vitest";
 
-/** Mesin lokal fiktif; tidak menghasilkan audio atau menghubungi layanan suara. */
 export class TestUtterance {
   lang = ""; voice: SpeechSynthesisVoice | null = null; rate = 1; pitch = 1; volume = 1;
   onstart: (() => void) | null = null; onend: (() => void) | null = null; onerror: ((event: { error: string }) => void) | null = null;

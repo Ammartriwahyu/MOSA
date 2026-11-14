@@ -6,7 +6,6 @@ import { ROUTES } from "@/shared/config";
 import { Spinner } from "@/shared/ui";
 import { useSessionStatus } from "../hooks/use-session-status";
 
-/** Halaman tamu (onboarding, masuk, daftar): yang sudah masuk langsung ke jadwal. */
 export function GuestGuard({ children }: { children: ReactNode }) {
   const status = useSessionStatus();
   const router = useRouter();

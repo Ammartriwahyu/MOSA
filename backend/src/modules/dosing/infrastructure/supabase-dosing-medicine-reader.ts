@@ -36,7 +36,7 @@ export class SupabaseDosingMedicineReader implements DosingMedicineReader {
   }
   async listActive(householdId: string): Promise<Result<readonly DosingMedicine[], DomainError>> {
     try {
-      // Jadwal harus merespons dalam batas fetch klien, tanpa backoff SDK tambahan.
+
       const { data, error } = await this.client.from("medicines").select(COLUMNS).eq("household_id", householdId).eq("active", true).order("created_at").retry(false);
       if (error) return err(databaseUnavailable());
       const values: DosingMedicine[] = [];

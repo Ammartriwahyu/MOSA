@@ -16,15 +16,10 @@ const ITEMS = [
   { href: ROUTES.settings, label: DRAFT.pengaturan, Icon: Settings },
 ] as const;
 
-/**
- * Navigasi samping desktop (Figma Desktop 06 · 184:326): logo utama di atas,
- * menu berlabel teks (bukan ikon saja), target ≥ 56 px. Menggantikan navigasi
- * bawah mulai lebar 1024 px; tujuan dan urutan sama dengan navigasi mobile.
- */
 export function SideNav() {
   const pathname = usePathname();
   return (
-    // <header> tingkat atas = landmark banner: logo dan menu situs berada di dalam landmark.
+
     <header className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col gap-8 border-r-2 border-line bg-surface px-5 py-7 lg:flex">
       <Logo variant="utama" height={64} alt={NAMA_APLIKASI} />
       <nav aria-label={DRAFT.navigasiSamping}>

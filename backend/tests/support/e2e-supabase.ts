@@ -10,9 +10,6 @@ const ORIGIN = "https://supabase-e2e.invalid";
 const SIGNUP = z.object({ email: z.email(), password: z.string().min(8), data: z.record(z.string(), z.unknown()).optional() });
 type TestUser = { id: string; email: string; user_metadata: Record<string, unknown>; app_metadata: { provider: string }; aud: string; role: string; created_at: string };
 
-/** Auth + transport PostgREST tiruan, di luar jalur produksi. SDK Supabase,
- * repository aplikasi, SQL/RLS/trigger/RPC tetap asli. Tidak menguji GoTrue/JWT.
- */
 export async function e2eSupabase(db: PGlite) {
   const dispatch = await postgresTransport(db);
   const sessions = new Map<string, TestUser>();
@@ -54,8 +51,7 @@ export async function e2eSupabase(db: PGlite) {
         failures.push(`unsupported transport request: ${request.method} ${url.pathname}`);
         return Response.json({ code: "42501", message: "Forbidden in test." }, { status: 403 });
       }
-      // PGlite mempunyai satu koneksi. Mutex meliputi seluruh transaksi agar
-      // permintaan adaptor paralel tidak saling menumpang SET LOCAL ROLE.
+
       await db.exec("begin; set local role service_role");
       try {
         const response = await dispatch(request);

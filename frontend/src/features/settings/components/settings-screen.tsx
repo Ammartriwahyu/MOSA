@@ -24,11 +24,6 @@ function AccountRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-/**
- * Pengaturan (Figma MOSA DRAFT 22 · 135:4687): keluaran Teks/Suara, akun bersama,
- * ringkasan privasi, hapus data & akun, keluar. Baris "Dipakai di: 2 HP" di Figma
- * tidak ditampilkan: aplikasi tidak melacak perangkat (tanpa data karangan).
- */
 export function SettingsScreen() {
   const household = useHousehold();
   const account = useAccount();
@@ -62,8 +57,8 @@ export function SettingsScreen() {
     <>
       <PageHeader title={PENGATURAN.judul} backHref={ROUTES.home} />
 
-      {/* Dua kolom bila area konten ≥ 42rem (Figma Desktop 22 · 184:2259): pilihan dan akun di
-          kiri, privasi dan tindakan akun di kanan. Urutan DOM sama dengan mobile. */}
+      {
+}
       <div className="flex min-w-0 flex-col gap-4 @2xl:grid @2xl:grid-cols-2 @2xl:items-start @2xl:gap-6">
       <div className="flex min-w-0 flex-col gap-4">
       <ChoiceCards

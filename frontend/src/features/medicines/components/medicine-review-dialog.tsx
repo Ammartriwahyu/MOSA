@@ -29,7 +29,7 @@ export function MedicineReviewDialog({ review, saving, error, onConfirm, onEdit,
     ...(input.notes ? [{ label: OBAT.catatanPribadi, value: input.notes }] : []),
     { label: SIMPAN_OBAT.sumber, value: input.labelSource === "apoteker" ? LABEL.diisiApoteker : LABEL.diisiKeluarga },
   ];
-  // Pratinjau ini masih harus diperiksa pengisi: jangan menambahkan label "telah diperiksa".
+
   const reading = [title, KONFIRMASI_SIMPAN_OBAT, SIMPAN_OBAT.dataAsli,
     ...rows.flatMap(({ label, value }) => [label, value]),
     ...(reviewed.explanationOrigin === "ai_dikonfirmasi" ? [SIMPAN_OBAT.penjelasanAi, reviewed.explanation] : [AI_GAGAL, DRAFT.penjelasanBelumTersedia, SIMPAN_OBAT.tanpaAi]),

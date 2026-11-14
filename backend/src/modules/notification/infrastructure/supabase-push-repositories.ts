@@ -38,7 +38,7 @@ export class SupabasePushSubscriptions implements PushSubscriptionRepository {
           if (!parsed.success) return unavailable();
           const row = parsed.data;
           const registration = createPushRegistration({ endpoint: row.endpoint, keys: { p256dh: row.p256dh, auth: row.auth } });
-          if (!registration.ok) continue; // Data lama tidak boleh menjadi URL proxy.
+          if (!registration.ok) continue;
           subscriptions.push({ ...registration.value, id: row.id, householdId: row.household_id });
         }
         if (data.length < 500) return ok(subscriptions);

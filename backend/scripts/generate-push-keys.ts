@@ -2,7 +2,6 @@ import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import * as webpush from "web-push";
 
-// Tulis ke berkas di-ignore, tanpa mencetak private key atau menimpa konfigurasi.
 const keys = webpush.generateVAPIDKeys();
 try {
   writeFileSync(resolve(import.meta.dirname, "../.env.push-keys"),

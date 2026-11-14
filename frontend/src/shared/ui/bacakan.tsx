@@ -6,7 +6,6 @@ import { DRAFT, SUARA, TOMBOL } from "../copy";
 import { useSpeech } from "../hooks";
 import { Button } from "./button";
 
-/** text harus sama persis dengan teks yang dirender consumer; tidak ada autoplay atau teks medis tambahan. */
 export function Bacakan({ text, active = true, contextKey }: { text: string; active?: boolean; contextKey?: string }) {
   const speech = useSpeech(text, { active, contextKey });
   const statusId = useId();

@@ -3,7 +3,7 @@ import { z } from "zod";
 import type { E2eSystem } from "./e2e-system";
 
 export const MEDICINE_INPUT = { name: "Amlodipin", strength: "5 mg", purpose: "Kegunaan fiktif uji", doseAmount: "1 tablet", usageRule: "Sesudah makan", warnings: "Tidak ada larangan khusus", notes: null, intakeTimes: ["07:00", "19:00"], labelSource: "keluarga", explanationOrigin: "teks_pengisi", explanation: null } as const;
-// Biner sintetis, bukan foto; AI pembaca diganti port fiktif.
+
 export const E2E_IMAGE = { mimeType: "image/jpeg", data: Buffer.from([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]).toString("base64") };
 export const medicineSchema = z.object({ id: z.uuid(), name: z.string(), explanation: z.string().nullable(), explanationOrigin: z.enum(["ai_dikonfirmasi", "teks_pengisi"]), intakeTimes: z.array(z.string()) });
 export const confirmationSchema = z.object({ level: z.enum(["dasar", "scan_terverifikasi"]), scheduledTime: z.string(), medicineId: z.uuid() });

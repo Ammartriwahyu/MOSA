@@ -27,7 +27,6 @@ function encode(canvas: HTMLCanvasElement, quality: number, signal: AbortSignal)
   });
 }
 
-/** Gambar digambar ulang menjadi JPEG; nama berkas dan metadata sumber tidak diteruskan. */
 export async function compressPhoto(file: File, signal: AbortSignal): Promise<PreparedPhoto> {
   signal.throwIfAborted();
   if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) throw new PhotoError("unsupported");

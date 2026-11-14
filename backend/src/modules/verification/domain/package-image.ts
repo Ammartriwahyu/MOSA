@@ -1,12 +1,10 @@
 import { domainError, type DomainError } from "../../../shared/domain/domain-error";
 import { err, ok, type Result } from "../../../shared/domain/result";
 
-/** Byte gambar sebelum base64; dipakai ulang oleh batas request HTTP pada row 19. */
 export const PACKAGE_IMAGE_LIMITS = Object.freeze({ maxBytes: 1_500_000 });
 export const PACKAGE_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 export type PackageImageMimeType = (typeof PACKAGE_IMAGE_MIME_TYPES)[number];
 
-/** Hanya memori request. Tidak memuat nama berkas, lokasi disk, URL, atau data akun. */
 export type PackageImage = {
   readonly bytes: Uint8Array;
   readonly mimeType: PackageImageMimeType;
@@ -24,7 +22,6 @@ function hasSignature(bytes: Uint8Array, mimeType: PackageImageMimeType): boolea
   }
 }
 
-/** Pemeriksaan ukuran, MIME dan signature; dekode gambar tetap dilakukan penyedia AI. */
 export function createPackageImage(input: {
   readonly bytes: Uint8Array;
   readonly mimeType: string;

@@ -1,7 +1,6 @@
 import { ApiError } from "@/shared/lib";
 import { PHOTO_POLICY } from "./photo-policy";
 
-/** FileReader hanya hidup selama pengiriman; tidak menyimpan data URL atau nama berkas. */
 export function photoBase64(blob: Blob, signal: AbortSignal): Promise<string> {
   signal.throwIfAborted();
   if (blob.type !== "image/jpeg" || blob.size === 0 || blob.size > PHOTO_POLICY.maxBytes)

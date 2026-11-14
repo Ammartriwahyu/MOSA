@@ -13,15 +13,14 @@ export class SendDueReminders {
     if (!subscriptions.ok) return subscriptions;
     const summary: DispatchSummary = { sent: 0, expired: 0, failed: 0, skipped: 0 };
     for (const subscription of subscriptions.value) {
-      // Baca status segar per perangkat; jangan mengirim snapshot cron sebelumnya.
+
       const reminders = await this.due.read(subscription.householdId);
       if (!reminders.ok) { summary.failed++; continue; }
       for (const reminder of reminders.value) {
         const claimed = await this.dispatches.claim(subscription, reminder);
         if (!claimed.ok) { summary.failed++; continue; }
         if (!claimed.value) { summary.skipped++; continue; }
-        // Klaim tidak dilepas sesudah timeout: hasil jaringan bisa sudah diterima.
-        // At-most-once per slot/perangkat; kegagalan/crash dapat kehilangan kiriman.
+
         let result: "sent" | "expired" | "failed";
         try { result = await this.sender.send(subscription, { type: "dose_due", slotId: reminder.slotId }); }
         catch { result = "failed"; }

@@ -6,7 +6,6 @@ import type { PackageReader } from "../application/ports/package-reader";
 import { createPackageImage, type PackageImage } from "../domain/package-image";
 import type { PackageReading } from "../domain/package-reading";
 
-// docs/04 Pemanggilan B. Tidak menerima daftar obat atau keputusan dari model.
 export const PACKAGE_READER_SYSTEM_INSTRUCTION = `Kamu membaca teks pada foto kemasan obat (bungkus, strip, blister, atau plastik).
 Keluarkan hanya apa yang benar-benar tercetak dan terbaca:
 - names: semua nama obat yang tercetak (nama dagang dan/atau nama zat aktif), persis seperti tertulis.
@@ -38,12 +37,11 @@ function unreadable(): PackageReading {
   return { names: [], strength: null, legible: false };
 }
 
-/** inlineData saja: tidak memakai Files API, penyimpanan, cache foto, atau logger. */
 export class GeminiPackageReader implements PackageReader {
   constructor(private readonly gemini: GeminiJsonGenerator) {}
 
   async read(image: PackageImage): Promise<Result<PackageReading, DomainError>> {
-    // Uint8Array dapat berubah setelah pabrik dipanggil; periksa lagi sebelum dikirim.
+
     const validated = createPackageImage(image);
     if (!validated.ok) return validated;
     const raw = await this.gemini.generateJson({

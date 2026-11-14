@@ -19,7 +19,6 @@ const nextDose = z.object({ ...slotFields, tanggal: z.enum(["hari_ini", "besok"]
 const matched = { medicine, readStrength: z.string().min(1), nextDose };
 const base = { serverTime: timestamp };
 
-/** Delapan DTO P06. Field tambahan dibuang; token hanya dipertahankan pada bisa_konfirmasi. */
 export const scanResponseSchema = z.discriminatedUnion("outcome", [
   z.object({ ...base, outcome: z.literal("tidak_terbaca") }),
   z.object({ ...base, outcome: z.literal("tidak_terdaftar") }),

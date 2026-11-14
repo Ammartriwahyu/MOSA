@@ -22,7 +22,6 @@ function NearbyDoses({ doses, title, description, ...actions }: DoseActionProps 
   );
 }
 
-/** Kelompok dan ringkasan dari backend; hanya urutan penyajian yang ditata di sini. */
 export function DoseGroups({ data, ...actions }: DoseActionProps & { data: TodaysDoses }) {
   const summaries = new Map(data.medicines.map((medicine) => [medicine.medicineId, medicine.summary]));
   return (

@@ -18,7 +18,17 @@ test.each([
   ["/medicines", "/medicines"],
   ["https://situs-lain.example", "/"],
   ["//situs-lain.example", "/"],
+  ["/\\situs-lain.example", "/"],
+  ["/\n/situs-lain.example", "/"],
+  ["/\t/situs-lain.example", "/"],
+  ["/medicines?next=%2Fscan#info", "/medicines?next=%2Fscan#info"],
   [null, "/"],
 ])("safeInternalPath(%j) → %s", (value, expected) => {
   expect(safeInternalPath(value, "/")).toBe(expected);
+});
+
+test.each(["/\\situs-lain.example", "/\n/situs-lain.example", "/\t/situs-lain.example"])("normalisasi URL browser tidak dapat mengalihkan lewat %j", (value) => {
+  const origin = "https://mosa.example";
+  expect(new URL(value, origin).origin).toBe("https://situs-lain.example");
+  expect(new URL(safeInternalPath(value, "/"), origin).origin).toBe(origin);
 });

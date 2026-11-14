@@ -3,7 +3,6 @@ import { cpus, totalmem } from "node:os";
 import { fileURLToPath } from "node:url";
 import { summarizeDurations } from "./measurements";
 
-// Tool lokal saja, tidak masuk src/ atau CI timing assertions. Tidak memuat .env.
 const backendDir = fileURLToPath(new URL("../../", import.meta.url));
 const script = fileURLToPath(import.meta.url);
 const warmup = 5;
@@ -17,7 +16,7 @@ async function coldEntry() {
 }
 
 async function benchmark() {
-  // Jangan mewariskan kredensial/proyek AI dari shell ke probe entri produksi.
+
   const env: NodeJS.ProcessEnv = {};
   for (const key of ["PATH", "Path", "SystemRoot", "WINDIR", "TEMP", "TMP", "LOCALAPPDATA", "USERPROFILE"]) {
     if (process.env[key]) env[key] = process.env[key];
@@ -63,7 +62,7 @@ async function benchmark() {
     }
     const confirmations = [];
     for (let index = 0; index < warmup + samples; index++) {
-      // Satu slot baru per hari fiktif: setiap sampel mengukur 201, bukan replay 409.
+
       const date = new Date(Date.UTC(2026, 10, 12 + index)).toISOString().slice(0, 10);
       system.setNow(`${date}T00:30:00Z`);
       const slot = `${medicine.id}:${date.replaceAll("-", "")}:0700`;
@@ -77,7 +76,6 @@ async function benchmark() {
   } finally { await system.close(); }
 }
 
-// Entri impor saja: tidak ada permintaan jaringan dari mode ini.
 if (process.argv.includes("--cold-entry")) await coldEntry();
 else await benchmark().then((result) => process.stdout.write(`${JSON.stringify(result, null, 2)}\n`))
   .catch(() => { process.stderr.write("Benchmark gagal; tidak menerbitkan hasil sukses atau isi respons.\n"); process.exitCode = 1; });

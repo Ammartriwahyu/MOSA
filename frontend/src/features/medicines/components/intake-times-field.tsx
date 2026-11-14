@@ -6,10 +6,6 @@ import { FORM_OBAT, labelJamMinum, OBAT } from "@/shared/copy";
 import { Button, CheckboxCard, TextField } from "@/shared/ui";
 import { MAX_INTAKE_TIMES, type TimeRow } from "../schemas/medicine-form";
 
-/**
- * Jam minum (Figma 17): Pagi/Siang/Malam bisa dicentang dan jamnya diubah,
- * ditambah jam lain sampai 6 baris. Kelompok waktu hanya label (docs/01).
- */
 export function IntakeTimesField({
   rows,
   onChange,

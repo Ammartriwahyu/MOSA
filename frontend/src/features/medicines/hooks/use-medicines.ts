@@ -3,7 +3,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createMedicine, deactivateMedicine, explainMedicine, getMedicine, listMedicines, updateMedicine, type CreateMedicineInput, type ExplanationInput, type Medicine } from "../api/medicines";
 
-/** Kunci cache obat; mutasi (tambah/ubah/hapus) membatalkan seluruh awalan ini. */
 export const medicinesQueryKey = ["medicines"] as const;
 
 export function useMedicines() {
@@ -27,7 +26,7 @@ export function useCreateMedicine() {
     mutationFn: createMedicine,
     retry: false,
     onSuccess: (medicine) => {
-      // Cache diperbarui hanya setelah server berhasil menyimpan.
+
       client.setQueryData([...medicinesQueryKey, medicine.id], medicine);
       client.setQueryData<Medicine[]>(medicinesQueryKey, (previous) =>
         previous ? [...previous.filter((item) => item.id !== medicine.id), medicine] : undefined,
@@ -43,7 +42,7 @@ export function useUpdateMedicine(id: string) {
     mutationFn: (input: CreateMedicineInput) => updateMedicine(id, input),
     retry: false,
     onSuccess: async (medicine) => {
-      // Respons refetch lama tidak boleh menimpa hasil PATCH yang baru selesai.
+
       await client.cancelQueries({ queryKey: medicinesQueryKey });
       client.setQueryData([...medicinesQueryKey, id], medicine);
       client.setQueryData<Medicine[]>(medicinesQueryKey, (previous) =>
@@ -63,7 +62,7 @@ export function useDeactivateMedicine(id: string) {
       await client.cancelQueries({ queryKey: medicinesQueryKey });
       client.setQueryData<Medicine[]>(medicinesQueryKey, (previous) => previous?.filter((item) => item.id !== id));
       client.removeQueries({ queryKey: [...medicinesQueryKey, id], exact: true });
-      // Hindari refetch detail yang baru dinonaktifkan; daftar dimuat ulang.
+
       void client.invalidateQueries({ queryKey: medicinesQueryKey, exact: true });
     },
   });

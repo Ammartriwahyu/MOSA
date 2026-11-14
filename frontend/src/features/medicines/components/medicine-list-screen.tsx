@@ -58,7 +58,6 @@ function LoadingList() {
   );
 }
 
-/** Daftar Obat (Figma MOSA DRAFT 16 · 135:4138): obat aktif milik akun, terurut saat dibuat. */
 export function MedicineListScreen({ savedId, removed = false }: { savedId?: string; removed?: boolean } = {}) {
   const medicines = useMedicines();
   const savedMedicine = medicines.data?.find((medicine) => medicine.id === savedId);

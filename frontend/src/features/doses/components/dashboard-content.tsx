@@ -8,11 +8,6 @@ import { DashboardDay } from "./dashboard-day";
 import { DoseGroups } from "./dose-groups";
 import type { DoseActionProps } from "./dose-actions";
 
-/**
- * Aksi utama dasbor: satu tombol ketuk besar (bukan geser). Tanda ">>>" pada Figma
- * menyiratkan gestur geser yang sulit bagi lansia dan tidak berfungsi, jadi tidak
- * dipakai (WCAG 2.5.1: tanpa gestur jalur). Ikon + teks di tengah seperti tombol lain.
- */
 function ScanButton({ due = [], onChooseScan, disabled = false }: { due?: readonly Dose[]; onChooseScan?: (trigger: HTMLButtonElement) => void; disabled?: boolean }) {
   const contents = <>
     <Camera aria-hidden="true" className="size-7 shrink-0" />
@@ -58,7 +53,6 @@ function EmptyDashboard() {
   );
 }
 
-/** Status dan hitungan hanya dibaca dari backend; pemilihan di sini untuk presentasi banner. */
 export function DashboardContent({ data, onChooseScan, speechActive = true, ...actions }: DoseActionProps & { data: TodaysDoses; onChooseScan?: (trigger: HTMLButtonElement) => void; speechActive?: boolean }) {
   const empty = data.medicines.length === 0;
   const due = [...data.carryoverDoses, ...data.doses, ...data.earlyDoses].filter((dose) => dose.status === "jatuh_tempo");
@@ -105,14 +99,13 @@ export function DashboardContent({ data, onChooseScan, speechActive = true, ...a
               <Bacakan text={reading.join("\n")} active={speechActive} contextKey={`${data.date}:${next?.medicineId}:${next?.tanggal}:${next?.jam}`} />
             </section>
           )}
-          {/* Dua kolom bila area konten ≥ 48rem (Figma 184:326): dosis di kiri, progres di kanan.
-              Diukur dalam rem pada kontainer, bukan lebar layar: saat teks diperbesar 200%
-              tata letak kembali satu kolom tanpa geser samping. Kolom kanan tanpa elemen fokus,
-              jadi urutan Tab tetap mengikuti dosis. */}
+          {
+
+}
           <div className="flex min-w-0 flex-col gap-3 @3xl:grid @3xl:grid-cols-[minmax(0,1fr)_20rem] @3xl:items-start @3xl:gap-6">
             <div className="flex min-w-0 flex-col gap-3 @3xl:sticky @3xl:top-8 @3xl:col-start-2 @3xl:row-start-1">
               <DailyProgress summary={data.summary} />
-              {/* Desktop: tombol ini ada di header. */}
+              { }
               <Button asChild variant="secondary" className="lg:hidden"><Link href={ROUTES.newMedicine}>{OBAT.tambahObat}</Link></Button>
             </div>
             <div className="flex min-w-0 flex-col gap-3 @3xl:col-start-1 @3xl:row-start-1">

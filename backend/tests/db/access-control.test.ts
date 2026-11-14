@@ -23,8 +23,7 @@ describe("hak tabel dan RLS pada migrasi PostgreSQL asli", () => {
     test.each(DATA_TABLES)("%s menolak baca/tulis/ubah/hapus langsung dan tidak mengubah data", async (table) => {
       const before = (await db.query(`select * from public.${table} order by 1`)).rows;
       expect(before).toHaveLength(2);
-      // INSERT ... SELECT menghasilkan baris valid; penolakan harus 42501,
-      // bukan kebetulan gagal NOT NULL/constraint karena payload kosong.
+
       for (const sql of [`select * from public.${table}`, `insert into public.${table} select * from public.${table}`,
         `update public.${table} set ${unchanged[table]}`, `delete from public.${table}`]) {
         await expect(queryAs(db, role, sql)).rejects.toMatchObject({ code: "42501" });
@@ -40,8 +39,7 @@ describe("hak tabel dan RLS pada migrasi PostgreSQL asli", () => {
       expect(rights.rows).toEqual([{ allowed: false }]);
     });
     test.each(DATA_TABLES)("RLS %s tetap menolak INSERT setelah hak tabel dibuka dalam transaksi uji", async (table) => {
-      // Baris baru berasal dari SELECT milik owner sebelum SET ROLE, bukan
-      // SELECT yang sudah disembunyikan RLS sehingga INSERT menjadi no-op.
+
       const row = (await db.query(`select * from public.${table} limit 1`)).rows[0];
       await expect(queryAs(db, role, `insert into public.${table} select * from json_populate_record(null::public.${table},$1::json)`, [JSON.stringify(row)], true)).rejects.toMatchObject({ code: "42501", message: expect.stringContaining("row-level security") });
     });

@@ -6,7 +6,6 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { AUTH, DRAFT, PENGATURAN, PREFERENSI } from "@/shared/copy";
 import { SettingsScreen } from "./settings-screen";
 
-// Data fiktif untuk uji.
 const backend = vi.hoisted(() => ({
   household: { dataConsentAt: "x", scanConsentAt: null, outputMode: "teks" as "teks" | "suara" | null, isDemo: false },
   patch: vi.fn(),

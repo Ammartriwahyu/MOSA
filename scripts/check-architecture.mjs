@@ -4,8 +4,6 @@ import { spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-// lintText memakai konfigurasi dan path berkas asli tanpa menulis probe ke src.
-// Kasus positif mencegah pemeriksaan yang memblokir seluruh impor ikut dianggap lulus.
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const probes = {
   backend: [
@@ -43,16 +41,14 @@ const selectedPackage = process.argv[2];
 if (selectedPackage && !Object.hasOwn(probes, selectedPackage)) throw new Error("Paket probe tidak dikenal.");
 for (const [name, cases] of Object.entries(probes)) {
   if (!selectedPackage) {
-    // Resolver menyimpan cache project. Dua proses menjaga konfigurasi backend
-    // dan alias frontend terisolasi sebagaimana perintah lint masing-masing.
+
     const result = spawnSync(process.execPath, [fileURLToPath(import.meta.url), name], { cwd: join(root, name), stdio: "inherit" });
     failed ||= result.status !== 0;
     continue;
   }
   if (selectedPackage !== name) continue;
   const cwd = join(root, name);
-  // Resolver TypeScript membaca project relatif terhadap cwd proses, sama
-  // seperti pnpm --filter <paket> lint. Jangan menguji alias dari cwd akar.
+
   process.chdir(cwd);
   const require = createRequire(join(cwd, "package.json"));
   const ts = require("typescript");
@@ -75,8 +71,7 @@ for (const [name, cases] of Object.entries(probes)) {
       const results = await eslint.lintText(code, { filePath: join(cwd, file), warnIgnored: true });
       const messages = results.flatMap((result) => result.messages);
       const rules = messages.map((message) => message.ruleId);
-      // Parser errors, ignored paths, and unrelated failures cannot masquerade
-      // as enforcement of the requested architecture rule.
+
       const passed = results.length === 1 && (allowed ? messages.length === 0 : rules.includes(expectedRule) && rules.every((rule) => rule === expectedRule));
       if (!passed) failures.push({ label, typeOnly, allowed, expectedRule, actualRules: rules });
     }

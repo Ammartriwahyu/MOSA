@@ -7,7 +7,6 @@ export function speechEngine(): SpeechSynthesis | null {
 }
 export const VOICE_DISCOVERY_TIMEOUT_MS = 2_000;
 
-/** Snapshot eksternal untuk SSR/hidrasi; satu listener mesin, tanpa daftar suara atau teks pada cache aplikasi. */
 export function createVoiceAvailabilityStore() {
   let snapshot: VoiceAvailability = "checking";
   const listeners = new Set<() => void>();

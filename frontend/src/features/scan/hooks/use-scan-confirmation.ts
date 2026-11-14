@@ -11,7 +11,6 @@ export type ScanSlot = ConfirmableScan["slots"][number];
 type Failure = "expired" | "changed" | "already" | "uncertain";
 type State = { phase: "ready" } | { phase: "pending" } | { phase: "error"; reason: Failure } | { phase: "saved"; receipt: DoseConfirmation };
 
-/** Token tidak masuk mutation cache. Tidak ada retry/antrean offline atau hitungan optimistis. */
 export function useScanConfirmation(result: ScanResponse) {
   const client = useQueryClient();
   const [state, setState] = useState<State>({ phase: "ready" });

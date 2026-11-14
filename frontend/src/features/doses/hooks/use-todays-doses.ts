@@ -10,7 +10,7 @@ export function useTodaysDoses() {
   return useQuery({
     queryKey: dosesQueryKey,
     queryFn: ({ signal }) => getTodaysDoses(signal),
-    // Kembali dari mengubah obat harus meminta jadwal terbaru.
+
     staleTime: 0,
     refetchInterval: DOSES_POLL_INTERVAL_MS,
     refetchIntervalInBackground: false,

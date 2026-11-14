@@ -1,4 +1,4 @@
-/* Generated public/sw.js uses shared/copy/copy.ts. No fetch interception or data cache. */
+
 (() => {
   const COPY = /*__PUSH_COPY__*/ null;
   const CONTROL_CACHE = "mosa-push-control-v1";
@@ -19,7 +19,7 @@
   }
   self.addEventListener("push", (event) => {
     event.waitUntil((async () => {
-      // Hanya satu flag lokal; tidak menyimpan akun, sesi, obat, foto atau respons API.
+
       try {
         const cache = await caches.open(CONTROL_CACHE);
         const flag = await cache.match(CONTROL_PATH);
@@ -39,7 +39,7 @@
     event.notification.close();
     event.waitUntil((async () => {
       const slotId = slotFrom(event.notification.data);
-      // Jangan percaya URL dari payload; tujuan selalu origin aplikasi dan status dicek halaman scan.
+
       const target = new URL(slotId ? `/scan?dosis=${encodeURIComponent(slotId)}` : "/", self.location.origin).href;
       const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
       const current = windows.find((client) => new URL(client.url).origin === self.location.origin);

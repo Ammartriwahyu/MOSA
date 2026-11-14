@@ -16,7 +16,6 @@ export type PackageMatch = PackageMismatch | {
   readonly readStrength: Strength;
 };
 
-/** Urutan docs/01 §5: keterbacaan → nama → kekuatan. Tidak memakai kemiripan/sinonim tebakan. */
 export function matchPackage(
   reading: PackageReading,
   registered: readonly RegisteredMedicine[],
@@ -25,7 +24,7 @@ export function matchPackage(
   const names = new Set(reading.names.map(normalizeMedicineName).filter(Boolean));
   if (names.size === 0) return ok({ outcome: "tidak_terbaca" });
   const candidates = registered.filter((medicine) => names.has(normalizeMedicineName(medicine.name)));
-  // Nama tebakan dari AI tidak ikut keluar pada hasil tidak terdaftar.
+
   if (candidates.length === 0) return ok({ outcome: "tidak_terdaftar" });
 
   const readStrength = reading.strength === null ? null : parseStrength(reading.strength);
@@ -35,7 +34,7 @@ export function matchPackage(
   if (matches.length === 0) return ok({ outcome: "kekuatan_beda", medicines: candidates, readStrength });
   const [medicine] = matches;
   if (matches.length !== 1 || !medicine) {
-    // Dua identitas terdaftar cocok: jangan memilih dari urutan repository atau jadwal.
+
     return err(domainError("VALIDATION_FAILED", "Identitas obat perlu diperjelas.", { field: "medicineId", reason: "ambiguous_match" }));
   }
   return ok({ outcome: "cocok", medicine, readStrength });

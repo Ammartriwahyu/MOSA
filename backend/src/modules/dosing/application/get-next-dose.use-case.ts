@@ -5,7 +5,6 @@ import { findNextDose, nextDoseDates, type NextDose } from "../domain/next-dose"
 import type { ConfirmedDoseReader } from "./ports/confirmed-dose-reader";
 import type { MedicineScheduleReader } from "./ports/medicine-schedule-reader";
 
-/** Dipakai doses/today dan verification nanti, tanpa rute HTTP tersendiri. */
 export class GetNextDose {
   constructor(
     private readonly medicines: MedicineScheduleReader,
@@ -19,7 +18,7 @@ export class GetNextDose {
     if (!schedule.value?.active || schedule.value.medicineId !== input.medicineId) {
       return err(domainError("NOT_FOUND", "Obat tidak ditemukan."));
     }
-    // Satu snapshot waktu agar rentang konfirmasi dan hasil pencarian konsisten.
+
     const now = this.clock.now();
     const dates = nextDoseDates(now);
     if (!dates.ok) return dates;

@@ -1,4 +1,4 @@
-// Satu-satunya pintu keluar fitur medicines (dicek lint).
+
 export { AddMedicineScreen } from "./components/add-medicine-screen";
 export { EditMedicineScreen } from "./components/edit-medicine-screen";
 export { MedicineDetailScreen } from "./components/medicine-detail-screen";

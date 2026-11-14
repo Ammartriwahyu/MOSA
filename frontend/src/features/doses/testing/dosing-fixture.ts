@@ -11,7 +11,6 @@ export function doseFixture(overrides: Partial<Dose> = {}): Dose {
   };
 }
 
-/** Data fiktif tes saja; tidak diimpor jalur produksi. */
 export function todaysDosesFixture(overrides: Partial<TodaysDoses> = {}): TodaysDoses {
   return {
     date: "2026-11-11", serverTime: "2026-11-11T00:30:00.000Z", summary: { confirmed: 0, total: 1 },

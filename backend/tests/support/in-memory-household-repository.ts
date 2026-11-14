@@ -4,9 +4,8 @@ import type { HouseholdRepository } from "../../src/modules/household/domain/hou
 import { domainError, type DomainError } from "../../src/shared/domain/domain-error";
 import { err, ok, type Result } from "../../src/shared/domain/result";
 
-/** Repository palsu untuk tes application/interface. Data seluruhnya fiktif. */
 export class InMemoryHouseholdRepository implements HouseholdRepository {
-  /** Kunci: ownerUserId. */
+
   readonly rows = new Map<string, Household>();
   private sequence = 0;
 
@@ -38,7 +37,7 @@ export class InMemoryHouseholdRepository implements HouseholdRepository {
     if (!current || current.id !== household.id) {
       return err(domainError("NOT_FOUND", "Rumah tangga tidak ditemukan."));
     }
-    // Hanya kolom pengaturan yang boleh berubah, sama seperti repository Supabase.
+
     this.rows.set(household.ownerUserId, {
       ...current,
       dataConsentAt: household.dataConsentAt,
@@ -49,7 +48,6 @@ export class InMemoryHouseholdRepository implements HouseholdRepository {
   }
 }
 
-/** Penghapus akun palsu: menghapus baris rumah tangga, meniru ON DELETE CASCADE. */
 export class InMemoryAccountEraser implements AccountEraser {
   readonly erased: string[] = [];
 

@@ -1,4 +1,3 @@
-# Aturan umum ada di .gitignore akar; di sini hanya yang khusus Next.js.
 next-env.d.ts
 *.pem
 .env*

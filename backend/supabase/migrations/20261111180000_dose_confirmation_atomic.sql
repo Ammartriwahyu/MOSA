@@ -1,4 +1,4 @@
--- Q5: jam baru aktif langsung saat perubahan disimpan, tanpa dosis masa lalu.
+
 alter table public.medicines
   add column if not exists intake_times_started_at jsonb not null default '{}'::jsonb
   check (jsonb_typeof(intake_times_started_at) = 'object');
@@ -23,7 +23,7 @@ begin
   end if;
   foreach t in array new.intake_times loop
     if supplied and new.intake_times_started_at ? t then
-      -- Hanya backend/seed yang bisa menulis kolom internal ini.
+
       started := (new.intake_times_started_at ->> t)::timestamptz;
     elsif tg_op = 'UPDATE' and t = any(old.intake_times) then
       started := coalesce((old.intake_times_started_at ->> t)::timestamptz, old.created_at);
@@ -44,8 +44,6 @@ drop trigger if exists medicines_intake_time_starts on public.medicines;
 create trigger medicines_intake_time_starts before insert or update on public.medicines
   for each row execute function public.track_intake_time_starts();
 
--- Kunci baris obat menyerialkan perubahan jadwal/hapus dengan konfirmasi.
--- Angka jendela dikirim backend dari satu konstanta domain, bukan disalin di SQL.
 create or replace function public.confirm_dose(
   p_household_id uuid,
   p_medicine_id uuid,

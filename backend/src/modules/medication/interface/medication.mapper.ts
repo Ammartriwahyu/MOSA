@@ -1,7 +1,5 @@
 import type { ExplanationOrigin, LabelSource, Medicine } from "../domain/medicine";
 
-// Bentuk respons untuk frontend. household_id, kolom normalisasi, dan status
-// aktif tidak dikirim (obat nonaktif tidak pernah dikembalikan).
 export type MedicineResponse = {
   id: string;
   name: string;

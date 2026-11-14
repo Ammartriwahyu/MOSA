@@ -45,17 +45,12 @@ export function memoryLogger(): MemoryLogger {
   return { events, info: (e) => events.push(e), error: (e) => events.push(e) };
 }
 
-// Explainer palsu bawaan: membalas teks yang lolos pagar keluaran untuk sumber apa pun.
 export const echoExplainer: PlainLanguageExplainer = {
   explain: async (_householdId, text) => ok(`Minum obat ini: ${text.aturanPakai}`),
 };
 
 export const healthyDb: DatabasePing = { ping: async () => ok(undefined) };
 
-/**
- * Verifier palsu: token tertentu memetakan ke userId tertentu.
- * "token-gangguan" mensimulasikan layanan Auth tidak terjangkau.
- */
 export function fakeTokenVerifier(tokens: Record<string, string>): AccessTokenVerifier {
   return {
     verify: async (token) => {

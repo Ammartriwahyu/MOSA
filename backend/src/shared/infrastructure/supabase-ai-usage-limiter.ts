@@ -5,7 +5,6 @@ import { err, ok, type Result } from "../domain/result";
 import { toWib } from "../domain/wib-time";
 import type { AdminClient } from "./supabase-client";
 
-/** Menghitung jatah lewat fungsi SQL atomik `consume_ai_usage` (per hari WIB). */
 export class SupabaseAiUsageLimiter implements AiUsageLimiter {
   constructor(
     private readonly client: AdminClient,

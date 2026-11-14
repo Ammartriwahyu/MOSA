@@ -14,8 +14,7 @@ describe("penghapusan menyeluruh lewat foreign key PostgreSQL", () => {
     const before = await accountSnapshot(db, account); const otherBefore = await accountSnapshot(db, other);
     expect(Object.keys(before).sort()).toEqual(["users", ...DATA_TABLES].sort());
     for (const rows of Object.values(before)) expect(rows).toHaveLength(1);
-    // Titik akhir Supabase Auth deleteUser menghapus baris ini; Auth server
-    // tidak dijalankan di sini. Yang dibuktikan adalah seluruh rantai cascade.
+
     await db.query("delete from auth.users where id=$1", [account.user]);
     const after = await accountSnapshot(db, account);
     for (const rows of Object.values(after)) expect(rows).toEqual([]);

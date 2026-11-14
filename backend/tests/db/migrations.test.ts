@@ -2,7 +2,6 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 
-// Pemeriksaan statis atas migrasi; pembuktian langsung ke Supabase: `pnpm db:check-rls`.
 const dir = join(import.meta.dirname, "../../supabase/migrations");
 const files = readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();
 const sql = files

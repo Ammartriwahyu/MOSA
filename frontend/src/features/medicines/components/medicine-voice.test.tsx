@@ -17,7 +17,7 @@ let engine: TestSpeechEngine;
 beforeEach(() => { engine = installSpeechEngine(); vi.mocked(useMedicine).mockReturnValue({ isPending: false, isError: false, data: medicine } as ReturnType<typeof useMedicine>); });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 function expectVisibleReading(text: string) {
-  // Setiap baris harus benar-benar ada di layar, termasuk tanda baca/nilai asli.
+
   for (const line of text.split("\n")) expect(document.body.textContent).toContain(line);
 }
 test("pop-up membacakan pratinjau persis tanpa menganggap sudah diperiksa atau menyimpan; unmount menghentikan", async () => {

@@ -31,11 +31,8 @@ import { migratedDatabase } from "./sql-database";
 import { e2eSupabase } from "./e2e-supabase";
 import { memoryLogger } from "./test-container";
 
-export const E2E_START = Date.parse("2026-11-11T23:00:00Z"); // 12 November, 06.00 WIB.
+export const E2E_START = Date.parse("2026-11-11T23:00:00Z");
 
-/** Backend HTTP sungguhan + SDK/adaptor/SQL/HMAC asli; hanya Auth/AI/transport
- * Supabase yang diganti khusus tes. Tidak menyalakan rute pratinjau produksi.
- */
 export async function e2eSystem() {
   const db = await migratedDatabase();
   const transport = await e2eSupabase(db); const admin = transport.admin;

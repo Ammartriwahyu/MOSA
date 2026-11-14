@@ -2,18 +2,18 @@ import { z } from "zod";
 import { ApiError } from "./api-error";
 
 export type ApiClientConfig = {
-  /** Alamat backend tanpa garis miring akhir, mis. http://localhost:8787 */
+
   baseUrl: string;
-  /** Token akses Supabase sesi ini; null = belum masuk. */
+
   getAccessToken: () => Promise<string | null>;
   fetch?: typeof fetch;
-  /** Batas waktu per permintaan. AI bisa sampai 20 detik (docs/04), jadi bawaan 25 detik. */
+
   timeoutMs?: number;
 };
 
 export type RequestOptions = {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
-  /** Objek dikirim sebagai JSON; FormData dikirim apa adanya (foto scan). */
+
   body?: unknown;
   signal?: AbortSignal;
 };
@@ -26,12 +26,6 @@ function isFormData(body: unknown): body is FormData {
   return typeof FormData !== "undefined" && body instanceof FormData;
 }
 
-/**
- * Klien HTTP bertipe untuk backend /v1 (docs/03 §13): menambahkan token
- * Supabase, memvalidasi bentuk respons dengan zod, dan menerjemahkan format
- * galat `{ error: { code, message, details } }` menjadi ApiError.
- * Melempar galat (bukan Result) karena dipakai TanStack Query.
- */
 export function createApiClient(config: ApiClientConfig) {
   const doFetch = config.fetch ?? fetch;
   const timeoutMs = config.timeoutMs ?? 25_000;
@@ -49,7 +43,6 @@ export function createApiClient(config: ApiClientConfig) {
       body = JSON.stringify(options.body);
     }
 
-    // Dibatalkan selagi menunggu token: jangan kirim apa pun.
     options.signal?.throwIfAborted();
 
     const timeout = AbortSignal.timeout(timeoutMs);
@@ -64,7 +57,7 @@ export function createApiClient(config: ApiClientConfig) {
         signal,
       });
     } catch (error) {
-      // Pembatalan oleh pemanggil (mis. TanStack Query) diteruskan apa adanya.
+
       if (options.signal?.aborted) throw error;
       if (timeout.aborted) throw new ApiError("TIMEOUT", null, "Permintaan melewati batas waktu.");
       throw new ApiError("NETWORK_ERROR", null, "Tidak dapat terhubung ke server.");
@@ -75,7 +68,7 @@ export function createApiClient(config: ApiClientConfig) {
   }
 
   return {
-    /** Permintaan yang membalas JSON; bentuknya divalidasi `schema`. */
+
     async json<Schema extends z.ZodType>(
       path: string,
       schema: Schema,
@@ -89,7 +82,6 @@ export function createApiClient(config: ApiClientConfig) {
       return parsed.data;
     },
 
-    /** Permintaan tanpa isi balasan (mis. 204 dari DELETE). */
     async noContent(path: string, options: RequestOptions = {}): Promise<void> {
       await send(path, options);
     },

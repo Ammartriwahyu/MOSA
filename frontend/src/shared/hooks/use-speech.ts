@@ -5,16 +5,14 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { createSpeechPlayback, indonesianLocalVoice, type SpeechPlaybackState } from "../lib/speech-playback";
 import { createVoiceAvailabilityStore, speechEngine } from "../lib/speech-voices";
 
-// Hanya event/effect klien yang memakai mesin; tidak ada teks pada state server atau cache aplikasi.
 const playback = createSpeechPlayback();
 const voices = createVoiceAvailabilityStore();
 
-/** Panggil speak langsung dari handler sentuhan. active=false saat dialog ditutup; contextKey membedakan akun/slot. */
 export function useSpeech(text: string, { active = true, contextKey }: { active?: boolean; contextKey?: string } = {}) {
   const pathname = usePathname();
   const availability = useSyncExternalStore(voices.subscribe, voices.getSnapshot, voices.getServerSnapshot);
   const [snapshot, setSnapshot] = useState({ text, active, pathname, contextKey, state: "idle" as SpeechPlaybackState });
-  // Callback dari konteks lama tidak boleh mengubah status teks/akun/rute yang baru.
+
   const state = snapshot.text === text && snapshot.active === active && snapshot.pathname === pathname && snapshot.contextKey === contextKey ? snapshot.state : "idle";
   const owner = useRef({}); const mounted = useRef(false);
   const notify = useCallback((value: SpeechPlaybackState) => {
@@ -47,7 +45,7 @@ export function useSpeech(text: string, { active = true, contextKey }: { active?
       if (!synth || !voice) { playback.stop(owner.current); notify("unavailable"); return; }
       const utterance = new window.SpeechSynthesisUtterance(text);
       utterance.lang = "id-ID"; utterance.voice = voice; utterance.rate = 1; utterance.pitch = 1; utterance.volume = 1;
-      // Tidak ada await/setTimeout sebelum speak: tetap di dalam gestur pengguna.
+
       playback.start(owner.current, synth, utterance, notify);
     } catch { playback.stop(owner.current); notify("failed"); }
   }

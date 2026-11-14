@@ -13,10 +13,6 @@ import { BrandHeader } from "./brand-header";
 
 type FieldErrors = { email?: string; password?: string };
 
-/**
- * Masuk akun (Figma MOSA DRAFT 02 · 135:2788). Tanpa tombol Quick Login Demo:
- * juri masuk seperti pengguna biasa memakai akun demo dari README (keputusan tim 14 Nov).
- */
 export function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState("");

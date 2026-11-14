@@ -17,7 +17,6 @@ import {
   TextField,
 } from "./index";
 
-// Kontras diuji pada token (design-tokens.test.ts); jsdom tidak merender warna.
 async function expectNoA11yViolations(root: Element = document.body) {
   const results = await axe.run(root, { rules: { "color-contrast": { enabled: false } } });
   expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);

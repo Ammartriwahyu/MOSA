@@ -4,23 +4,20 @@ import { Slot } from "@radix-ui/react-slot";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cx } from "./cx";
 
-// Figma MOSA DRAFT: tombol kapsul (pill). Tinggi 56 px (aksi utama) atau 60 px
-// (layar hasil/pengaturan); tinggi minimum, bukan tinggi tetap, agar label
-// dapat membungkus ketika pengguna memperbesar teks (docs/06).
 const VARIANT = {
-  /** Aksi utama: kapsul gelap (Scan Obat, Foto Obat yang Benar). */
+
   action: "bg-action text-on-action",
-  /** Hijau brand (Figma 03: Buat Akun). */
+
   brand: "bg-brand text-on-brand",
-  /** Sekunder: abu muda (Kembali ke Jadwal, Batal, Sudah minum tanpa scan). */
+
   secondary: "bg-secondary text-ink",
-  /** Bahaya padat (Ya, hapus semua). */
+
   danger: "bg-danger text-on-brand",
-  /** Garis gelap di latar putih (Keluar dari Akun). */
+
   outline: "border-2 border-action bg-surface text-ink",
-  /** Garis merah di latar putih (Hapus Seluruh Data & Akun). */
+
   "danger-outline": "border-2 border-danger bg-surface text-danger",
-  /** Biru muda (Bacakan di latar terang). */
+
   info: "border-2 border-info-border bg-info-soft text-info",
 } as const;
 
@@ -34,11 +31,11 @@ export type ButtonVariant = keyof typeof VARIANT;
 export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   size?: keyof typeof SIZE;
-  /** Ikon di kiri label (dekoratif; label teks wajib ada). */
+
   icon?: ReactNode;
-  /** Lebar penuh (bawaan, sesuai Figma). */
+
   fullWidth?: boolean;
-  /** Pakai elemen anak (mis. Link) dengan gaya tombol. */
+
   asChild?: boolean;
 };
 

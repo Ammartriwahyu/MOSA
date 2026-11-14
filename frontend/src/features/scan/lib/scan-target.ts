@@ -1,6 +1,5 @@
 export type ScanTarget = { mode: "generic" } | { mode: "selected"; slotId: string; date: string; time: string } | { mode: "invalid" };
 
-/** Next searchParams sudah decode sekali; jangan decode lagi atau mengganti target rusak. */
 export function parseScanTarget(value?: string | string[]): ScanTarget {
   if (value === undefined) return { mode: "generic" };
   if (typeof value !== "string") return { mode: "invalid" };

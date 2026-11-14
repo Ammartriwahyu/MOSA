@@ -20,12 +20,11 @@ function validate(fields: Fields): FieldErrors {
   if (!isEmail(fields.email)) errors.email = AUTH.galatEmail;
   if (fields.password.length < MIN_PASSWORD_LENGTH) errors.password = AUTH.galatKataSandiPendek;
   if (fields.confirm !== fields.password) errors.confirm = AUTH.galatKataSandiBeda;
-  // Persetujuan wajib sebelum akun dibuat (PRD §9.1, MVP-01).
+
   if (!fields.consent) errors.consent = AUTH.galatPersetujuan;
   return errors;
 }
 
-/** Daftar akun + persetujuan data (Figma MOSA DRAFT 03 · 135:2844). */
 export function RegisterScreen() {
   const router = useRouter();
   const recordConsent = useRecordDataConsent();
@@ -52,7 +51,7 @@ export function RegisterScreen() {
       return;
     }
     if (!result.hasSession) {
-      // Konfirmasi email aktif: persetujuan dicatat setelah masuk (layar /consent).
+
       setSubmitting(false);
       setNeedsEmailConfirmation(true);
       return;

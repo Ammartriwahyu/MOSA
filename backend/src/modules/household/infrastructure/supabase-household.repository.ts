@@ -66,7 +66,7 @@ export class SupabaseHouseholdRepository implements HouseholdRepository {
 
   async saveSettings(household: Household): Promise<Result<void, DomainError>> {
     try {
-      // Hanya kolom pengaturan; is_demo dan pemilik tidak pernah diubah dari aplikasi.
+
       const { data, error } = await this.client
         .from("households")
         .update({
@@ -87,7 +87,7 @@ export class SupabaseHouseholdRepository implements HouseholdRepository {
 
   async createIfAbsent(ownerUserId: string): Promise<Result<void, DomainError>> {
     try {
-      // ON CONFLICT DO NOTHING pada owner_user_id (unik): aman untuk permintaan bersamaan.
+
       const { error } = await this.client
         .from("households")
         .upsert({ owner_user_id: ownerUserId }, { onConflict: "owner_user_id", ignoreDuplicates: true });

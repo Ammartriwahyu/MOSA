@@ -10,12 +10,10 @@ export const SQL_ACCOUNTS = [
 export type SqlAccount = typeof SQL_ACCOUNTS[number];
 export type SqlRole = "anon" | "authenticated" | "service_role";
 
-/** PostgreSQL sementara di memori, tanpa env, koneksi produksi, atau salinan skema aplikasi. */
 export async function migratedDatabase() {
   const db = new PGlite();
   try {
-    // Hanya batas Auth dan role bawaan Supabase yang ditiru; seluruh tabel/RLS/RPC
-    // aplikasi dibuat oleh berkas migrasi asli, berurutan seperti pemasangan bersih.
+
     await db.exec(`create schema auth; create table auth.users (id uuid primary key);
       create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
       grant usage on schema public to anon, authenticated, service_role;
@@ -30,7 +28,7 @@ export async function migratedDatabase() {
 }
 
 export async function seedSqlAccounts(db: PGlite) {
-  // Menghapus hanya database yang dibuat helper ini; tidak membaca kredensial layanan.
+
   await db.exec("delete from auth.users");
   for (const account of SQL_ACCOUNTS) {
     await db.query("insert into auth.users (id) values ($1)", [account.user]);
@@ -46,12 +44,10 @@ export async function seedSqlAccounts(db: PGlite) {
   }
 }
 
-/** SET LOCAL dan semua perubahan uji selalu dibatalkan, juga setelah galat SQL. */
 export async function queryAs<T>(db: PGlite, role: SqlRole, sql: string, params: unknown[] = [], grantForRls = false) {
   await db.exec("begin");
   try {
-    // Membuktikan RLS secara mandiri setelah pagar privilege sengaja dibuka
-    // HANYA di transaksi tes, tanpa mengubah migrasi atau role produksi.
+
     if (grantForRls) await db.exec(`grant select, insert, update, delete on all tables in schema public to ${role}`);
     await db.exec(`set local role ${role}`);
     return await db.query<T>(sql, params);

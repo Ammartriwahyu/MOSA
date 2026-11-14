@@ -8,11 +8,6 @@ import { DRAFT, TOMBOL } from "../copy";
 import { cx } from "./cx";
 import { isActivePath as isActive } from "./is-active-path";
 
-/**
- * Navigasi bawah (Figma MOSA DRAFT 05): Jadwal · Scan Obat (tombol tengah) · Obat.
- * Label teks selalu tampil di bawah ikon (docs/06: tanpa ikon tanpa label).
- * Mulai 1024 px digantikan SideNav.
- */
 export function BottomNav() {
   const pathname = usePathname();
   const items = [

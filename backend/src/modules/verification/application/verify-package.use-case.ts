@@ -31,7 +31,7 @@ export class VerifyPackage {
     if (!quota.ok) return quota;
     const reading = await this.reader.read(image.value);
     if (!reading.ok) return reading;
-    // Waktu keputusan diambil setelah latensi AI, bukan saat request dimulai.
+
     const now = this.clock.now();
     const unreadable = matchPackage(reading.value, []);
     if (unreadable.ok && unreadable.value.outcome === "tidak_terbaca") {

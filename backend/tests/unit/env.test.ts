@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { loadEnv } from "../../src/config/env";
 
-// Nilai uji fiktif; bukan kunci sungguhan.
 const SUPABASE = {
   SUPABASE_URL: "http://127.0.0.1:54321",
   SUPABASE_SECRET_KEY: "kunci-uji",

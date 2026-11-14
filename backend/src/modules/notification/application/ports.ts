@@ -10,7 +10,7 @@ export interface PushSubscriptionRepository {
   list(): Promise<Result<readonly PushSubscription[], DomainError>>;
 }
 export interface ReminderDispatchRepository {
-  /** Atomik, sebelum efek jaringan: false berarti slot/perangkat sudah diklaim. */
+
   claim(subscription: PushSubscription, reminder: DueReminder): Promise<Result<boolean, DomainError>>;
 }
 export interface DueDoseReader {

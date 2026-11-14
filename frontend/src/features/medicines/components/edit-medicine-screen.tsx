@@ -9,7 +9,6 @@ import { useMedicine, useUpdateMedicine } from "../hooks/use-medicines";
 import { medicineToFormValues } from "../schemas/medicine-edit";
 import { MedicineEditor } from "./medicine-editor";
 
-/** MOSA DRAFT B7: semua edit melewati pemilihan sumber, explain, dan konfirmasi ulang. */
 export function EditMedicineScreen({ id }: { id: string }) {
   const medicine = useMedicine(id);
   const update = useUpdateMedicine(id);

@@ -1,7 +1,5 @@
 import { formatTimeOfDay, minutesOfDay, parseTimeOfDay } from "../../../../shared/domain/wib-time";
 
-// Jam minum harian (WIB, "HH:mm"): minimal satu, tanpa duplikat (docs/01 §2),
-// maksimal 6 (P04), disimpan terurut agar kelompok Pagi/Siang/Malam stabil.
 export const MAX_INTAKE_TIMES = 6;
 
 export type ScheduleTimesError = "kosong" | "format" | "duplikat" | "terlalu_banyak";

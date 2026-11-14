@@ -6,7 +6,6 @@ import type { ScanResponse } from "../schemas/scan-response";
 
 type MatchedResult = Extract<ScanResponse, { medicine: unknown }>;
 
-/** Seluruh informasi berasal dari snapshot server yang sudah dicocokkan, tanpa menampilkan bacaan AI mentah. */
 export function ScanMedicineInfo({ result, speechActive = true, contextKey }: { result: MatchedResult; speechActive?: boolean; contextKey?: string }) {
   const reading = medicineInformationText(result.medicine, [DASBOR.jadwalBerikutnya, jadwalBerikutnya(result.nextDose),
     ...(result.nextDose ? [jadwalTargetScan(result.nextDose.scheduledDate, result.nextDose.scheduledTime)] : [])]);

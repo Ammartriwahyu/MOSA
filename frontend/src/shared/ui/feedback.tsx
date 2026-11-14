@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { DRAFT } from "../copy";
 import { cx } from "./cx";
 
-/** Indikator memuat dengan label untuk pembaca layar (docs/06: jangan biarkan layar menggantung). */
 export function Spinner({ label = DRAFT.memuat, visibleLabel = false }: { label?: string; visibleLabel?: boolean }) {
   return (
     <span role="status" className="inline-flex items-center gap-3 text-body text-ink-secondary">
@@ -13,7 +12,6 @@ export function Spinner({ label = DRAFT.memuat, visibleLabel = false }: { label?
   );
 }
 
-/** Kerangka abu saat data dimuat. Dekoratif; pasangkan dengan Spinner untuk pembaca layar. */
 export function Skeleton({ className }: { className?: string }) {
   return <span aria-hidden="true" className={cx("block animate-pulse rounded-field bg-line", className)} />;
 }
@@ -22,11 +20,10 @@ type StateProps = {
   title: string;
   message?: string;
   icon?: ReactNode;
-  /** Jalan keluar (docs/06: setiap kegagalan punya pesan dan jalan keluar). */
+
   action?: ReactNode;
 };
 
-/** Keadaan kosong (mis. Figma 04 dasbor akun baru). */
 export function EmptyState({ title, message, icon, action }: StateProps) {
   return (
     <section className="flex flex-col items-center gap-3 rounded-card bg-surface p-6 text-center shadow-card">
@@ -42,7 +39,6 @@ export function EmptyState({ title, message, icon, action }: StateProps) {
   );
 }
 
-/** Keadaan gagal; diumumkan langsung ke pembaca layar. */
 export function ErrorState({ title, message, icon, action }: StateProps) {
   return (
     <section role="alert" className="flex flex-col items-center gap-3 rounded-card border-3 border-danger-border bg-danger-soft p-6 text-center">

@@ -2,7 +2,6 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
 
-// Menegakkan docs/06 pada token tema (Figma page MOSA DRAFT): kontras dan ukuran minimum.
 const css = readFileSync(join(import.meta.dirname, "globals.css"), "utf8");
 
 function token(name: string): string {
@@ -34,7 +33,6 @@ const px = (name: string, rootSize = 16) => {
   return Number.parseFloat(value) * (value.endsWith("rem") ? rootSize : 1);
 };
 
-// Pasangan teks/latar yang dipakai di layar Figma DRAFT.
 const TEXT_PAIRS: Array<[string, string]> = [
   ["color-ink", "color-surface"],
   ["color-ink", "color-canvas"],

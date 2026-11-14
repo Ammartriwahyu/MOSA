@@ -36,7 +36,7 @@ describe("GeminiJsonGenerator", () => {
     vi.spyOn(AbortSignal, "timeout").mockReturnValue(controller.signal);
     const generate = vi.fn<GenerateContent>().mockRejectedValue({ status });
     const pending = generator(generate).generateJson(REQUEST);
-    // Beri kesempatan promise penolakan melewati helper sebelum membatalkan jeda.
+
     for (let index = 0; index < 5; index += 1) await Promise.resolve();
     controller.abort();
     expect(await pending).toMatchObject({ ok: false, error: { code: "AI_UNAVAILABLE" } });

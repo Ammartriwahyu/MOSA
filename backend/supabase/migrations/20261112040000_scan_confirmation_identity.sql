@@ -1,5 +1,4 @@
--- Periksa bukti kemasan dan INSERT di bawah kunci baris obat yang sama.
--- Menghindari perubahan nama/kekuatan sesudah verifier membaca tetapi sebelum RPC.
+
 create or replace function public.confirm_scanned_dose(
   p_household_id uuid, p_medicine_id uuid, p_scheduled_date date,
   p_scheduled_time time, p_confirmed_at timestamptz, p_level text,
@@ -18,7 +17,7 @@ begin
      or medicine.strength is distinct from p_expected_strength then
     return jsonb_build_object('code', 'SCAN_TOKEN_INVALID');
   end if;
-  -- Kunci tetap ditahan sampai konfirmasi selesai; fungsi lama memeriksa jadwal/jendela/duplikat.
+
   return public.confirm_dose(p_household_id, p_medicine_id, p_scheduled_date, p_scheduled_time,
     p_confirmed_at, p_level, p_opens_before_minutes, p_closes_after_minutes);
 end;

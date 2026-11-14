@@ -3,8 +3,6 @@ import type { z } from "zod";
 import { domainError, type DomainError } from "../domain/domain-error";
 import { err, ok, type Result } from "../domain/result";
 
-// Seluruh isian valid maksimum < 32 KiB; batas diterapkan sebelum JSON.parse
-// agar kolom tambahan besar tidak menghabiskan memori sebelum dibuang zod.
 export const MAX_JSON_BODY_BYTES = 32 * 1024;
 
 async function boundedJson(c: Context): Promise<{ ok: true; value: unknown } | { ok: false }> {
@@ -28,11 +26,6 @@ async function boundedJson(c: Context): Promise<{ ok: true; value: unknown } | {
   finally { reader.releaseLock(); }
 }
 
-/**
- * Membaca dan memvalidasi body JSON. Galat hanya menyebut nama kolom yang
- * salah, tidak pernah nilai yang dikirim (bisa berisi data pengguna).
- * Kolom yang tidak dikenal (mis. householdId) dibuang oleh skema objek zod.
- */
 export async function parseJsonBody<Schema extends z.ZodType>(
   c: Context,
   schema: Schema,

@@ -15,7 +15,7 @@ Ukuran: **10.000 byte**. SHA-256 arsip:
 b8436f051f45d48ee5d6c14a7bd8d76b8d44a9dfe2c3520838cfb68b1866e785
 ```
 
-Arsip dan berkas `.sha256` pendamping berada di `.claude/cache/` lokal, di-ignore dan tidak ikut push. Ketujuh entri diperiksa terhadap isi commit sumber dengan normalisasi CRLF/LF saja. Hash arsip di atas memeriksa byte ZIP persis; arsip yang dibuat ulang dapat memiliki hash berbeda.
+Arsip dan berkas `.sha256` pendamping disimpan lokal di luar Git. Ketujuh entri diperiksa terhadap isi commit sumber dengan normalisasi CRLF/LF saja. Hash arsip di atas memeriksa byte ZIP persis; arsip yang dibuat ulang dapat memiliki hash berbeda.
 
 Ini **cadangan seed fiktif dan skema**, bukan dump database atau cadangan akun/data pengguna. Tidak berisi .env, kredensial, sesi maupun foto. Sumbernya juga tersedia di Git. Simpan arsip di perangkat cadangan tim sebelum berpindah perangkat; cache lokal bukan penyimpanan permanen.
 

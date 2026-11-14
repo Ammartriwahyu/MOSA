@@ -35,7 +35,6 @@ export function notificationRoutes(useCases: NotificationUseCases | undefined): 
     });
 }
 
-/** Dipasang sebelum middleware sesi, hanya POST pada path persis ini. */
 export function reminderCronRoutes(useCases: NotificationUseCases | undefined, secret: string | undefined): Hono {
   return new Hono().post("/internal/reminders/run", async (c) => {
     if (!useCases || !secret) return domainErrorResponse(c, unavailable());

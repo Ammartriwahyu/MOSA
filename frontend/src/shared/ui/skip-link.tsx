@@ -1,13 +1,7 @@
 import { DRAFT } from "../copy";
 
-/** id isi utama; dipakai SkipLink dan kerangka (<main>). */
 export const MAIN_CONTENT_ID = "isi-utama";
 
-/**
- * Tautan "lewati ke isi" (WCAG 2.4.1): elemen pertama yang difokus dengan Tab,
- * tersembunyi sampai difokus, agar pengguna keyboard tidak melewati menu samping
- * setiap pindah halaman. Target ≥ 56 px saat tampil.
- */
 export function SkipLink() {
   return (
     <a

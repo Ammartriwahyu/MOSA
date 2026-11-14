@@ -17,7 +17,7 @@ describe("alur emas HTTP dengan adaptor asli dan PostgreSQL sementara", () => {
     await consent(system, token);
     expect((await dashboard(system, token)).summary).toEqual({ confirmed: 0, total: 0 });
     const explained = z.object({ explanation: z.string() }).parse(await call(system, token, "POST", "/v1/medicines/explain", { usageRule: MEDICINE_INPUT.usageRule, warnings: MEDICINE_INPUT.warnings, notes: null }));
-    // Meminta AI/pratinjau bukan menyimpan; POST baru dilakukan setelah pemeriksaan pengisi.
+
     expect(await call(system, token, "GET", "/v1/medicines")).toEqual({ medicines: [] });
     const medicine = await addMedicine(system, token, { explanation: explained.explanation, explanationOrigin: "ai_dikonfirmasi" });
     expect(medicine.explanation).toBe(explained.explanation); expect(system.explainFields).toEqual([["aturanPakai", "catatan", "larangan"]]);
@@ -29,7 +29,7 @@ describe("alur emas HTTP dengan adaptor asli dan PostgreSQL sementara", () => {
     const scanned = scanSchema.parse(await call(system, token, "POST", "/v1/scan", { image: E2E_IMAGE }));
     expect(scanned.outcome).toBe("bisa_konfirmasi"); expect(scanned.slots).toHaveLength(1);
     const slot = scanned.slots[0]!; expect(slot.scanToken).toBeTruthy();
-    expect((await dashboard(system, token)).summary).toEqual(before.summary); // Belum ada POST konfirmasi.
+    expect((await dashboard(system, token)).summary).toEqual(before.summary);
     expect(await call(system, token, "PATCH", "/v1/household/preferences", { outputMode: "suara" })).toMatchObject({ outputMode: "suara" });
     expect(await call(system, token, "GET", "/v1/household")).toMatchObject({ outputMode: "suara" });
     const receipt = await call(system, token, "POST", confirmPath(slot.slotId), { mode: "verified", scanToken: slot.scanToken }, 201);
@@ -50,7 +50,7 @@ describe("alur emas HTTP dengan adaptor asli dan PostgreSQL sementara", () => {
     system.setNow("2026-11-12T00:30:00Z");
     const dose = (await dashboard(system, first.token)).doses[0]!;
     await call(system, first.token, "POST", confirmPath(dose.slotId), { mode: "basic" }, 201);
-    // Data tahap push belum dibuat lewat API (P14): hanya precondition uji cascade.
+
     const house = (await system.db.query<{ id: string }>("select id from public.households where owner_user_id=$1", [first.userId])).rows[0]!.id;
     await system.db.query("insert into public.push_subscriptions(household_id,endpoint,p256dh,auth) values($1,'https://push.invalid/e2e','uji','uji')", [house]);
     await system.db.query("insert into public.reminder_dispatches(medicine_id,scheduled_date,scheduled_time,kind) values($1,'2026-11-12','07:00','uji')", [dose.medicineId]);

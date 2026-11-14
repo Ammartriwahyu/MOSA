@@ -11,7 +11,6 @@ const bodySchema = z.object({ image: z.object({ mimeType: z.string().max(32),
   slotId: z.string().min(1).max(256).regex(/^[^:\s]+:\d{8}:\d{4}$/).optional() });
 const invalid = () => err(domainError("VALIDATION_FAILED", "Isi permintaan scan tidak valid.", { field: "image" }));
 
-/** Baca stream dengan batas nyata, termasuk bila Content-Length hilang atau tidak jujur. */
 export async function parseScanBody(c: Context) {
   if (c.req.header("Content-Type")?.split(";")[0]?.trim().toLowerCase() !== "application/json") return invalid();
   const length = c.req.header("Content-Length");

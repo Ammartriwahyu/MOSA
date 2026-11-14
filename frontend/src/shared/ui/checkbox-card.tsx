@@ -10,10 +10,6 @@ export type CheckboxCardProps = Omit<InputHTMLAttributes<HTMLInputElement>, "typ
   error?: string;
 };
 
-/**
- * Kotak centang berbentuk kartu (Figma 03: persetujuan data). Checkbox bawaan
- * (tersembunyi visual) agar Spasi, pembaca layar, dan validasi bekerja normal.
- */
 export function CheckboxCard({ label, description, error, checked, className, ...props }: CheckboxCardProps) {
   const id = useId();
   const labelId = `${id}-label`;
@@ -34,7 +30,7 @@ export function CheckboxCard({ label, description, error, checked, className, ..
           id={id}
           type="checkbox"
           checked={checked}
-          // Nama = kalimat utama saja; keterangan sebagai deskripsi (tidak dibaca dua kali).
+
           aria-labelledby={labelId}
           aria-describedby={[descriptionId, errorId].filter(Boolean).join(" ") || undefined}
           aria-invalid={error ? true : undefined}

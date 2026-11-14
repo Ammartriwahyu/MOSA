@@ -9,29 +9,26 @@ import { cx } from "./cx";
 export type DialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** Judul wajib (nama dialog untuk pembaca layar). */
+
   title: string;
-  /** Kalimat utama (mis. kalimat baku #5). */
+
   description?: ReactNode;
-  /** Lingkaran ikon di atas judul (mis. peringatan). */
+
   icon?: ReactNode;
   iconTone?: "danger" | "brand" | "neutral" | "info";
-  /** Isi tambahan di bawah deskripsi (ringkasan data, input). */
+
   children?: ReactNode;
-  /** Tombol aksi, tersusun vertikal. Boleh kosong bila tombol ada di dalam `children` (formulir). */
+
   actions?: ReactNode;
-  /**
-   * Elemen yang difokus saat dialog terbuka. Bawaan: kotak dialog itu sendiri,
-   * sehingga tombol bahaya tidak pernah menjadi fokus bawaan (docs/06).
-   */
+
   initialFocusRef?: RefObject<HTMLElement | null>;
-  /** Alur tanpa Radix Trigger (mis. proses AI): pulihkan fokus ke tombol formulir. */
+
   returnFocusRef?: RefObject<HTMLElement | null>;
-  /** false = tidak tertutup lewat klik latar (dialog penting). Esc tetap menutup. */
+
   dismissOnOutsideClick?: boolean;
-  /** Penulisan sedang berlangsung: jangan menutup sebelum hasil server diketahui. */
+
   closeDisabled?: boolean;
-  /** Ikon besar sudah memisahkan judul dari tombol tutup; consumer boleh membuka lebar judul. */
+
   reserveCloseSpace?: boolean;
 };
 
@@ -42,10 +39,6 @@ const ICON_TONE = {
   info: "bg-info-soft text-info",
 } as const;
 
-/**
- * Pop-up bergaya bottom sheet (Figma A10): latar gelap, lembar putih sudut 28 px.
- * Radix menjebak fokus, Esc menutup, fokus kembali ke pemicu (docs/06).
- */
 export function Dialog({
   open,
   onOpenChange,
@@ -71,12 +64,11 @@ export function Dialog({
         <RadixDialog.Content
           ref={contentRef}
           tabIndex={-1}
-          // Tanpa deskripsi: Radix meminta aria-describedby eksplisit undefined.
+
           {...(description ? {} : { "aria-describedby": undefined })}
           onOpenAutoFocus={(event) => {
             event.preventDefault();
-            // Consumer memakai tombol biasa, bukan Radix Trigger. Simpan fokus
-            // sebelum modal membukanya agar Escape/Batal tidak berakhir di body.
+
             openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
             (initialFocusRef?.current ?? contentRef.current)?.focus();
           }}
@@ -91,7 +83,7 @@ export function Dialog({
             if (!dismissOnOutsideClick || closeDisabled) event.preventDefault();
           }}
           onEscapeKeyDown={(event) => { if (closeDisabled) event.preventDefault(); }}
-          // Mobile: lembar bawah. ≥ 768 px: modal di tengah layar (P17).
+
           className="dialog-content fixed inset-x-0 bottom-0 z-50 mx-auto flex max-h-[92dvh] w-full max-w-app flex-col gap-3 overflow-y-auto rounded-t-sheet bg-surface px-6 pt-3.5 pb-6 outline-none md:inset-auto md:top-1/2 md:left-1/2 md:max-h-[88dvh] md:max-w-lg md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-card md:px-8 md:pt-8 md:pb-8 md:shadow-card"
         >
           <div aria-hidden="true" className="mx-auto h-1.5 w-12 rounded-pill bg-field-border md:hidden" />

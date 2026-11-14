@@ -10,7 +10,7 @@ export function PwaLifecycle() {
     void prepareWorker().catch(() => undefined);
     window.addEventListener("storage", pushStorageChanged);
     const { data } = getSupabaseBrowserClient().auth.onAuthStateChange((_event, session) => {
-      // Jangan menunggu panggilan Auth dari callback SDK (menghindari deadlock).
+
       observePushIdentity(session?.user.id ?? null);
     });
     return () => { data.subscription.unsubscribe(); window.removeEventListener("storage", pushStorageChanged); };

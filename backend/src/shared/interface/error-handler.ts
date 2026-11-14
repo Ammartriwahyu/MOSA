@@ -6,7 +6,6 @@ import type { Logger } from "../application/logger";
 import type { DomainError, DomainErrorCode, DomainErrorDetails } from "../domain/domain-error";
 import { requestMethod } from "./request-method";
 
-// Format galat seragam (docs/03 §9).
 export type ErrorBody = {
   error: { code: string; message: string; details: DomainErrorDetails };
 };
@@ -19,7 +18,6 @@ export function errorBody(
   return { error: { code, message, details } };
 }
 
-// Satu-satunya tempat pemetaan galat domain → HTTP.
 export const DOMAIN_ERROR_STATUS: Record<DomainErrorCode, ContentfulStatusCode> = {
   VALIDATION_FAILED: 400,
   UNAUTHENTICATED: 401,
@@ -38,7 +36,6 @@ export const DOMAIN_ERROR_STATUS: Record<DomainErrorCode, ContentfulStatusCode> 
   PUSH_UNAVAILABLE: 503,
 };
 
-/** Respons untuk Result gagal dari use case. Rute memanggil ini, bukan menyusun galat sendiri. */
 export function domainErrorResponse(c: Context, error: DomainError): Response {
   return c.json(
     errorBody(error.code, error.message, error.details),
@@ -63,7 +60,6 @@ export function createErrorHandler(logger: Logger): ErrorHandler {
       return c.json(errorBody(code, "Permintaan tidak dapat diproses."), status);
     }
 
-    // Bug tak terduga: pesan galat tidak dicatat maupun dikirim (bisa memuat data pengguna).
     logger.error({
       event: "unexpected_error",
       code: "INTERNAL_ERROR",

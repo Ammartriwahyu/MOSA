@@ -21,7 +21,7 @@ describe("wibTimeOfDay", () => {
 });
 
 describe("demoMedicines", () => {
-  const now = new Date("2026-11-10T06:42:30Z"); // 13.42 WIB
+  const now = new Date("2026-11-10T06:42:30Z");
 
   test("jadwal normal: Amlodipin 5 mg 07.00 dan 19.00, Metformin 500 mg di jam lain", () => {
     const [amlodipin, metformin] = demoMedicines("normal", now);

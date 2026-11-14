@@ -9,7 +9,6 @@ import {
   type GenerateContent,
 } from "../../src/shared/infrastructure/gemini-json-generator";
 
-// Fixture respons terekam (docs/04: tes otomatis tidak memanggil API sungguhan). Data fiktif.
 const TEXT = { aturanPakai: "2 x 1 tablet sesudah makan", larangan: "Jangan diminum bersama susu", catatan: null };
 const OK_RESPONSE = { text: '{"penjelasan":"Minum 1 tablet, 2 kali sehari sesudah makan."}' };
 
@@ -51,7 +50,7 @@ describe("GeminiPlainLanguageExplainer", () => {
     expect(params.contents).toBe(
       "<data>\n<aturan_pakai>2 x 1 tablet sesudah makan</aturan_pakai>\n<larangan>Jangan diminum bersama susu</larangan>\n<catatan></catatan>\n</data>",
     );
-    // householdId hanya untuk jatah; tidak pernah ikut terkirim.
+
     expect(JSON.stringify(params)).not.toContain("rumah-1");
   });
 

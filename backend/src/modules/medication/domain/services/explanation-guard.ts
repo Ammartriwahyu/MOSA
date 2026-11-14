@@ -1,11 +1,4 @@
-/**
- * Pagar keluaran AI (docs/04 aturan prompt, P04 #7). AI hanya boleh
- * menyederhanakan kalimat sumber; kode yang memutuskan apakah hasilnya layak
- * ditampilkan di pop-up. Bila ragu, hasil ditolak dan pengisi memakai teks
- * pengisi (D3), bukan teks AI yang belum tentu benar.
- */
 
-// Angka dalam kata yang boleh berpadanan dengan angka pada keluaran.
 const NUMBER_WORDS: Readonly<Record<string, string>> = {
   satu: "1",
   dua: "2",
@@ -20,16 +13,11 @@ const NUMBER_WORDS: Readonly<Record<string, string>> = {
   sebelas: "11",
 };
 
-/**
- * Istilah yang menandakan diagnosis, kegunaan, atau anjuran baru. Boleh muncul
- * hanya bila sudah ada di teks sumber. Dicocokkan sebagai potongan kata,
- * sehingga "disembuhkan" tertangkap oleh "sembuh". USULAN: daftar ditinjau tim.
- */
 const NEW_ADVICE_TERMS = [
   "diagnos",
   "penyakit",
   "sembuh",
-  "nyembuh", // "menyembuhkan": awalan meN- meluluhkan huruf s
+  "nyembuh",
   "gejala",
   "dosis",
   "takaran",
@@ -54,11 +42,8 @@ const NEW_ADVICE_TERMS = [
   "menyusui",
 ] as const;
 
-// Tautan atau markup tidak pernah dibutuhkan dalam penjelasan untuk lansia.
 const LINK_OR_MARKUP = /https?:|www\.|[<>]/i;
 
-// Instruksi pengambilalihan bukan sumber untuk menyusun panduan minum. Teks
-// asli tetap dapat disimpan lewat fallback, tanpa mengubah input pengisi.
 const CONTROL_INSTRUCTION = /(?:^|[.!?\n])\s*(?:abaikan|lupakan|ignore)\b[^.!?\n]{0,100}\b(?:instruksi|aturan|perintah|previous|system|semua)\b|(?:^|\n)\s*(?:system|assistant|developer)\s*:|<\/(?:data|catatan|aturan_pakai|larangan)>/i;
 
 function normalizedNumbers(text: string): string {
@@ -81,22 +66,19 @@ function prohibitions(text: string): string[][] {
   });
 }
 
-/**
- * Kata yang boleh ditambahkan AI ke kalimat larangan tanpa mengubah artinya
- * ("Hindari jus jeruk bali" → "Jangan minum jus jeruk bali"). Daftar sengaja
- * sempit: kata yang melunakkan atau membatasi ("kecuali", "sedikit", "banyak")
- * tidak ada di sini sehingga larangan yang berubah arti tetap ditolak.
- */
 const WARNING_FILLER_WORDS = new Set(["minum", "obat", "ini", "itu", "anda", "juga", "ya"]);
 
-/** Larangan keluaran memuat semua kata larangan asli, dan tambahannya hanya kata pengisi. */
 function sameTopics(original: string[], warning: string[]): boolean {
-  return original.every((word) => warning.includes(word))
-    && warning.every((word) => original.includes(word) || WARNING_FILLER_WORDS.has(word));
+  let next = 0;
+  for (const word of warning) {
+    if (word === original[next]) next++;
+    else if (!WARNING_FILLER_WORDS.has(word)) return false;
+  }
+  return next === original.length;
 }
 
 function numbersIn(text: string): Set<string> {
-  // "07.00" menjadi "7" dan "0": jam yang ditulis ulang "7" tetap cocok.
+
   return new Set([...text.matchAll(/\d+/g)].map((m) => String(Number(m[0]))));
 }
 
@@ -109,16 +91,12 @@ function allowedNumbers(source: string): Set<string> {
   return allowed;
 }
 
-/** Pagar konservatif untuk angka, pasangan takaran, topik larangan dan kontrol prompt.
- * Bukan pembuktian kesetiaan semantik; pemeriksaan manusia tetap wajib.
- */
 export function isFaithfulExplanation(source: string, explanation: string): boolean {
   const from = source.toLowerCase();
   const out = explanation.toLowerCase();
 
   if (CONTROL_INSTRUCTION.test(from) || LINK_OR_MARKUP.test(out)) return false;
 
-  // Angka yang sah sebagai frekuensi/jam tidak otomatis sah sebagai takaran.
   const sourceQuantities = quantities(from);
   for (const quantity of quantities(out)) if (!sourceQuantities.has(quantity)) return false;
   const originals = prohibitions(from); const warnings = prohibitions(out);
@@ -126,7 +104,7 @@ export function isFaithfulExplanation(source: string, explanation: string): bool
     || warnings.some((warning) => !originals.some((original) => sameTopics(original, warning)))) return false;
 
   const allowed = allowedNumbers(from);
-  for (const n of numbersIn(out)) {
+  for (const n of numbersIn(normalizedNumbers(out))) {
     if (!allowed.has(n)) return false;
   }
 

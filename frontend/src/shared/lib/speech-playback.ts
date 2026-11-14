@@ -1,7 +1,6 @@
 export type SpeechPlaybackState = "idle" | "starting" | "speaking" | "blocked" | "failed" | "unavailable";
 export const SPEECH_START_TIMEOUT_MS = 5_000;
 
-/** Tidak mengirim teks obat ke suara jarak jauh atau mengganti bahasa secara diam-diam. */
 export function indonesianLocalVoice(voices: readonly SpeechSynthesisVoice[]): SpeechSynthesisVoice | undefined {
   const local = voices.filter((voice) => voice.localService && ["id-id", "id"].includes(voice.lang.toLowerCase().replaceAll("_", "-")));
   return local.find((voice) => voice.lang.toLowerCase().replaceAll("_", "-") === "id-id") ?? local[0];
@@ -12,7 +11,6 @@ type Playback = {
   change: (state: SpeechPlaybackState) => void; timer: ReturnType<typeof setTimeout> | undefined;
 };
 
-/** speechSynthesis punya satu antrean per window; pemilik lama tidak boleh membatalkan pemilik baru. */
 export function createSpeechPlayback() {
   let current: Playback | null = null;
   function finish(job: Playback, state: SpeechPlaybackState, cancel: boolean) {

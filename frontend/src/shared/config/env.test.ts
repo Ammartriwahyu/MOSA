@@ -1,7 +1,6 @@
 import { expect, test } from "vitest";
 import { readPublicEnv } from "./env";
 
-// Nilai fiktif untuk uji.
 const VALID = {
   NEXT_PUBLIC_API_URL: "http://localhost:8787/",
   NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:54321",

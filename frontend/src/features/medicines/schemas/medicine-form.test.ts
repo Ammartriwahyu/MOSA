@@ -2,7 +2,6 @@ import { describe, expect, test } from "vitest";
 import { DRAFT, FORM_OBAT } from "@/shared/copy";
 import { emptyMedicineForm, validateMedicineForm, type MedicineFormValues } from "./medicine-form";
 
-// Data fiktif.
 function filled(patch: Partial<MedicineFormValues> = {}): MedicineFormValues {
   return {
     ...emptyMedicineForm(),

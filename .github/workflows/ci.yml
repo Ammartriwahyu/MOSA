@@ -20,7 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # Versi pnpm dibaca dari kolom packageManager di package.json akar.
       - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v7

@@ -70,7 +70,7 @@ Preview dengan autentikasi Vercel dapat menghalangi API lintas proyek. Akses dan
 | Hapus akun uji | Hanya akun disposable yang disetujui; pengguna Auth/enam tabel terhapus, akun lain utuh; demo ditolak |
 | Perangkat/layanan | Kamera, suara lokal, sesi dua HP dan Supabase/Gemini nyata |
 
-Tabel adalah prosedur, **belum hasil lulus**. Catat hasil pada [checklist rilis](release-checklist.md); batas bukti: [P15](review-report.md), [matriks AC](ac-traceability.md).
+Tabel adalah prosedur, **belum hasil lulus**. Catat hasil pada [checklist rilis](release-checklist.md).
 
 ## Cron dan keberlanjutan demo
 

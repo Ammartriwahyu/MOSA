@@ -33,7 +33,6 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-// Data fiktif untuk uji.
 const EMAIL = "uji@contoh.test";
 const PASSWORD = "katasandi-uji-123";
 
@@ -84,7 +83,7 @@ describe("Akun demo juri lewat formulir biasa", () => {
   });
 
   test("tidak ada tombol masuk demo, meski env demo lama masih terisi", () => {
-    // Nilai fiktif untuk uji.
+
     vi.stubEnv("NEXT_PUBLIC_DEMO_EMAIL", "demo-juri@contoh.test");
     vi.stubEnv("NEXT_PUBLIC_DEMO_PASSWORD", "sandi-demo-uji");
     renderWithClient(<LoginScreen />);

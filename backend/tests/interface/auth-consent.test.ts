@@ -8,7 +8,6 @@ import {
 } from "../support/in-memory-household-repository";
 import { FRONTEND, testContainer } from "../support/test-container";
 
-// Data fiktif: dua akun. "lansia" sudah setuju penyimpanan data; "baru" belum punya rumah tangga.
 const TOKENS = { "token-lansia": "user-lansia", "token-baru": "user-baru" };
 
 function buildApp() {
@@ -17,7 +16,6 @@ function buildApp() {
   ]);
   const app = createApp(testContainer({ tokens: TOKENS, households }));
 
-  // Rute uji yang meniru rute terlindungi nyata.
   const echo = (c: Context) => c.json(sessionOf(c));
   app.get("/v1/uji/sesi", echo);
   app.post("/v1/uji/sesi", echo);

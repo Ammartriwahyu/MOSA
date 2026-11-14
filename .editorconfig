@@ -9,5 +9,5 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.md]
-# Dua spasi di akhir baris bermakna baris baru di Markdown.
+
 trim_trailing_whitespace = false

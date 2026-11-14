@@ -3,7 +3,7 @@
 AC-01–AC-16: dari PRD §15 (final). AC-17–AC-26: **[USULAN]** analisis v2.1, menutup celah yang tidak dicakup PRD; aktifkan setelah tim menyetujui `docs/07`.
 Kolom "Lapis" = tempat tes utama: **D** domain unit, **A** application (repo palsu), **I** infrastruktur (fixture), **E** end-to-end, **M** manual di HP nyata.
 
-Bukti aktual dan status per AC tersedia di [matriks keterlacakan](ac-traceability.md). Pemeriksaan perangkat dicatat di [checklist manual](manual-test-checklist.md); sumber kalimat ditinjau di [audit copy](copy-audit.md). Tautan ini tidak mengubah kriteria di bawah atau status usulan.
+Pemeriksaan perangkat dicatat di [checklist manual](manual-test-checklist.md); sumber kalimat tersedia di [copywriting baku](02-copywriting-baku.md). Rujukan ini tidak mengubah kriteria di bawah atau status usulan.
 
 | ID | Skenario | Hasil yang diharapkan | Lapis |
 |---|---|---|---|

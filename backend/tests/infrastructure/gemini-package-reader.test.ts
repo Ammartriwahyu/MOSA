@@ -8,7 +8,7 @@ const RESPONSE = { text: JSON.stringify(READING) };
 const UNREADABLE = { ok: true, value: { names: [], strength: null, legible: false } };
 
 function image(): PackageImage {
-  // Header sintetis hanya untuk menguji transport, bukan foto nyata.
+
   const created = createPackageImage({ bytes: new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]), mimeType: "image/jpeg" });
   if (!created.ok) throw new Error("Fixture gambar tidak valid");
   return created.value;

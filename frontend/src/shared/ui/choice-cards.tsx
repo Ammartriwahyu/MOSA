@@ -12,7 +12,7 @@ export type ChoiceOption<Value extends string> = {
 
 export type ChoiceCardsProps<Value extends string> = {
   legend: string;
-  /** Kelas teks legend; bawaan ukuran judul kartu. */
+
   legendClassName?: string;
   name: string;
   options: ReadonlyArray<ChoiceOption<Value>>;
@@ -20,10 +20,6 @@ export type ChoiceCardsProps<Value extends string> = {
   onChange: (value: Value) => void;
 };
 
-/**
- * Grup pilihan berbentuk kartu (Figma 09, 22, B16: "Teks saja" / "Teks + Suara").
- * Memakai radio bawaan agar panah keyboard dan pembaca layar bekerja tanpa skrip.
- */
 export function ChoiceCards<Value extends string>({
   legend,
   legendClassName = "text-card-title",
@@ -56,7 +52,7 @@ export function ChoiceCards<Value extends string>({
                 value={option.value}
                 checked={checked}
                 onChange={() => onChange(option.value)}
-                // Nama radio = judul saja; keterangan sebagai deskripsi (tidak dibaca dua kali).
+
                 aria-labelledby={titleId}
                 aria-describedby={descriptionId}
                 className="sr-only"

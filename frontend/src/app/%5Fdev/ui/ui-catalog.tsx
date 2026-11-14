@@ -1,7 +1,5 @@
 "use client";
 
-// Halaman internal pengembang (tidak tampil di produksi). Judul bagian di sini
-// hanya untuk peninjauan; teks produk tetap diambil dari shared/copy.
 import { Camera, CheckCheck, Clock, Lock, Pill, Settings, Trash2, Type, Volume2 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import {

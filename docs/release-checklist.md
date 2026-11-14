@@ -2,7 +2,7 @@
 
 13 November 2026 · row51 · **persiapan lokal saja**, sesuai keputusan PM. Belum ada deploy, perubahan cloud, seed live, cron aktif, rekaman atau tag freeze. Koneksi Vercel yang diperiksa belum menampilkan proyek repo ini.
 
-**Belum siap freeze.** Kelulusan pemeriksaan kode tidak menggantikan bukti layanan/perangkat. [Matriks AC](ac-traceability.md) masih 20 Lulus otomatis, 6 Belum lengkap, 0 Gagal.
+**Belum siap freeze.** Kelulusan pemeriksaan kode tidak menggantikan bukti layanan/perangkat. Status kriteria penerimaan masih 20 Lulus otomatis, 6 Belum lengkap, 0 Gagal.
 
 ## Bukti lokal row51
 
@@ -14,7 +14,7 @@
 | pnpm lint | Lulus termasuk 48 probe batas impor, 35,58 dtk |
 | pnpm test | Lulus: 677 backend/44 berkas dan 559 frontend/49 berkas, termasuk 11 HTTP E2E; keseluruhan 67,31 dtk |
 | Dokumentasi | 37 tautan lokal/enam anchor valid; enam blok PowerShell lolos pemeriksaan sintaks; diff check bersih |
-| Build dan startup dari klon bersih | Bukti row50 saja; konfigurasi fiktif, health 503, bukan alur layanan nyata ([laporan](clean-clone-test.md)) |
+| Build dan startup dari klon bersih | Bukti row50 saja; konfigurasi fiktif, health 503, bukan alur layanan nyata |
 
 Tidak ada perubahan fitur, dependensi atau skema pada row51. Konfigurasi dashboard/build cloud tetap perlu dicocokkan dengan [panduan deploy](deploy.md) ketika target tersedia.
 

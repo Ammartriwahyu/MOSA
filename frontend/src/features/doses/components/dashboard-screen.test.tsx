@@ -77,7 +77,7 @@ describe("dasbor", () => {
     renderDashboard();
     expect(await screen.findByText("besok pagi pukul 07.00 WIB.")).toBeInTheDocument();
     expect(screen.queryByText(/Sekarang waktunya/)).not.toBeInTheDocument();
-    // Dua tautan di DOM: header desktop (lg) dan konten mobile; CSS menampilkan satu saja.
+
     const addLinks = screen.getAllByRole("link", { name: OBAT.tambahObat });
     expect(addLinks).toHaveLength(2);
     for (const link of addLinks) expect(link).toHaveAttribute("href", "/medicines/new");

@@ -37,7 +37,7 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true, o
     <div className={photo ? "rounded-tile bg-surface p-5" : undefined}>
     <div className={cx("relative flex w-full items-center justify-center overflow-hidden rounded-sheet bg-camera-surface", photo ? "aspect-[6/5] p-4" : "p-10")}>
       {photo ?
-        // Foto lokal tidak melalui optimasi/proxy Next Image agar tidak terkirim ke server.
+
         // eslint-disable-next-line @next/next/no-img-element
         <img src={photo.url} alt={SCAN_CAPTURE.preview} className="h-full w-full object-contain" />
         : processing ? <span role="status" className="inline-flex items-center gap-3 text-body text-on-action"><LoaderCircle aria-hidden="true" className="size-7 shrink-0 animate-spin text-success-border" />{SCAN_CAPTURE.processing}</span>
@@ -55,8 +55,7 @@ export function ScanCaptureView({ capture, target, headingRef, enabled = true, o
     <input ref={upload} type="file" accept="image/*" hidden disabled={!enabled || processing} aria-label={SCAN_CAPTURE.upload} onChange={(event) => select(event.currentTarget)} />
     {photo && onUsePhoto ? <Button size="lg" variant="brand" disabled={!enabled || processing} onClick={onUsePhoto}>{SCAN_REQUEST.usePhoto}</Button> : null}
     {photo ? <Button size="lg" variant="secondary" disabled={!enabled || processing} icon={<Camera />} onClick={() => { capture.clear(); camera.current?.click(); }}>{SCAN_CAPTURE.retake}</Button>
-      // Perangkat dengan mouse (laptop/desktop) umumnya tanpa kamera belakang: tombol rana
-      // disembunyikan dan unggah foto menjadi aksi utama (P17). HP/tablet sentuh tetap memakai kamera.
+
       : <div className="flex flex-col items-center gap-2 pointer-fine:hidden"><button type="button" aria-label={SCAN_CAPTURE.camera} aria-describedby={instructionId} disabled={!enabled || processing}
         onClick={() => camera.current?.click()} className="flex size-22 items-center justify-center rounded-pill border-4 border-on-action disabled:opacity-50">
         <span aria-hidden="true" className="size-17 rounded-pill bg-on-action" />
