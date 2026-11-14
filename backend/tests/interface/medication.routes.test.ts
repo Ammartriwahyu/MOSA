@@ -47,6 +47,17 @@ async function created(app: ReturnType<typeof buildApp>["app"], token = "token-a
 }
 
 describe("POST /v1/medicines/explain", () => {
+  test.each([
+    ["Minum 1 tablet satu kali sehari", "Minum 1 tablet tiga kali sehari."],
+    ["Jangan minum sebelum makan", "Jangan makan sebelum minum."],
+  ])("perubahan angka kata atau urutan larangan tidak diteruskan lewat HTTP: %s", async (usageRule, output) => {
+    const { app, medicines } = buildApp({ explain: async () => ok(output) });
+    const res = await app.request("/v1/medicines/explain", send("token-a", "POST", { usageRule, warnings: "Tidak ada larangan khusus" }));
+    expect(res.status).toBe(503);
+    expect(await res.json()).toMatchObject({ error: { code: "AI_UNAVAILABLE" } });
+    expect(medicines.rows.size).toBe(0);
+  });
+
   test("membalas draf penjelasan tanpa menyimpan apa pun; householdId dari sesi", async () => {
     const explain = vi.fn<PlainLanguageExplainer["explain"]>(async () => ok("Minum obat ini sesudah makan."));
     const { app, medicines } = buildApp({ explain });

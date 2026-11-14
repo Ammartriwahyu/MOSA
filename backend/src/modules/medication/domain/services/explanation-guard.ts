@@ -89,10 +89,14 @@ function prohibitions(text: string): string[][] {
  */
 const WARNING_FILLER_WORDS = new Set(["minum", "obat", "ini", "itu", "anda", "juga", "ya"]);
 
-/** Larangan keluaran memuat semua kata larangan asli, dan tambahannya hanya kata pengisi. */
+/** Urutan kata asli harus tetap: kata yang sama dalam urutan berbeda dapat membalik larangan. */
 function sameTopics(original: string[], warning: string[]): boolean {
-  return original.every((word) => warning.includes(word))
-    && warning.every((word) => original.includes(word) || WARNING_FILLER_WORDS.has(word));
+  let next = 0;
+  for (const word of warning) {
+    if (word === original[next]) next++;
+    else if (!WARNING_FILLER_WORDS.has(word)) return false;
+  }
+  return next === original.length;
 }
 
 function numbersIn(text: string): Set<string> {
@@ -126,7 +130,7 @@ export function isFaithfulExplanation(source: string, explanation: string): bool
     || warnings.some((warning) => !originals.some((original) => sameTopics(original, warning)))) return false;
 
   const allowed = allowedNumbers(from);
-  for (const n of numbersIn(out)) {
+  for (const n of numbersIn(normalizedNumbers(out))) {
     if (!allowed.has(n)) return false;
   }
 

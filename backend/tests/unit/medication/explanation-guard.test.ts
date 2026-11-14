@@ -5,6 +5,25 @@ import { isFaithfulExplanation } from "../../../src/modules/medication/domain/se
 const SOURCE = "Diminum 2 x 1 tablet sesudah makan, jam 07.00 dan 19.00\nJangan diminum bersama susu";
 
 describe("isFaithfulExplanation", () => {
+  test.each([
+    ["Minum 1 tablet satu kali sehari", "Minum 1 tablet tiga kali sehari."],
+    ["Minum 1 tablet selama 2 hari", "Minum 1 tablet selama lima hari."],
+  ])("angka dalam kata pada keluaran tidak boleh menambah angka baru: %s", (source, output) => {
+    expect(isFaithfulExplanation(source, output)).toBe(false);
+  });
+
+  test.each([
+    ["Jangan minum sebelum makan", "Jangan makan sebelum minum."],
+    ["Jangan minum jika tidak makan", "Jangan minum jika makan tidak."],
+  ])("susunan larangan tidak boleh diubah: %s", (source, output) => {
+    expect(isFaithfulExplanation(source, output)).toBe(false);
+  });
+
+  test("angka kata yang setia dan kata pengisi di sela larangan tetap diterima", () => {
+    expect(isFaithfulExplanation("Minum 1 tablet 3 kali sehari", "Minum satu tablet tiga kali sehari.")).toBe(true);
+    expect(isFaithfulExplanation("Jangan diminum sebelum makan", "Jangan minum obat ini sebelum makan ya.")).toBe(true);
+  });
+
   test("larangan dan perintah perubahan takaran yang tidak ada pada sumber ditolak", () => {
     expect(isFaithfulExplanation("Sesudah makan", "Jangan dihentikan mendadak.")).toBe(false);
     expect(isFaithfulExplanation("Sesudah makan", "Gandakan takaran.")).toBe(false);
