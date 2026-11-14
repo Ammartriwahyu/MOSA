@@ -11,7 +11,7 @@ import { InMemoryMedicineRepository } from "./in-memory-medicine-repository";
 export const DOSE_MEDICINE: Medicine = {
   id: "obat-a", householdId: "rumah-a", name: "Obat Uji", nameNormalized: "obatuji", strength: "5 mg", strengthNormalized: "5mg",
   purpose: "Kegunaan uji", doseAmount: "1 tablet", usageRule: "Sesudah makan", warnings: "Tidak ada larangan khusus", notes: null,
-  intakeTimes: ["07:00", "19:00"], labelSource: "keluarga", explanation: null, explanationOrigin: "teks_pengisi", active: true, createdAt: atWib("2026-11-01", "00:00"),
+  intakeTimes: ["07:00", "19:00"], intakeDays: [1, 2, 3, 4, 5, 6, 7], labelSource: "keluarga", explanation: null, explanationOrigin: "teks_pengisi", active: true, createdAt: atWib("2026-11-01", "00:00"),
 };
 export const slotId = (time: string, date = "20261111", medicineId = "obat-a") => `${medicineId}:${date}:${time.replace(":", "")}`;
 

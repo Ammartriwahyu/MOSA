@@ -2,6 +2,7 @@ import { domainError, type DomainError } from "../../../shared/domain/domain-err
 import { err, ok, type Result } from "../../../shared/domain/result.js";
 import { isFaithfulExplanation } from "./services/explanation-guard.js";
 import { normalizeMedicineName } from "./services/medicine-name-normalizer.js";
+import { parseScheduleDays } from "./value-objects/schedule-days.js";
 import { parseScheduleTimes } from "./value-objects/schedule-times.js";
 import { parseStrength } from "./value-objects/strength.js";
 
@@ -23,6 +24,7 @@ export type Medicine = {
   readonly notes: string | null;
 
   readonly intakeTimes: readonly string[];
+  readonly intakeDays: readonly number[];
   readonly labelSource: LabelSource;
   readonly explanation: string | null;
   readonly explanationOrigin: ExplanationOrigin;
@@ -40,6 +42,7 @@ export type MedicineInput = {
   readonly warnings: string;
   readonly notes: string | null;
   readonly intakeTimes: readonly string[];
+  readonly intakeDays: readonly number[];
   readonly labelSource: LabelSource;
   readonly explanationOrigin: ExplanationOrigin;
 
@@ -94,6 +97,8 @@ export function validateMedicineInput(input: MedicineInput): Result<MedicineDraf
 
   const times = parseScheduleTimes(input.intakeTimes);
   if (!times.ok) invalid.push("intakeTimes");
+  const days = parseScheduleDays(input.intakeDays);
+  if (!days.ok) invalid.push("intakeDays");
 
   let explanation: string | null = null;
   if (input.explanationOrigin === "ai_dikonfirmasi") {
@@ -105,7 +110,7 @@ export function validateMedicineInput(input: MedicineInput): Result<MedicineDraf
     invalid.push("explanation");
   }
 
-  if (invalid.length > 0 || !parsedStrength || !times.ok) {
+  if (invalid.length > 0 || !parsedStrength || !times.ok || !days.ok) {
     return err(
       domainError("VALIDATION_FAILED", "Data obat tidak valid.", { fields: [...new Set(invalid)] }),
     );
@@ -122,6 +127,7 @@ export function validateMedicineInput(input: MedicineInput): Result<MedicineDraf
     warnings,
     notes,
     intakeTimes: times.value,
+    intakeDays: days.value,
     labelSource: input.labelSource,
     explanation,
     explanationOrigin: input.explanationOrigin,

@@ -5,21 +5,24 @@ import type { AdminClient } from "../../../shared/infrastructure/supabase-client
 import type { DosingMedicine, DosingMedicineReader } from "../application/ports/dosing-medicine-reader.js";
 import { databaseUnavailable, epoch, UUID } from "./dosing-data.js";
 
-const COLUMNS = "id, active, created_at, intake_times, intake_times_started_at, name, strength, purpose, dose_amount, usage_rule, warnings, notes, label_source, explanation, explanation_origin";
+const COLUMNS = "id, active, created_at, intake_times, intake_times_started_at, intake_days, intake_days_started_at, name, strength, purpose, dose_amount, usage_rule, warnings, notes, label_source, explanation, explanation_origin";
 const rowSchema = z.object({
   id: z.string(), active: z.boolean(), created_at: epoch, intake_times: z.array(z.string()),
-  intake_times_started_at: z.record(z.string(), epoch), name: z.string(), strength: z.string(), purpose: z.string(),
+  intake_times_started_at: z.record(z.string(), epoch),
+  intake_days: z.array(z.number().int().min(1).max(7)).min(1), intake_days_started_at: z.record(z.string(), epoch), name: z.string(), strength: z.string(), purpose: z.string(),
   dose_amount: z.string(), usage_rule: z.string(), warnings: z.string().nullable(), notes: z.string().nullable(),
   label_source: z.enum(["apoteker", "keluarga"]), explanation: z.string().nullable(), explanation_origin: z.enum(["ai_dikonfirmasi", "teks_pengisi"]),
 });
 
 function decode(raw: unknown): Result<DosingMedicine, DomainError> {
   const row = rowSchema.safeParse(raw);
-  if (!row.success || row.data.intake_times.some((time) => row.data.intake_times_started_at[time] === undefined)) return err(databaseUnavailable());
+  if (!row.success || row.data.intake_times.some((time) => row.data.intake_times_started_at[time] === undefined)
+    || row.data.intake_days.some((day) => row.data.intake_days_started_at[String(day)] === undefined)) return err(databaseUnavailable());
   const value = row.data;
   return ok({
     medicineId: value.id, active: value.active, createdAt: value.created_at, intakeTimes: value.intake_times,
-    intakeTimeStartedAt: value.intake_times_started_at, name: value.name, strength: value.strength, purpose: value.purpose,
+    intakeTimeStartedAt: value.intake_times_started_at, intakeDays: value.intake_days,
+    intakeDayStartedAt: value.intake_days_started_at, name: value.name, strength: value.strength, purpose: value.purpose,
     doseAmount: value.dose_amount, usageRule: value.usage_rule, warnings: value.warnings ?? "", notes: value.notes,
     labelSource: value.label_source, explanation: value.explanation, explanationOrigin: value.explanation_origin,
   });
