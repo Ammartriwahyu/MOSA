@@ -1,9 +1,9 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import { isFaithfulExplanation } from "./services/explanation-guard";
-import { normalizeMedicineName } from "./services/medicine-name-normalizer";
-import { parseScheduleTimes } from "./value-objects/schedule-times";
-import { parseStrength } from "./value-objects/strength";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import { isFaithfulExplanation } from "./services/explanation-guard.js";
+import { normalizeMedicineName } from "./services/medicine-name-normalizer.js";
+import { parseScheduleTimes } from "./value-objects/schedule-times.js";
+import { parseStrength } from "./value-objects/strength.js";
 
 export type LabelSource = "apoteker" | "keluarga";
 

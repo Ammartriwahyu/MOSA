@@ -1,6 +1,6 @@
-import type { Strength } from "../../../shared/domain/strength";
-import type { PackageMismatch } from "./match-package";
-import type { RegisteredMedicine } from "./package-reading";
+import type { Strength } from "../../../shared/domain/strength.js";
+import type { PackageMismatch } from "./match-package.js";
+import type { RegisteredMedicine } from "./package-reading.js";
 
 export type VerificationSlot = {
   readonly slotId: string;

@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from "hono";
-import { domainError } from "../domain/domain-error";
-import { domainErrorResponse } from "./error-handler";
-import { isConsentExempt } from "./session";
+import { domainError } from "../domain/domain-error.js";
+import { domainErrorResponse } from "./error-handler.js";
+import { isConsentExempt } from "./session.js";
 
 export function requireDataConsent(): MiddlewareHandler {
   return async (c, next) => {

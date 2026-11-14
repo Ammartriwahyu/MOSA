@@ -1,5 +1,5 @@
-import { domainError, type DomainError } from "./domain-error";
-import { err, ok, type Result } from "./result";
+import { domainError, type DomainError } from "./domain-error.js";
+import { err, ok, type Result } from "./result.js";
 
 const MINUTE_MS = 60_000;
 const DAY_MS = 24 * 60 * MINUTE_MS;

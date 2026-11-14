@@ -1,4 +1,4 @@
-import type { Household, OutputMode } from "../domain/household";
+import type { Household, OutputMode } from "../domain/household.js";
 
 export type HouseholdResponse = {
   dataConsentAt: string | null;

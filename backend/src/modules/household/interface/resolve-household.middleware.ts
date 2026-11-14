@@ -1,8 +1,8 @@
 import type { MiddlewareHandler } from "hono";
-import { domainErrorResponse } from "../../../shared/interface/error-handler";
-import { isPublicPath } from "../../../shared/interface/session";
-import type { EnsureHousehold } from "../application/ensure-household.use-case";
-import { hasDataConsent } from "../domain/household";
+import { domainErrorResponse } from "../../../shared/interface/error-handler.js";
+import { isPublicPath } from "../../../shared/interface/session.js";
+import type { EnsureHousehold } from "../application/ensure-household.use-case.js";
+import { hasDataConsent } from "../domain/household.js";
 
 export function resolveHousehold(ensureHousehold: EnsureHousehold): MiddlewareHandler {
   return async (c, next) => {

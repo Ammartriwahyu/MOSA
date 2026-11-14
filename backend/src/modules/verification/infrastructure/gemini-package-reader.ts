@@ -1,10 +1,10 @@
 import { z } from "zod";
-import type { DomainError } from "../../../shared/domain/domain-error";
-import { ok, type Result } from "../../../shared/domain/result";
-import type { GeminiJsonGenerator } from "../../../shared/infrastructure/gemini-json-generator";
-import type { PackageReader } from "../application/ports/package-reader";
-import { createPackageImage, type PackageImage } from "../domain/package-image";
-import type { PackageReading } from "../domain/package-reading";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import { ok, type Result } from "../../../shared/domain/result.js";
+import type { GeminiJsonGenerator } from "../../../shared/infrastructure/gemini-json-generator.js";
+import type { PackageReader } from "../application/ports/package-reader.js";
+import { createPackageImage, type PackageImage } from "../domain/package-image.js";
+import type { PackageReading } from "../domain/package-reading.js";
 
 export const PACKAGE_READER_SYSTEM_INSTRUCTION = `Kamu membaca teks pada foto kemasan obat (bungkus, strip, blister, atau plastik).
 Keluarkan hanya apa yang benar-benar tercetak dan terbaca:

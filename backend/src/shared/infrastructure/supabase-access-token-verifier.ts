@@ -2,10 +2,10 @@ import { isAuthRetryableFetchError, type AuthError } from "@supabase/supabase-js
 import type {
   AccessTokenVerifier,
   VerifiedSession,
-} from "../application/access-token-verifier";
-import { domainError, type DomainError } from "../domain/domain-error";
-import { err, ok, type Result } from "../domain/result";
-import type { AdminClient } from "./supabase-client";
+} from "../application/access-token-verifier.js";
+import { domainError, type DomainError } from "../domain/domain-error.js";
+import { err, ok, type Result } from "../domain/result.js";
+import type { AdminClient } from "./supabase-client.js";
 
 const UNAUTHENTICATED = domainError("UNAUTHENTICATED", "Sesi tidak valid. Silakan masuk lagi.");
 const AUTH_UNAVAILABLE = domainError("AUTH_UNAVAILABLE", "Layanan masuk sedang tidak dapat dihubungi.");

@@ -1,6 +1,6 @@
-import type { DomainError } from "../../../shared/domain/domain-error";
-import type { Result } from "../../../shared/domain/result";
-import type { Household } from "./household";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import type { Result } from "../../../shared/domain/result.js";
+import type { Household } from "./household.js";
 
 export interface HouseholdRepository {
   findByOwner(ownerUserId: string): Promise<Result<Household | null, DomainError>>;

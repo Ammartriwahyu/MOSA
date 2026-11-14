@@ -1,7 +1,7 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { Household } from "../domain/household";
-import type { HouseholdRepository } from "../domain/household-repository";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { Household } from "../domain/household.js";
+import type { HouseholdRepository } from "../domain/household-repository.js";
 
 export async function loadHousehold(
   households: HouseholdRepository,

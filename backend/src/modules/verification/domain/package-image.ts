@@ -1,5 +1,5 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
 
 export const PACKAGE_IMAGE_LIMITS = Object.freeze({ maxBytes: 1_500_000 });
 export const PACKAGE_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;

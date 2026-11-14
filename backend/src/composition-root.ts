@@ -1,51 +1,51 @@
-import type { Env } from "./config/env";
-import { ConfirmDose } from "./modules/dosing/application/confirm-dose.use-case";
-import { ListTodaysDoses } from "./modules/dosing/application/list-todays-doses.use-case";
-import { GetScanContext } from "./modules/dosing/application/get-scan-context.use-case";
-import { SupabaseDoseConfirmationRepository } from "./modules/dosing/infrastructure/supabase-dose-confirmation.repository";
-import { SupabaseDosingMedicineReader } from "./modules/dosing/infrastructure/supabase-dosing-medicine-reader";
-import type { DosingUseCases } from "./modules/dosing/interface/dosing.routes";
-import { DeleteHouseholdData } from "./modules/household/application/delete-household-data.use-case";
-import { EnsureHousehold } from "./modules/household/application/ensure-household.use-case";
-import { GetHousehold } from "./modules/household/application/get-household.use-case";
-import { RecordConsent } from "./modules/household/application/record-consent.use-case";
-import { UpdatePreferences } from "./modules/household/application/update-preferences.use-case";
-import { SupabaseAccountEraser } from "./modules/household/infrastructure/supabase-account-eraser";
-import { SupabaseHouseholdRepository } from "./modules/household/infrastructure/supabase-household.repository";
-import type { HouseholdUseCases } from "./modules/household/interface/household.routes";
-import { ExplainMedicineText } from "./modules/medication/application/explain-medicine-text.use-case";
+import type { Env } from "./config/env.js";
+import { ConfirmDose } from "./modules/dosing/application/confirm-dose.use-case.js";
+import { ListTodaysDoses } from "./modules/dosing/application/list-todays-doses.use-case.js";
+import { GetScanContext } from "./modules/dosing/application/get-scan-context.use-case.js";
+import { SupabaseDoseConfirmationRepository } from "./modules/dosing/infrastructure/supabase-dose-confirmation.repository.js";
+import { SupabaseDosingMedicineReader } from "./modules/dosing/infrastructure/supabase-dosing-medicine-reader.js";
+import type { DosingUseCases } from "./modules/dosing/interface/dosing.routes.js";
+import { DeleteHouseholdData } from "./modules/household/application/delete-household-data.use-case.js";
+import { EnsureHousehold } from "./modules/household/application/ensure-household.use-case.js";
+import { GetHousehold } from "./modules/household/application/get-household.use-case.js";
+import { RecordConsent } from "./modules/household/application/record-consent.use-case.js";
+import { UpdatePreferences } from "./modules/household/application/update-preferences.use-case.js";
+import { SupabaseAccountEraser } from "./modules/household/infrastructure/supabase-account-eraser.js";
+import { SupabaseHouseholdRepository } from "./modules/household/infrastructure/supabase-household.repository.js";
+import type { HouseholdUseCases } from "./modules/household/interface/household.routes.js";
+import { ExplainMedicineText } from "./modules/medication/application/explain-medicine-text.use-case.js";
 import {
   CreateMedicine,
   DeactivateMedicine,
   GetMedicine,
   ListMedicines,
   UpdateMedicine,
-} from "./modules/medication/application/medicine-use-cases";
-import { RateLimitedExplainer } from "./modules/medication/application/rate-limited-explainer";
-import { GeminiPlainLanguageExplainer } from "./modules/medication/infrastructure/gemini-plain-language-explainer";
-import { SupabaseMedicineRepository } from "./modules/medication/infrastructure/supabase-medicine.repository";
-import type { MedicationUseCases } from "./modules/medication/interface/medication.routes";
-import { VerifyPackage } from "./modules/verification/application/verify-package.use-case";
-import { GeminiPackageReader } from "./modules/verification/infrastructure/gemini-package-reader";
-import { HmacScanTokens, CurrentMedicineScanTokenVerifier } from "./modules/verification/infrastructure/hmac-scan-tokens";
-import { DosingScanContextReader, HouseholdScanConsentReader } from "./modules/verification/infrastructure/scan-context-adapters";
-import type { ScanUseCases } from "./modules/verification/interface/scan.routes";
-import { SubscribePush, UnsubscribePush } from "./modules/notification/application/subscription.use-cases";
-import { SendDueReminders } from "./modules/notification/application/send-due-reminders.use-case";
-import { DosingDueDoseReader } from "./modules/notification/infrastructure/dosing-due-dose-reader";
-import { SupabasePushSubscriptions, SupabaseReminderDispatches } from "./modules/notification/infrastructure/supabase-push-repositories";
-import { WebPushSender } from "./modules/notification/infrastructure/web-push-sender";
-import type { NotificationUseCases } from "./modules/notification/interface/notification.routes";
-import type { AccessTokenVerifier } from "./shared/application/access-token-verifier";
-import { CheckHealth } from "./shared/application/check-health.use-case";
-import type { Logger } from "./shared/application/logger";
-import { createGeminiGenerateContent, GeminiJsonGenerator } from "./shared/infrastructure/gemini-json-generator";
-import { createJsonLogger } from "./shared/infrastructure/json-logger";
-import { SupabaseAiUsageLimiter } from "./shared/infrastructure/supabase-ai-usage-limiter";
-import { SupabaseAccessTokenVerifier } from "./shared/infrastructure/supabase-access-token-verifier";
-import { createSupabaseAdminClient } from "./shared/infrastructure/supabase-client";
-import { SupabaseDatabasePing } from "./shared/infrastructure/supabase-database-ping";
-import { systemClock } from "./shared/infrastructure/system-clock";
+} from "./modules/medication/application/medicine-use-cases.js";
+import { RateLimitedExplainer } from "./modules/medication/application/rate-limited-explainer.js";
+import { GeminiPlainLanguageExplainer } from "./modules/medication/infrastructure/gemini-plain-language-explainer.js";
+import { SupabaseMedicineRepository } from "./modules/medication/infrastructure/supabase-medicine.repository.js";
+import type { MedicationUseCases } from "./modules/medication/interface/medication.routes.js";
+import { VerifyPackage } from "./modules/verification/application/verify-package.use-case.js";
+import { GeminiPackageReader } from "./modules/verification/infrastructure/gemini-package-reader.js";
+import { HmacScanTokens, CurrentMedicineScanTokenVerifier } from "./modules/verification/infrastructure/hmac-scan-tokens.js";
+import { DosingScanContextReader, HouseholdScanConsentReader } from "./modules/verification/infrastructure/scan-context-adapters.js";
+import type { ScanUseCases } from "./modules/verification/interface/scan.routes.js";
+import { SubscribePush, UnsubscribePush } from "./modules/notification/application/subscription.use-cases.js";
+import { SendDueReminders } from "./modules/notification/application/send-due-reminders.use-case.js";
+import { DosingDueDoseReader } from "./modules/notification/infrastructure/dosing-due-dose-reader.js";
+import { SupabasePushSubscriptions, SupabaseReminderDispatches } from "./modules/notification/infrastructure/supabase-push-repositories.js";
+import { WebPushSender } from "./modules/notification/infrastructure/web-push-sender.js";
+import type { NotificationUseCases } from "./modules/notification/interface/notification.routes.js";
+import type { AccessTokenVerifier } from "./shared/application/access-token-verifier.js";
+import { CheckHealth } from "./shared/application/check-health.use-case.js";
+import type { Logger } from "./shared/application/logger.js";
+import { createGeminiGenerateContent, GeminiJsonGenerator } from "./shared/infrastructure/gemini-json-generator.js";
+import { createJsonLogger } from "./shared/infrastructure/json-logger.js";
+import { SupabaseAiUsageLimiter } from "./shared/infrastructure/supabase-ai-usage-limiter.js";
+import { SupabaseAccessTokenVerifier } from "./shared/infrastructure/supabase-access-token-verifier.js";
+import { createSupabaseAdminClient } from "./shared/infrastructure/supabase-client.js";
+import { SupabaseDatabasePing } from "./shared/infrastructure/supabase-database-ping.js";
+import { systemClock } from "./shared/infrastructure/system-clock.js";
 
 export type Container = {
   frontendOrigin: string;

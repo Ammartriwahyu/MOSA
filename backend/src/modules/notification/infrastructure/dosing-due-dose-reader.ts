@@ -1,7 +1,7 @@
-import type { ListTodaysDoses } from "../../dosing/application/list-todays-doses.use-case";
-import type { GetHousehold } from "../../household/application/get-household.use-case";
-import { ok } from "../../../shared/domain/result";
-import type { DueDoseReader } from "../application/ports";
+import type { ListTodaysDoses } from "../../dosing/application/list-todays-doses.use-case.js";
+import type { GetHousehold } from "../../household/application/get-household.use-case.js";
+import { ok } from "../../../shared/domain/result.js";
+import type { DueDoseReader } from "../application/ports.js";
 
 export class DosingDueDoseReader implements DueDoseReader {
   constructor(private readonly doses: ListTodaysDoses, private readonly households: GetHousehold) {}

@@ -1,7 +1,7 @@
-import type { AiUsageLimiter } from "../../../shared/application/ai-usage-limiter";
-import type { DomainError } from "../../../shared/domain/domain-error";
-import type { Result } from "../../../shared/domain/result";
-import type { ExplainerText, PlainLanguageExplainer } from "./ports/plain-language-explainer";
+import type { AiUsageLimiter } from "../../../shared/application/ai-usage-limiter.js";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import type { Result } from "../../../shared/domain/result.js";
+import type { ExplainerText, PlainLanguageExplainer } from "./ports/plain-language-explainer.js";
 
 export class RateLimitedExplainer implements PlainLanguageExplainer {
   constructor(

@@ -1,9 +1,9 @@
 import { z } from "zod";
-import type { DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { AdminClient } from "../../../shared/infrastructure/supabase-client";
-import type { DosingMedicine, DosingMedicineReader } from "../application/ports/dosing-medicine-reader";
-import { databaseUnavailable, epoch, UUID } from "./dosing-data";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { AdminClient } from "../../../shared/infrastructure/supabase-client.js";
+import type { DosingMedicine, DosingMedicineReader } from "../application/ports/dosing-medicine-reader.js";
+import { databaseUnavailable, epoch, UUID } from "./dosing-data.js";
 
 const COLUMNS = "id, active, created_at, intake_times, intake_times_started_at, name, strength, purpose, dose_amount, usage_rule, warnings, notes, label_source, explanation, explanation_origin";
 const rowSchema = z.object({

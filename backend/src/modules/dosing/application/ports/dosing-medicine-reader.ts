@@ -1,7 +1,7 @@
-import type { DomainError } from "../../../../shared/domain/domain-error";
-import type { Result } from "../../../../shared/domain/result";
-import type { MedicineSchedule } from "../../domain/daily-slots";
-import type { MedicineScheduleReader } from "./medicine-schedule-reader";
+import type { DomainError } from "../../../../shared/domain/domain-error.js";
+import type { Result } from "../../../../shared/domain/result.js";
+import type { MedicineSchedule } from "../../domain/daily-slots.js";
+import type { MedicineScheduleReader } from "./medicine-schedule-reader.js";
 
 export type DosingMedicine = MedicineSchedule & {
   readonly name: string;

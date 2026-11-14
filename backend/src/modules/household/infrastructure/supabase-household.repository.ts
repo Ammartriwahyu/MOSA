@@ -1,9 +1,9 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { Database } from "../../../shared/infrastructure/database.types";
-import type { AdminClient } from "../../../shared/infrastructure/supabase-client";
-import type { Household, OutputMode } from "../domain/household";
-import type { HouseholdRepository } from "../domain/household-repository";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { Database } from "../../../shared/infrastructure/database.types.js";
+import type { AdminClient } from "../../../shared/infrastructure/supabase-client.js";
+import type { Household, OutputMode } from "../domain/household.js";
+import type { HouseholdRepository } from "../domain/household-repository.js";
 
 type HouseholdRow = Database["public"]["Tables"]["households"]["Row"];
 

@@ -1,12 +1,12 @@
-import { ok, type Result } from "../../../shared/domain/result";
-import type { DomainError } from "../../../shared/domain/domain-error";
-import { addWibDays, type WibDate } from "../../../shared/domain/wib-time";
-import { buildDailySlots } from "../domain/daily-slots";
-import type { DoseConfirmationRepository } from "../domain/dose-confirmation";
-import { createDoseSlot, parseDoseSlotId, type DoseSlot } from "../domain/dose-slot";
-import { classifyDose, doseWindow, type DoseStatus } from "../domain/dose-window";
-import { findNextDose, nextDoseDates, type NextDose } from "../domain/next-dose";
-import type { DosingMedicine, DosingMedicineReader } from "./ports/dosing-medicine-reader";
+import { ok, type Result } from "../../../shared/domain/result.js";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import { addWibDays, type WibDate } from "../../../shared/domain/wib-time.js";
+import { buildDailySlots } from "../domain/daily-slots.js";
+import type { DoseConfirmationRepository } from "../domain/dose-confirmation.js";
+import { createDoseSlot, parseDoseSlotId, type DoseSlot } from "../domain/dose-slot.js";
+import { classifyDose, doseWindow, type DoseStatus } from "../domain/dose-window.js";
+import { findNextDose, nextDoseDates, type NextDose } from "../domain/next-dose.js";
+import type { DosingMedicine, DosingMedicineReader } from "./ports/dosing-medicine-reader.js";
 
 export type ScanContextSnapshot = {
   readonly medicines: readonly DosingMedicine[];

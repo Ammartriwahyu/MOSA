@@ -1,9 +1,9 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import { addWibDays, toWib, type WibDate } from "../../../shared/domain/wib-time";
-import { buildDailySlots, type MedicineSchedule } from "./daily-slots";
-import type { DoseSlot } from "./dose-slot";
-import { dosePeriod, type DosePeriod } from "./time-periods";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import { addWibDays, toWib, type WibDate } from "../../../shared/domain/wib-time.js";
+import { buildDailySlots, type MedicineSchedule } from "./daily-slots.js";
+import type { DoseSlot } from "./dose-slot.js";
+import { dosePeriod, type DosePeriod } from "./time-periods.js";
 
 export type NextDose = {
   readonly slot: DoseSlot;

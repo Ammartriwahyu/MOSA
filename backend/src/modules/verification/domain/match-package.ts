@@ -1,8 +1,8 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { normalizeMedicineName } from "../../../shared/domain/medicine-name-normalizer";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import { parseStrength, type Strength } from "../../../shared/domain/strength";
-import type { PackageReading, RegisteredMedicine } from "./package-reading";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { normalizeMedicineName } from "../../../shared/domain/medicine-name-normalizer.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import { parseStrength, type Strength } from "../../../shared/domain/strength.js";
+import type { PackageReading, RegisteredMedicine } from "./package-reading.js";
 
 export type PackageMismatch =
   | { readonly outcome: "tidak_terbaca" }

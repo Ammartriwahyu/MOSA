@@ -1,6 +1,6 @@
-import { formatTimeOfDay, toWib } from "../../../shared/domain/wib-time";
-import type { VerifyPackageResult } from "../application/verify-package.use-case";
-import type { VerificationSlot } from "../domain/verification-outcome";
+import { formatTimeOfDay, toWib } from "../../../shared/domain/wib-time.js";
+import type { VerifyPackageResult } from "../application/verify-package.use-case.js";
+import type { VerificationSlot } from "../domain/verification-outcome.js";
 
 function slotResponse(slot: VerificationSlot) {
   const wib = toWib(slot.scheduledAt);

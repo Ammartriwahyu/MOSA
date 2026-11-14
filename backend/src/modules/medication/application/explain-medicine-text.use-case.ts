@@ -1,8 +1,8 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import { LIMITS } from "../domain/medicine";
-import { isFaithfulExplanation } from "../domain/services/explanation-guard";
-import type { ExplainerText, PlainLanguageExplainer } from "./ports/plain-language-explainer";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import { LIMITS } from "../domain/medicine.js";
+import { isFaithfulExplanation } from "../domain/services/explanation-guard.js";
+import type { ExplainerText, PlainLanguageExplainer } from "./ports/plain-language-explainer.js";
 
 export const AI_INPUT_FIELDS = ["aturanPakai", "larangan", "catatan"] as const;
 

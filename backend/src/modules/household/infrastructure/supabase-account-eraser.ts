@@ -1,7 +1,7 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { AdminClient } from "../../../shared/infrastructure/supabase-client";
-import type { AccountEraser } from "../application/ports/account-eraser";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { AdminClient } from "../../../shared/infrastructure/supabase-client.js";
+import type { AccountEraser } from "../application/ports/account-eraser.js";
 
 export class SupabaseAccountEraser implements AccountEraser {
   constructor(private readonly client: AdminClient) {}

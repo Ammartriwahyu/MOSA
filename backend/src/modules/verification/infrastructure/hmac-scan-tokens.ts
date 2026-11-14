@@ -1,12 +1,12 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
-import type { ScanTokenClaims, ScanTokenVerifier } from "../../dosing/application/ports/scan-token-verifier";
-import type { DosingMedicineReader } from "../../dosing/application/ports/dosing-medicine-reader";
-import type { Clock } from "../../../shared/domain/clock";
-import { domainError } from "../../../shared/domain/domain-error";
-import { err, ok } from "../../../shared/domain/result";
-import type { ScanTokenSigner } from "../application/ports/scan-token-signer";
-import { SCAN_TOKEN_POLICY } from "../domain/scan-token-policy";
+import type { ScanTokenClaims, ScanTokenVerifier } from "../../dosing/application/ports/scan-token-verifier.js";
+import type { DosingMedicineReader } from "../../dosing/application/ports/dosing-medicine-reader.js";
+import type { Clock } from "../../../shared/domain/clock.js";
+import { domainError } from "../../../shared/domain/domain-error.js";
+import { err, ok } from "../../../shared/domain/result.js";
+import type { ScanTokenSigner } from "../application/ports/scan-token-signer.js";
+import { SCAN_TOKEN_POLICY } from "../domain/scan-token-policy.js";
 
 const payloadSchema = z.strictObject({ householdId: z.string().min(1).max(200), medicineId: z.string().min(1).max(200),
   slotId: z.string().min(1).max(256), exp: z.number().int().positive(), fingerprint: z.string().regex(/^[a-f0-9]{64}$/) });

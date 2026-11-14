@@ -1,7 +1,7 @@
-import type { DomainError } from "../../../../shared/domain/domain-error";
-import type { Result } from "../../../../shared/domain/result";
-import type { RegisteredMedicine } from "../../domain/package-reading";
-import type { VerificationDose, VerificationSlot } from "../../domain/verification-outcome";
+import type { DomainError } from "../../../../shared/domain/domain-error.js";
+import type { Result } from "../../../../shared/domain/result.js";
+import type { RegisteredMedicine } from "../../domain/package-reading.js";
+import type { VerificationDose, VerificationSlot } from "../../domain/verification-outcome.js";
 
 export type ScanMedicine = RegisteredMedicine & {
   readonly purpose: string; readonly doseAmount: string; readonly usageRule: string;

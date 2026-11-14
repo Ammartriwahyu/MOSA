@@ -1,6 +1,6 @@
-import type { DomainError } from "../../../shared/domain/domain-error";
-import { ok, type Result } from "../../../shared/domain/result";
-import type { DueDoseReader, PushSender, PushSubscriptionRepository, ReminderDispatchRepository } from "./ports";
+import type { DomainError } from "../../../shared/domain/domain-error.js";
+import { ok, type Result } from "../../../shared/domain/result.js";
+import type { DueDoseReader, PushSender, PushSubscriptionRepository, ReminderDispatchRepository } from "./ports.js";
 
 export type DispatchSummary = { sent: number; expired: number; failed: number; skipped: number };
 

@@ -1,5 +1,5 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
 
 export type OutputMode = "teks" | "suara";
 export type ConsentKind = "data" | "scan";

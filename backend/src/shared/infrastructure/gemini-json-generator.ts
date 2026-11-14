@@ -1,6 +1,6 @@
 import { GoogleGenAI, type GenerateContentParameters } from "@google/genai";
-import { domainError, type DomainError } from "../domain/domain-error";
-import { err, ok, type Result } from "../domain/result";
+import { domainError, type DomainError } from "../domain/domain-error.js";
+import { err, ok, type Result } from "../domain/result.js";
 
 export type GenerateContent = (
   params: GenerateContentParameters,

@@ -1,9 +1,9 @@
-import { domainError, type DomainError } from "../../../shared/domain/domain-error";
-import { err, ok, type Result } from "../../../shared/domain/result";
-import type { Database } from "../../../shared/infrastructure/database.types";
-import type { AdminClient } from "../../../shared/infrastructure/supabase-client";
-import type { ExplanationOrigin, LabelSource, Medicine, MedicineDraft } from "../domain/medicine";
-import type { MedicineRepository } from "../domain/medicine-repository";
+import { domainError, type DomainError } from "../../../shared/domain/domain-error.js";
+import { err, ok, type Result } from "../../../shared/domain/result.js";
+import type { Database } from "../../../shared/infrastructure/database.types.js";
+import type { AdminClient } from "../../../shared/infrastructure/supabase-client.js";
+import type { ExplanationOrigin, LabelSource, Medicine, MedicineDraft } from "../domain/medicine.js";
+import type { MedicineRepository } from "../domain/medicine-repository.js";
 
 type MedicineRow = Omit<Database["public"]["Tables"]["medicines"]["Row"], "intake_times_started_at">;
 

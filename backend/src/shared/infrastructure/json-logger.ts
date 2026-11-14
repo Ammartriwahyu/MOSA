@@ -1,4 +1,4 @@
-import type { LogEvent, Logger } from "../application/logger";
+import type { LogEvent, Logger } from "../application/logger.js";
 
 type LogSink = (line: string) => void;
 

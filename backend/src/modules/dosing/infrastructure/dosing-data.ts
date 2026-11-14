@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { domainError } from "../../../shared/domain/domain-error";
-import { err, ok } from "../../../shared/domain/result";
-import { parseWibDate } from "../../../shared/domain/wib-time";
-import type { DoseConfirmation } from "../domain/dose-confirmation";
+import { domainError } from "../../../shared/domain/domain-error.js";
+import { err, ok } from "../../../shared/domain/result.js";
+import { parseWibDate } from "../../../shared/domain/wib-time.js";
+import type { DoseConfirmation } from "../domain/dose-confirmation.js";
 
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export const databaseUnavailable = () => domainError("DATABASE_UNAVAILABLE", "Database tidak dapat dihubungi.");
