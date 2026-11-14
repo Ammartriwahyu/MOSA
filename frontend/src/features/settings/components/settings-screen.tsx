@@ -62,6 +62,10 @@ export function SettingsScreen() {
     <>
       <PageHeader title={PENGATURAN.judul} backHref={ROUTES.home} />
 
+      {/* ≥ 1024 px: dua kolom (Figma Desktop 22 · 184:2259): pilihan dan akun di kiri,
+          privasi dan tindakan akun di kanan. Urutan DOM sama dengan mobile. */}
+      <div className="flex min-w-0 flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
+      <div className="flex min-w-0 flex-col gap-4">
       <ChoiceCards
         legend={PENGATURAN.caraMenampilkan}
         name="mode-keluaran"
@@ -87,7 +91,9 @@ export function SettingsScreen() {
           <AccountRow label={PENGATURAN.labelTetapMasuk} value={PENGATURAN.tetapMasukAktif} />
         </dl>
       </Card>
+      </div>
 
+      <div className="flex min-w-0 flex-col gap-4">
       <h2 className="pt-1 text-card-title">{PENGATURAN.dataPrivasi}</h2>
       <Card>
         <ul className="flex flex-col gap-3">
@@ -117,6 +123,8 @@ export function SettingsScreen() {
       }}>
         {AUTH.keluar}
       </Button>
+      </div>
+      </div>
 
       <DeleteAccountDialog open={deleteOpen} onOpenChange={setDeleteOpen} email={account.data?.email ?? null} />
     </>

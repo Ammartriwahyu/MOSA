@@ -57,7 +57,9 @@ export function MedicineDetailScreen({ id, updated = false }: { id: string; upda
       );
   } else {
     body = (
-      <>
+      // ≥ 1024 px: dua kolom (Figma Desktop 21 · 184:2123). Urutan DOM sama dengan mobile.
+      <div className="flex min-w-0 flex-col gap-3 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
+        <div className="flex min-w-0 flex-col gap-3">
         {updated ? <Notice tone="brand" role="status">{UBAH_OBAT.berhasil}</Notice> : null}
         <MedicineIdentity medicine={medicine.data} />
         <Button asChild variant="secondary">
@@ -65,6 +67,8 @@ export function MedicineDetailScreen({ id, updated = false }: { id: string; upda
         </Button>
         <h2 className="text-card-title">{OBAT.penjelasanSederhana}</h2>
         <MedicineExplanation medicine={medicine.data} />
+        </div>
+        <div className="flex min-w-0 flex-col gap-3">
         <h2 className="text-card-title">{OBAT.informasiAsli}</h2>
         <MedicineOriginalInfo medicine={medicine.data} />
         <Notice tone="plain">{OBAT.bukanSaranMedis}</Notice>
@@ -74,7 +78,8 @@ export function MedicineDetailScreen({ id, updated = false }: { id: string; upda
         </Button>
         <p className="text-body text-ink-secondary">{UBAH_OBAT.petunjuk}</p>
         <DeleteMedicineAction medicine={medicine.data} onDialogChange={setDeleting} />
-      </>
+        </div>
+      </div>
     );
   }
 
